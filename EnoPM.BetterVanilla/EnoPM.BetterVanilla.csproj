@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>EnoPM.BetterVanilla</AssemblyName>
+        <Description>Among Us client mod</Description>
+        <Version>1.0.0</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json
+        </RestoreAdditionalProjectSources>
+        <RootNamespace>EnoPM.BetterVanilla</RootNamespace>
+        <Configurations>Debug;Release;CodeGen</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <FieldAttribute>ManagedByEditor</FieldAttribute>
+        <MonoBehaviourParents>MonoBehaviour</MonoBehaviourParents>
+        <MonoBehaviourGeneratedFieldPrefix />
+        <MonoBehaviourGeneratedFieldSuffix>Ref2</MonoBehaviourGeneratedFieldSuffix>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Analyzer Include="$(SolutionDir)\EnoPM.Generators\bin\Release\net6.0\EnoPM.Generators.dll" />
+        <EmbeddedResource Include="Resources\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.3.5" />
+        <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.688" IncludeAssets="compile"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <GameDirectory>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Bepinex</GameDirectory>
+    </PropertyGroup>
+
+    <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(GameDirectory)/BepInEx/plugins/')">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDirectory)/BepInEx/plugins/" />
+    </Target>
+</Project>

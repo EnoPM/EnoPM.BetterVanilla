@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnoPM.BetterVanilla", "EnoPM.BetterVanilla\EnoPM.BetterVanilla.csproj", "{9D4E20EE-631C-4199-9F9A-929D8DA4E109}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnoPM.Generators", "EnoPM.Generators\EnoPM.Generators.csproj", "{898870EA-53F6-472B-A727-FAD2FD41A4AE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		CodeGen|Any CPU = CodeGen|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.CodeGen|Any CPU.ActiveCfg = CodeGen|Any CPU
+		{9D4E20EE-631C-4199-9F9A-929D8DA4E109}.CodeGen|Any CPU.Build.0 = CodeGen|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
+		{898870EA-53F6-472B-A727-FAD2FD41A4AE}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal
