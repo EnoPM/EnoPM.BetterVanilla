@@ -19,7 +19,7 @@ namespace EnoPM.BetterVanilla.ManagedComponents;
 
 public partial class UpdaterController : MonoBehaviour
 {
-    private const string GithubRepository = "TheOtherRolesAU/TheOtherRoles";
+    private const string GithubRepository = "EnoPM/EnoPM.BetterVanilla";
     
     // ReSharper disable InconsistentNaming
     [ManagedByEditor] private GameObject canvas;
