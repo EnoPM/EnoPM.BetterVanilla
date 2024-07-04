@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Extensions;
 
-internal static class PlayerInfoExtensions
+internal static class NetworkedPlayerInfoExtensions
 {
-    internal static string GenerateModdedText(this GameData.PlayerInfo info)
+    internal static string GenerateModdedText(this NetworkedPlayerInfo info)
     {
         var role = info.Role;
         var amDead = Utils.AmDead;

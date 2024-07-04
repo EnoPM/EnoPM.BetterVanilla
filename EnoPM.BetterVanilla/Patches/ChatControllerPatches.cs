@@ -109,7 +109,7 @@ internal static class ChatControllerPatches
         if (arguments.Count == 0) return false;
         var playerName = string.Join(" ", arguments);
         var target = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.Data.PlayerName.Equals(playerName));
-        if (target == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.CanBan()) return false;
+        if (!target || !AmongUsClient.Instance || !AmongUsClient.Instance.CanBan()) return false;
         var client = AmongUsClient.Instance.GetClient(target.OwnerId);
         if (client == null) return false; 
         AmongUsClient.Instance.KickPlayer(client.Id, false);
@@ -211,8 +211,8 @@ internal static class ChatControllerPatches
 
     private static void SetPrivateChatBubbleName(
         ChatBubble bubble,
-        GameData.PlayerInfo senderInfo,
-        GameData.PlayerInfo receiverInfo,
+        NetworkedPlayerInfo senderInfo,
+        NetworkedPlayerInfo receiverInfo,
         bool isDead,
         bool didVote,
         Color nameColor)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -60,7 +61,7 @@ internal static class Utils
         return GetTasksCount(player);
     }
 
-    internal static Tuple<int, int> GetTasksCount(GameData.PlayerInfo player)
+    internal static Tuple<int, int> GetTasksCount(NetworkedPlayerInfo player)
     {
         var total = 0;
         var done = 0;
@@ -88,9 +89,14 @@ internal static class Utils
         return $"<color=#{ToByte(c.r):X2}{ToByte(c.g):X2}{ToByte(c.b):X2}{ToByte(c.a):X2}>{s}</color>";
     }
 
-    internal static GameData.PlayerInfo GetPlayerById(byte id)
+    internal static NetworkedPlayerInfo GetPlayerById(byte id)
     {
-        return GameData.Instance.GetPlayerById(id);
+        var pc = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == id);
+        if (pc)
+        {
+            return pc.Data;
+        }
+        return null;
     }
 
     internal static string ColorToHex(Color color)

@@ -7,7 +7,6 @@ namespace EnoPM.BetterVanilla.Core;
 
 internal static class ModAssets
 {
-
     internal static readonly Prefab<PopupController> ErrorPopupPrefab;
     internal static readonly Prefab<PopupController> SuccessPopupPrefab;
     internal static readonly Prefab<UpdaterController> UpdaterPrefab;

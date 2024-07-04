@@ -12,7 +12,7 @@
             https://nuget.bepinex.dev/v3/index.json
         </RestoreAdditionalProjectSources>
         <RootNamespace>EnoPM.BetterVanilla</RootNamespace>
-        <Configurations>Debug;Release;CodeGen</Configurations>
+        <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     
@@ -29,12 +29,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.3.5" />
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2024.6.18" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.688" IncludeAssets="compile"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.692" IncludeAssets="compile" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
     </ItemGroup>
 
