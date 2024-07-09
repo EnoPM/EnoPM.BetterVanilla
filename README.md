@@ -5,5 +5,5 @@
 
 # Installation (FR)
 - Télécharger [EnoPM.BetterVanilla v1.0.1.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.0.1/EnoPM.BetterVanilla.v1.0.1.zip)
-- Extraire le contenu de l'archive dans votre dossier du jeu Among Us (Steam ou Epic Games).
+- Extraire le contenu de l'archive dans le dossier du jeu Among Us (Steam ou Epic Games).
 - Lancer Among Us.
