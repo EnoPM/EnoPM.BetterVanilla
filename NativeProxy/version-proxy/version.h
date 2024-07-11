@@ -1,0 +1,8 @@
+﻿#pragma once
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+extern HMODULE version_dll;
+DWORD WINAPI Load(LPVOID lpParam);
+
+bool check_entry_point();

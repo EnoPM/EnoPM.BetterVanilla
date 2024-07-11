@@ -2,6 +2,8 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CEnoPM_005CRiderProjects_005CEnoPM_002EBetterVanilla_005CEnoPM_002EBetterVanilla_005CResources_005CLibrary_005CAssembly_002DCSharp_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CEnoPM_005CTheOtherRoles_005CBuild_005CTheOtherRoles_005FData_005CManaged_005CAssembly_002DCSharp_002DEnoPM_002EAssemblyCSharpManipulator_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
-  &lt;Assembly Path="C:\Users\EnoPM\Downloads\Assembly-CSharp-2024.3.5.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\EnoPM\Downloads\Assembly-CSharp-2024.6.4.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\EnoPM\RiderProjects\EnoPM.BetterVanilla\EnoPM.BetterVanilla\bin\Release\net6.0\EnoPM.BetterVanilla.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	
 	</wpf:ResourceDictionary>

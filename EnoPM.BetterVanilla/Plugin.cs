@@ -13,13 +13,13 @@ using UnityEngine;
 
 namespace EnoPM.BetterVanilla;
 
-[BepInProcess("Among Us"), BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInProcess("Among Us"), BepInPlugin(PluginProps.Guid, PluginProps.Name, PluginProps.Version)]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Plugin : BasePlugin
 {
     internal static ManualLogSource Logger { get; private set; }
     internal static ConfigFile ConfigFile { get; private set; }
-    private static readonly Harmony HarmonyPatcher = new(MyPluginInfo.PLUGIN_GUID);
+    private static readonly Harmony HarmonyPatcher = new(PluginProps.Guid);
     
     private static GameObject UiObject { get; set; }
     public static PopupController SuccessPopup { get; private set; }
@@ -47,7 +47,7 @@ public class Plugin : BasePlugin
         
         AddComponent<ModStampBehaviour>();
         HarmonyPatcher.PatchAll();
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Log.LogInfo($"Plugin {PluginProps.Guid} is loaded!");
     }
 
     private static void RegisterManagedComponentsInIl2Cpp()

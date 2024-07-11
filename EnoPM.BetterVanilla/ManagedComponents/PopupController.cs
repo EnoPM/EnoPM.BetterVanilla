@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using EnoPM.BetterVanilla.Core;
-using Il2CppInterop.Runtime.Attributes;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,15 +6,13 @@ using UnityEngine.UI;
 
 namespace EnoPM.BetterVanilla.ManagedComponents;
 
-public partial class PopupController : MonoBehaviour
+public class PopupController : MonoBehaviour
 {
-    // ReSharper disable InconsistentNaming
-    [ManagedByEditor] private GameObject canvas;
-    [ManagedByEditor] private TextMeshProUGUI titleText;
-    [ManagedByEditor] private TextMeshProUGUI bodyText;
-    [ManagedByEditor] private Button closeButton;
-    [ManagedByEditor] private Button confirmButton;
-    // ReSharper restore InconsistentNaming
+    public GameObject canvas;
+    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI bodyText;
+    public Button closeButton;
+    public Button confirmButton;
 
     private void Start()
     {
@@ -27,8 +22,7 @@ public partial class PopupController : MonoBehaviour
     }
 
     public void SetActive(bool value) => canvas.SetActive(value);
-
-    [HideFromIl2Cpp]
+    
     public IEnumerator CoShow(string title, string body)
     {
         titleText.SetText(title);

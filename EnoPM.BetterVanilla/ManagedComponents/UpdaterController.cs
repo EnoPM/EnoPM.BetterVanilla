@@ -7,8 +7,6 @@ using System.Reflection;
 using System.Text.Json;
 using BepInEx.Unity.IL2CPP.Utils;
 using EnoPM.BetterVanilla.Api;
-using EnoPM.BetterVanilla.Core;
-using Il2CppInterop.Runtime.Attributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,31 +15,27 @@ using UnityEngine.UI;
 
 namespace EnoPM.BetterVanilla.ManagedComponents;
 
-public partial class UpdaterController : MonoBehaviour
+public class UpdaterController : MonoBehaviour
 {
     private const string GithubRepository = "EnoPM/EnoPM.BetterVanilla";
     
-    // ReSharper disable InconsistentNaming
-    [ManagedByEditor] private GameObject canvas;
-    [ManagedByEditor] private GameObject updaterPanel;
-    [ManagedByEditor] private TextMeshProUGUI titleText;
-    [ManagedByEditor] private Button closeButton;
-    [ManagedByEditor] private Image icon;
-    [ManagedByEditor] private Button checkForUpdatesButton;
-    [ManagedByEditor] private Button installButton;
-    [ManagedByEditor] private TextMeshProUGUI installButtonText;
-    [ManagedByEditor] private TextMeshProUGUI selectVersionText;
-    [ManagedByEditor] private TMP_Dropdown versionSelectorDropdown;
-    [ManagedByEditor] private GameObject progressBarContainer;
-    [ManagedByEditor] private RectTransform progressBarContainerRect;
-    [ManagedByEditor] private RectTransform progressBarRect;
-    [ManagedByEditor] private TextMeshProUGUI changelogTitleText;
-    [ManagedByEditor] private TextMeshProUGUI changelogText;
-    // ReSharper restore InconsistentNaming
-
-    [HideFromIl2Cpp]
+    public GameObject canvas;
+    public GameObject updaterPanel;
+    public TextMeshProUGUI titleText;
+    public Button closeButton;
+    public Image icon;
+    public Button checkForUpdatesButton;
+    public Button installButton;
+    public TextMeshProUGUI installButtonText;
+    public TextMeshProUGUI selectVersionText;
+    public TMP_Dropdown versionSelectorDropdown;
+    public GameObject progressBarContainer;
+    public RectTransform progressBarContainerRect;
+    public RectTransform progressBarRect;
+    public TextMeshProUGUI changelogTitleText;
+    public TextMeshProUGUI changelogText;
+    
     private List<GithubRelease> AvailableReleases { get; set; }
-    [HideFromIl2Cpp]
     private GithubRelease SelectedRelease { get; set; }
 
     private void Start()
@@ -55,15 +49,13 @@ public partial class UpdaterController : MonoBehaviour
         versionSelectorDropdown.onValueChanged.AddListener((UnityAction<int>)OnSelectVersion);
         CheckForUpdates();
     }
-
-    [HideFromIl2Cpp]
+    
     private IEnumerator CoShowError(string errorMessage)
     {
         Plugin.Logger.LogError(errorMessage);
         yield return Plugin.ErrorPopup.CoShow("Updater Error",errorMessage);
     }
-
-    [HideFromIl2Cpp]
+    
     private IEnumerator CoShowSuccess()
     {
         Plugin.Logger.LogMessage("Update successfully installed.");
@@ -84,8 +76,7 @@ public partial class UpdaterController : MonoBehaviour
     {
         this.StartCoroutine(CoCheckForUpdates());
     }
-
-    [HideFromIl2Cpp]
+    
     private IEnumerator CoCheckForUpdates()
     {
         SetProgressBarActive(false);
@@ -133,13 +124,12 @@ public partial class UpdaterController : MonoBehaviour
         installButton.interactable = true;
         versionSelectorDropdown.interactable = true;
 
-        if (latestRelease.IsNewer(Version.Parse(MyPluginInfo.PLUGIN_VERSION)))
+        if (latestRelease.IsNewer(Version.Parse(PluginProps.Version)))
         {
             Open();
         }
     }
-
-    [HideFromIl2Cpp]
+    
     private IEnumerator CoDownloadRelease()
     {
         installButton.interactable = false;
