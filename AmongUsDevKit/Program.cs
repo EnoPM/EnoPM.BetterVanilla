@@ -1,7 +1,6 @@
 ﻿global using AmongUsDevKit.Utils;
 
 using AmongUsDevKit.Il2Cpp;
-using Mono.Cecil;
 
 namespace AmongUsDevKit;
 
@@ -11,8 +10,8 @@ internal static class Program
     
     private static void Main(string[] args)
     {
-        Arguments.SetProgramArguments(args);
-        var command = Arguments.ConsumeArgument().ToLowerInvariant();
+        Arguments.Init(args);
+        var command = Arguments.Consume().ToLowerInvariant();
         switch (command)
         {
             case "enhance":
@@ -25,8 +24,8 @@ internal static class Program
 
     private static void Enhance(ArgumentsReader args)
     {
-        var input = args.ConsumeArgument();
-        var output = args.ConsumeArgument();
+        var input = args.Consume();
+        var output = args.Consume();
         var libraryDirectories = args.RemainingArguments;
 
         var interopMaker = new InteropMaker(input);
@@ -38,8 +37,10 @@ internal static class Program
         interopMaker.RemoveAssemblyNameSuffix(".Mono");
         interopMaker.RandomizeAssemblyVersion();
         interopMaker.RegisterPluginEntryPoint();
+        
         var monoBehaviourInterop = new MonoBehaviourInterop(interopMaker);
         monoBehaviourInterop.Run();
+        
         interopMaker.Save(output);
     }
 }

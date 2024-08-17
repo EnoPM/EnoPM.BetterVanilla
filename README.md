@@ -1,3 +1,5 @@
+![Logo](https://github.com/EnoPM/EnoPM.BetterVanilla/blob/master/Images/BetterVanillaLogo.png)
+
 # Installation (EN)
 - Download [EnoPM.BetterVanilla v1.0.1.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.0.1/EnoPM.BetterVanilla.v1.0.1.zip)
 - Extract the contents of the archive into the Among Us game folder (Steam or Epic Games).

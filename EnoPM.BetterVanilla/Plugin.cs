@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.ManagedComponents;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
@@ -17,48 +15,31 @@ namespace EnoPM.BetterVanilla;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class Plugin : BasePlugin
 {
+    internal static Plugin Instance { get; private set; }
     internal static ManualLogSource Logger { get; private set; }
     internal static ConfigFile ConfigFile { get; private set; }
     private static readonly Harmony HarmonyPatcher = new(PluginProps.Guid);
     
     private static GameObject UiObject { get; set; }
-    public static PopupController SuccessPopup { get; private set; }
-    public static PopupController ErrorPopup { get; private set; }
-    public static UpdaterController Updater { get; private set; }
     
     public override void Load()
     {
+        Instance = this;
+        
         Logger = Log;
         ConfigFile = Config;
         
         ModConfigs.Load();
-        
-        RegisterManagedComponentsInIl2Cpp();
+        CustomButtonsManager.RegisterAssembly(Assembly.GetExecutingAssembly());
 
-        UiObject = new GameObject("BetterVanillaUI")
+        UiObject = new GameObject("BetterVanillaUi")
         {
             layer = 4,
             hideFlags = HideFlags.HideAndDontSave
         };
-
-        SuccessPopup = ModAssets.SuccessPopupPrefab.Instantiate(UiObject.transform);
-        ErrorPopup = ModAssets.ErrorPopupPrefab.Instantiate(UiObject.transform);
-        Updater = ModAssets.UpdaterPrefab.Instantiate(UiObject.transform);
         
-        AddComponent<ModStampBehaviour>();
+        AddComponent<StartupBehaviour>();
         HarmonyPatcher.PatchAll();
         Log.LogInfo($"Plugin {PluginProps.Guid} is loaded!");
-    }
-
-    private static void RegisterManagedComponentsInIl2Cpp()
-    {
-        var types = Assembly.GetExecutingAssembly().GetTypes();
-        var ns = $"{typeof(Plugin).Namespace}.{nameof(ManagedComponents)}";
-        var managedComponentsTypes = types.Where(x => x.Namespace == ns && x.IsAssignableTo(typeof(MonoBehaviour)));
-        foreach (var type in managedComponentsTypes)
-        {
-            if (ClassInjector.IsTypeRegisteredInIl2Cpp(type)) continue;
-            ClassInjector.RegisterTypeInIl2Cpp(type);
-        }
     }
 }

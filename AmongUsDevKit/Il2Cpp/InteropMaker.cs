@@ -47,7 +47,7 @@ internal sealed class InteropMaker
         }
         pluginEntryPointMethod.AddCallOnTop(MainAssembly.MainModule.ImportReference(BaseLoader));
 
-        var attribute = CreateAttributeClass("CanNotBeObfuscate", AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Enum | AttributeTargets.Event);
+        var attribute = CreateCustomAttributeType("CanNotBeObfuscated", 256);
         _doNotRenameAttributeConstructor = attribute.Methods.First(x => x.IsConstructor);
     }
 
@@ -82,30 +82,26 @@ internal sealed class InteropMaker
         return type;
     }
 
-    public TypeDefinition CreateInternalStaticCompilerClass(string className) => CreateCompilerType(className, TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.NotPublic, MainAssembly.MainModule.TypeSystem.Object);
+    private TypeDefinition CreateInternalStaticCompilerClass(string className) => CreateCompilerType(className, TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.NotPublic, MainAssembly.MainModule.TypeSystem.Object);
 
 
     private const TypeAttributes AttributeTypeBaseAttributes = TypeAttributes.NotPublic | TypeAttributes.Class | TypeAttributes.Sealed;
     private const MethodAttributes AttributeConstructorBaseAttributes = MethodAttributes.Assembly | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
 
-    public TypeDefinition CreateAttributeClass(string attributeName, AttributeTargets attributeTargets)
+    private TypeDefinition CreateCustomAttributeType(string attributeName, int attributeTargets)
     {
         var mainModule = MainAssembly.MainModule;
         var attributeBaseClass = Helper.ResolveTypeOrThrow("System.Attribute");
         var attributeBaseCtor = attributeBaseClass.Methods.First(x => x.IsConstructor);
         var attributeUsageCtor = Helper.ResolveMethodOrThrow("System.Void System.AttributeUsageAttribute::.ctor(System.AttributeTargets)");
         var attributeTargetsType = Helper.ResolveTypeOrThrow("System.AttributeTargets");
-        
-        var attributeType = CreateCompilerType(attributeName, AttributeTypeBaseAttributes, mainModule.ImportReference(attributeBaseClass));
-
+        var attributeType = CreateCompilerType($"{attributeName}Attribute", AttributeTypeBaseAttributes, mainModule.ImportReference(attributeBaseClass));
         var ctor = new MethodDefinition(".ctor", AttributeConstructorBaseAttributes, mainModule.TypeSystem.Void);
-        
         var attributeUsage = new CustomAttribute(mainModule.ImportReference(attributeUsageCtor));
         attributeUsage.ConstructorArguments.Add(new CustomAttributeArgument(mainModule.ImportReference(attributeTargetsType), attributeTargets));
-    
         attributeType.CustomAttributes.Add(attributeUsage);
         attributeType.Methods.Add(ctor);
-
+        
         var il = ctor.Body.GetILProcessor();
         il.Emit(OpCodes.Ldarg_0);
         il.Emit(OpCodes.Call, mainModule.ImportReference(attributeBaseCtor));
@@ -113,6 +109,7 @@ internal sealed class InteropMaker
 
         return attributeType;
     }
+
 
     private MethodDefinition CreateBaseLoader()
     {

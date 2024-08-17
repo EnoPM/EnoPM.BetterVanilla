@@ -16,7 +16,7 @@ internal sealed class ArgumentsReader
     #endregion
 
 
-    public void SetProgramArguments(string[] args)
+    public void Init(string[] args)
     {
         foreach (var arg in args)
         {
@@ -32,7 +32,7 @@ internal sealed class ArgumentsReader
         }
     }
 
-    public string ConsumeArgument()
+    public string Consume()
     {
         var result = _arguments.First();
         _arguments.RemoveAt(0);

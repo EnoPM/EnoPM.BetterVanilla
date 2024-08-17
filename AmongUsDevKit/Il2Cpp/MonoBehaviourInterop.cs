@@ -12,17 +12,87 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
     public void Run()
     {
         Log.Production(nameof(MonoBehaviourInterop), ConsoleColor.Cyan);
-        var components = interopMaker.MainAssembly.MainModule.Types
-            .Where(IsMonoBehaviour)
-            .Select(GetMonoBehaviourData)
-            .ToList();
+
+        var allMonoBehaviours = GetMonoBehavioursOrderedByInheritance();
+
+        var components = new List<MonoBehaviourData>();
+
+        foreach (var monoBehaviourType in allMonoBehaviours)
+        {
+            components.Add(GetMonoBehaviourData(monoBehaviourType));
+        }
+        
+        //IdentifyDependencies(components);
+        //IdentifyMethodDependencies(components);
+        //components = TopologicalSort(components);
 
         foreach (var component in components)
         {
-            Log.Verbose($"MonoBehaviour found: {component.Type.FullName} (nearest awake method in {component.NearestAwakeMethod?.DeclaringType.Name ?? "nowhere"}) (serialized fields: {component.SerializedFields.Count})", ConsoleColor.Magenta);
+            Log.Verbose($"MonoBehaviour found: {component.Type.FullName} (serialized fields: {component.SerializedFields.Count})", ConsoleColor.Magenta);
         }
 
         DoSerializedFieldsInterop(components);
+        HideUnsupportedTypeInIl2Cpp(components);
+        CreateMonoBehavioursRegisterer(components);
+    }
+
+    private void HideUnsupportedTypeInIl2Cpp(List<MonoBehaviourData> allComponents)
+    {
+        var unsupportedMembers = new List<IMemberDefinition>();
+        foreach (var component in allComponents)
+        {
+            foreach (var method in component.Type.Methods)
+            {
+                if (IsTypeSupportedInIl2Cpp(method.ReturnType) && method.Parameters.All(x => IsTypeSupportedInIl2Cpp(x.ParameterType)))
+                {
+                    continue;
+                }
+                unsupportedMembers.Add(method);
+            }
+            foreach (var ev in component.Type.Events)
+            {
+                if (IsTypeSupportedInIl2Cpp(ev.EventType))
+                {
+                    continue;
+                }
+                unsupportedMembers.Add(ev);
+            }
+            foreach (var property in component.Type.Properties)
+            {
+                if (IsTypeSupportedInIl2Cpp(property.PropertyType))
+                {
+                    continue;
+                }
+                unsupportedMembers.Add(property);
+            }
+        }
+        if (unsupportedMembers.Count == 0) return;
+        var hideFromIl2CppAttributeConstructor = interopMaker.Helper.ResolveMethodOrThrow("System.Void Il2CppInterop.Runtime.Attributes.HideFromIl2CppAttribute::.ctor()");
+        foreach (var unsupportedMember in unsupportedMembers)
+        {
+            unsupportedMember.CustomAttributes.Add(new CustomAttribute(interopMaker.MainAssembly.MainModule.ImportReference(hideFromIl2CppAttributeConstructor)));
+        }
+    }
+
+    private bool IsTypeSupportedInIl2Cpp(TypeReference type)
+    {
+        if (type.IsValueType || type.FullName == interopMaker.MainAssembly.MainModule.TypeSystem.Void.FullName || type.FullName == interopMaker.MainAssembly.MainModule.TypeSystem.String.FullName || type.IsGenericParameter)
+        {
+            return true;
+        }
+
+        if (type.IsByReference)
+        {
+            return IsTypeSupportedInIl2Cpp(((ByReferenceType)type).ElementType);
+        }
+        
+        var resolvedType = interopMaker.Helper.ResolveType(type.FullName);
+        if (resolvedType == null)
+        {
+            return false;
+        }
+        
+        return interopMaker.Helper.IsChildOf(resolvedType, "Il2CppInterop.Runtime.InteropTypes.Il2CppObjectBase");
     }
 
     private void DoSerializedFieldsInterop(List<MonoBehaviourData> allComponents)
@@ -48,37 +118,43 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
             }
             var deserializationMethod = CreateDeserializationMethod(deserializationFields);
             component.Type.Methods.Add(deserializationMethod);
-            var awakeMethod = FindOrCreateAwakeMethod(component);
-            AddDeserializationMethodCallInTopOfAwakeMethod(awakeMethod, deserializationMethod);
+            var nearestAwakeMethod = interopMaker.Helper.FindNearestMethod(component.Type, method => method.Name == "Awake");
+            var awakeMethod = FindOrCreateAwakeMethod(component, nearestAwakeMethod);
+            AddDeserializationMethodCallInTopOfAwakeMethod(awakeMethod, deserializationMethod, nearestAwakeMethod);
         }
-        CreateMonoBehavioursRegisterer(components);
     }
 
-    private void AddDeserializationMethodCallInTopOfAwakeMethod(MethodDefinition awakeMethod, MethodDefinition deserializationMethod)
+    private void AddDeserializationMethodCallInTopOfAwakeMethod(MethodDefinition awakeMethod, MethodDefinition deserializationMethod, MethodDefinition? nearestAwakeMethod)
     {
         var il = awakeMethod.Body.GetILProcessor();
-        var hasBody = awakeMethod.HasBody;
         il.Prepend([
             il.Create(OpCodes.Ldarg_0),
             il.Create(OpCodes.Call, interopMaker.MainAssembly.MainModule.ImportReference(deserializationMethod))
         ]);
-        if (hasBody) return;
-        il.Emit(OpCodes.Ret);
+        if (nearestAwakeMethod != null && nearestAwakeMethod != awakeMethod)
+        {
+            il.Prepend([
+                il.Create(OpCodes.Ldarg_0),
+                il.Create(OpCodes.Call, interopMaker.MainAssembly.MainModule.ImportReference(nearestAwakeMethod))
+            ]);
+        }
     }
     
-    private MethodDefinition FindOrCreateAwakeMethod(MonoBehaviourData component)
+    private MethodDefinition FindOrCreateAwakeMethod(MonoBehaviourData component, MethodDefinition? awakeMethod)
     {
-        var awakeMethod = component.NearestAwakeMethod;
+        // No awake method found in parent or in current class
         if (awakeMethod == null)
         {
             awakeMethod = CreateEmptyAwakeMethod(MethodAttributes.Private);
             component.Type.Methods.Add(awakeMethod);
             return awakeMethod;
         }
+        // Awake method found in current class
         if (awakeMethod.DeclaringType.FullName == component.Type.FullName)
         {
             return awakeMethod;
         }
+        // Awake method found in parent class
         if (awakeMethod.IsPrivate)
         {
             awakeMethod.IsPrivate = false;
@@ -95,6 +171,7 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
         }
         awakeMethod = CreateEmptyAwakeMethod(attributes);
         component.Type.Methods.Add(awakeMethod);
+        
         return awakeMethod;
     }
     
@@ -159,7 +236,7 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
 
     private TypeDefinition GetInteropFieldTypeDefinition(FieldDefinition field)
     {
-        var type = interopMaker.Helper.ResolveTypeOrThrow(field.FieldType.FullName);
+        var type = interopMaker.Helper.ResolveTypeOrThrow(field.FieldType);
         if (type.FullName == interopMaker.MainAssembly.MainModule.TypeSystem.String.FullName)
         {
             var il2CppStringFieldType = interopMaker.Helper.ResolveTypeOrThrow("Il2CppInterop.Runtime.InteropTypes.Fields.Il2CppStringField");
@@ -200,6 +277,7 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
         for (var i = components.Count - 1; i >= 0; i--)
         {
             var type = components[i].Type;
+            Log.Verbose($"Add registration call for component {type.FullName}");
             var conditionMethod = new GenericInstanceMethod(isRegisteredMethod);
             conditionMethod.GenericArguments.Add(type);
             var actionMethod = new GenericInstanceMethod(registerMethod);
@@ -219,22 +297,145 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
 
     private MonoBehaviourData GetMonoBehaviourData(TypeDefinition type) => new(
         type,
-        interopMaker.Helper.FindNearestMethod(type, method => method.Name == "Awake"),
         type.Fields.Where(IsUnitySerializedField).ToList()
     );
+    
+    private void IdentifyDependencies(List<MonoBehaviourData> components)
+    {
+        foreach (var component in components)
+        {
+            foreach (var field in component.Type.Fields)
+            {
+                var fieldType = interopMaker.Helper.ResolveType(field.FieldType.FullName);
+                if (fieldType != null && components.Any(c => c.Type == fieldType))
+                {
+                    component.Dependencies.Add(fieldType);
+                }
+            }
+
+            foreach (var method in component.Type.Methods)
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    var paramType = interopMaker.Helper.ResolveType(parameter.ParameterType.FullName);
+                    if (paramType != null && components.Any(c => c.Type == paramType))
+                    {
+                        component.Dependencies.Add(paramType);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void IdentifyMethodDependencies(List<MonoBehaviourData> components)
+    {
+        foreach (var component in components)
+        {
+            foreach (var method in component.Type.Methods)
+            {
+                foreach (var instruction in method.Body.Instructions)
+                {
+                    if (instruction.OpCode == OpCodes.Call || instruction.OpCode == OpCodes.Callvirt)
+                    {
+                        var methodRef = instruction.Operand as MethodReference;
+                        if (methodRef == null) continue;
+                        
+                        if (methodRef.Name == "AddComponent" && methodRef.DeclaringType.FullName == "UnityEngine.GameObject")
+                        {
+                            var genericInstanceMethod = methodRef as GenericInstanceMethod;
+                            if (genericInstanceMethod != null)
+                            {
+                                var dependencyType = genericInstanceMethod.GenericArguments[0].Resolve();
+                                if (components.Any(c => c.Type == dependencyType))
+                                {
+                                    component.Dependencies.Add(dependencyType);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private List<TypeDefinition> GetMonoBehavioursOrderedByInheritance()
+    {
+        var types = interopMaker.MainAssembly.MainModule.Types.Where(IsMonoBehaviour).ToList();
+        var sortedList = new List<TypeDefinition>();
+        var visited = new HashSet<TypeDefinition>();
+
+        foreach (var type in types)
+        {
+            VisitType(type, types, visited, sortedList);
+        }
+
+        sortedList.Reverse();
+
+        return sortedList;
+    }
+    
+    private void VisitType(
+        TypeDefinition type, 
+        List<TypeDefinition> allTypes, 
+        HashSet<TypeDefinition> visited, 
+        List<TypeDefinition> sortedList)
+    {
+        if (!visited.Add(type)) return;
+        foreach (var potentialChild in allTypes)
+        {
+            if (interopMaker.Helper.IsChildOf(potentialChild, type))
+            {
+                VisitType(potentialChild, allTypes, visited, sortedList); // Visiter les enfants avant d'ajouter le parent
+            }
+        }
+
+        sortedList.Add(type);
+    }
+
+    
+    private static List<MonoBehaviourData> TopologicalSort(List<MonoBehaviourData> components)
+    {
+        var sorted = new List<MonoBehaviourData>();
+        var visited = new HashSet<MonoBehaviourData>();
+
+        void Visit(MonoBehaviourData component)
+        {
+            if (!visited.Contains(component))
+            {
+                visited.Add(component);
+                foreach (var dependencyType in component.Dependencies)
+                {
+                    var dependency = components.FirstOrDefault(c => c.Type == dependencyType);
+                    if (dependency != null)
+                    {
+                        Visit(dependency);
+                    }
+                }
+                sorted.Add(component);
+            }
+        }
+
+        foreach (var component in components)
+        {
+            Visit(component);
+        }
+
+        return sorted;
+    }
 
     private bool IsMonoBehaviour(TypeDefinition type) => interopMaker.Helper.IsChildOf(type, "UnityEngine.MonoBehaviour");
 
     private static bool IsUnitySerializedField(FieldDefinition field)
     {
         if (field.IsLiteral || field.IsStatic || field.IsPrivate || field.IsFamilyOrAssembly || field.IsInitOnly) return false;
+        if (field.HasCustomAttributes && field.HasCustomAttribute("AmongUsDevKit.Api.DoNotInteropThisFieldAttribute")) return false;
         return (!field.HasCustomAttributes || !field.HasCustomAttribute("System.NonSerializedAttribute")) && field.IsPublic;
     }
 
-    private sealed class MonoBehaviourData(TypeDefinition type, MethodDefinition? nearestAwakeMethod, List<FieldDefinition> serializedFields)
+    private sealed class MonoBehaviourData(TypeDefinition type, List<FieldDefinition> serializedFields)
     {
         public readonly TypeDefinition Type = type;
-        public readonly MethodDefinition? NearestAwakeMethod = nearestAwakeMethod;
         public readonly List<FieldDefinition> SerializedFields = serializedFields;
+        public readonly List<TypeDefinition> Dependencies = [];
     }
 }

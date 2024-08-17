@@ -6,7 +6,6 @@ namespace EnoPM.BetterVanilla.Components;
 
 public class ZoomBehaviour : MonoBehaviour
 {
-    static ZoomBehaviour() => ClassInjector.RegisterTypeInIl2Cpp<ZoomBehaviour>();
     internal static ZoomBehaviour Instance { get; private set; }
     private Camera MainCamera { get; set; }
     private float MinOrthographicSize { get; set; }

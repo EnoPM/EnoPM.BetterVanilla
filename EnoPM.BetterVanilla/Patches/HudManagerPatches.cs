@@ -10,6 +10,7 @@ internal static class HudManagerPatches
     private static void StartPostfix(HudManager __instance)
     {
         __instance.gameObject.AddComponent<ZoomBehaviour>();
+        __instance.gameObject.AddComponent<CustomButtonsManager>();
     }
     
     [HarmonyPostfix, HarmonyPatch(nameof(HudManager.Update))]

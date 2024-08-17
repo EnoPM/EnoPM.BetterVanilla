@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AmongUs.Data;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Extensions;
 using HarmonyLib;
@@ -42,5 +43,12 @@ internal static class PlayerControlPatches
         {
             ZoomBehaviour.Instance.ResetZoom();
         }
+    }
+
+    [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.Start))]
+    private static void StartPrefix(PlayerControl __instance)
+    {
+        if (!__instance.AmOwner) return;
+        DataManager.Player.Stats.Level = 254;
     }
 }

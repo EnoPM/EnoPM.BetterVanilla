@@ -40,4 +40,9 @@ public class GithubRelease
     {
         return Version > version;
     }
+
+    public bool IsOlder(Version version)
+    {
+        return Version < version;
+    }
 }

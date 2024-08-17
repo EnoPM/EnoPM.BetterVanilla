@@ -51,8 +51,8 @@ internal static class ModConfigs
     internal static void Load()
     {
         IsExperimental = ExperimentalCodeEntry.Value != string.Empty && Utils.CalculateSHA256(ExperimentalCodeEntry.Value) == ExperimentalHash;
-        CheckAmDead = true;
-        CheckAmImpostor = true;
+        CheckAmDead = false;
+        CheckAmImpostor = false;
         
         ZoomInKey = ZoomInKeyEntry.Value;
         ZoomOutKey = ZoomOutKeyEntry.Value;

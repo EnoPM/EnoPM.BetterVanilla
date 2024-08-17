@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using EnoPM.BetterVanilla.Core;
+using EnoPM.BetterVanilla.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 
@@ -14,27 +15,15 @@ namespace EnoPM.BetterVanilla;
 internal static class Utils
 {
     private static readonly Dictionary<string, Sprite> Cache = new();
-
-    private static unsafe Texture2D LoadTextureFromResource(string path)
-    {
-        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
-        var assembly = Assembly.GetExecutingAssembly();
-        var stream = assembly.GetManifestResourceStream(path);
-        if (stream == null) throw new Exception($"Unable to load resource: {path}");
-        var length = stream.Length;
-        var byteTexture = new Il2CppStructArray<byte>(length);
-        _ = stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-        ImageConversion.LoadImage(texture, byteTexture, false);
-        return texture;
-    }
     
     internal static Sprite LoadSpriteFromResource(string path, float pixelsPerUnit)
     {
-        if (Cache.TryGetValue($"{path}:{pixelsPerUnit}", out var sprite) && sprite) return sprite;
-        var texture = LoadTextureFromResource(path);
-        sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
-        sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
-        return Cache[$"{path}:{pixelsPerUnit}"] = sprite;
+        return Assembly.GetExecutingAssembly().LoadSpriteFromResources(path, pixelsPerUnit);
+    }
+
+    internal static Sprite LoadSpriteFromResource(string path)
+    {
+        return Assembly.GetExecutingAssembly().LoadSpriteFromResources(path);
     }
     
     internal static bool AmDead => !ModConfigs.CheckAmDead || (PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data != null &&

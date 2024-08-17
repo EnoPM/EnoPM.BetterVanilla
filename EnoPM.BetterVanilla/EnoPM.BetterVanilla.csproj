@@ -3,9 +3,11 @@
     <PropertyGroup>
         <PluginName>EnoPM.BetterVanilla</PluginName>
         <PluginGuid>eno.pm.bettervanilla</PluginGuid>
-        <PluginVersion>1.0.2</PluginVersion>
+        <PluginVersion>1.0.0</PluginVersion>
         <AmongUsGameLibsVersion>2024.6.18</AmongUsGameLibsVersion>
         <Description>Among Us Plugin made with AmongUsDevKit</Description>
+        <GameDirectoryPath>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Latest\</GameDirectoryPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -16,5 +18,17 @@
       <ProjectReference Include="..\AmongUsDevKit.Api\AmongUsDevKit.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MessagePack" Version="3.0.134-beta" />
+    </ItemGroup>
+
     <Import Project="../CommonProps/AmongUsPlugin.props" />
+
+    <Target Name="RunAfterBuild" AfterTargets="Build">
+        <Exec Command="C:\Users\EnoPM\RiderProjects\AmongUs.BetterVanilla\AmongUsDevKit\bin\Release\net8.0\AmongUsDevKit.exe enhance &quot;$(TargetPath)&quot; &quot;$(GameDirectoryPath)BepInEx\plugins\$(PluginName).dll&quot; &quot;$(GameDirectoryPath)BepInEx/interop&quot; &quot;$(GameDirectoryPath)BepInEx\core&quot; &quot;$(GameDirectoryPath)dotnet&quot; -v" />
+    </Target>
 </Project>

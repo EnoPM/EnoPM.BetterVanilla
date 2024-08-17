@@ -38,6 +38,26 @@ public sealed class AmongUsReferenceHelper(AssemblyDefinition assembly, AmongUsP
         return result;
     }
 
+    public TypeDefinition? ResolveType(TypeReference typeReference)
+    {
+        var resolved = typeReference.Resolve();
+        if (resolved != null)
+        {
+            return resolved;
+        }
+        return ResolveType(typeReference.FullName);
+    }
+
+    public TypeDefinition ResolveTypeOrThrow(TypeReference typeReference)
+    {
+        var result = ResolveType(typeReference);
+        if (result == null)
+        {
+            throw new Exception($"Unable to resolve type {typeReference.FullName}");
+        }
+        return result;
+    }
+
     public MethodDefinition? ResolveMethod(string fullName)
     {
         var (_, typeFullName) = ParseMethodFullName(fullName);
