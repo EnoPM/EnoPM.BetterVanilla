@@ -1,5 +1,6 @@
 using System.Linq;
 using EnoPM.BetterVanilla.Core;
+using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,24 +16,40 @@ public class ModMenuController : MonoBehaviour
     public Button closeButton;
     public GameObject tabHeadersContainer;
     public GameObject tabBodiesContainer;
+    
+    public GameObject tabHeaderPrefab;
+    
     public GameObject outfitsTabPrefab;
-    public GameObject settingsTabPrefab;
-
-    internal DressingOutfitTabController DressingOutfitTab;
-    internal SettingsTabController SettingsTab;
-
+    public GameObject localSettingsTabPrefab;
+    public GameObject vanillaSettingsTabPrefab;
+    public GameObject rolesSettingsTabPrefab;
+    
     private readonly PassiveButtonsBlocker _overlayBlocker = new();
+    
+    public SettingsTabController LocalSettingsTab { get; set; }
+    public SettingsTabController VanillaSettingsTab { get; set; }
+    public SettingsTabController RolesSettingsTab { get; set; }
+    public DressingOutfitTabController DressingOutfitTab { get; set; }
+    
 
     private void Awake()
     {
         Instance = this;
         closeButton.onClick.AddListener((UnityAction)Close);
 
-        DressingOutfitTab = Instantiate(outfitsTabPrefab, tabBodiesContainer.transform).GetComponent<DressingOutfitTabController>();
-        Plugin.Logger.LogMessage($"Tab: {DressingOutfitTab.name}");
-        SettingsTab = Instantiate(settingsTabPrefab, tabBodiesContainer.transform).GetComponent<SettingsTabController>();
-        Plugin.Logger.LogMessage($"Tab: {SettingsTab.name}");
+        LocalSettingsTab = InstantiateTab<SettingsTabController>(localSettingsTabPrefab);
+        VanillaSettingsTab = InstantiateTab<SettingsTabController>(vanillaSettingsTabPrefab);
+        RolesSettingsTab = InstantiateTab<SettingsTabController>(rolesSettingsTabPrefab);
+        DressingOutfitTab = InstantiateTab<DressingOutfitTabController>(outfitsTabPrefab);
+        
         canvas.SetActive(false);
+    }
+
+    private TTabController InstantiateTab<TTabController>(GameObject prefab) where TTabController : TabController
+    {
+        var tab = Instantiate(prefab, tabBodiesContainer.transform).GetComponent<TTabController>();
+        Plugin.Logger.LogMessage($"Instantiated TabController {typeof(TTabController).Name}: {tab.name}");
+        return tab;
     }
 
     public void Open()
@@ -43,7 +60,6 @@ public class ModMenuController : MonoBehaviour
         if (TabController.AllTabs.Any(x => x.IsOpened())) return;
         var allowedTab = TabController.AllTabs.FirstOrDefault(x => x.IsAllowed());
         allowedTab?.Show();
-
     }
 
     public void Close()
@@ -55,5 +71,10 @@ public class ModMenuController : MonoBehaviour
     public void CloseOpenedTab()
     {
         TabController.AllTabs.Find(x => x.IsOpened())?.Hide();
+    }
+
+    public TabHeaderController CreateTabHeader()
+    {
+        return Instantiate(tabHeaderPrefab, tabHeadersContainer.transform).GetComponent<TabHeaderController>();
     }
 }

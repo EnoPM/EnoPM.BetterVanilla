@@ -34,6 +34,32 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
         DoSerializedFieldsInterop(components);
         HideUnsupportedTypeInIl2Cpp(components);
         CreateMonoBehavioursRegisterer(components);
+        RemoveAbstractItems(components);
+    }
+
+    private void RemoveAbstractItems(List<MonoBehaviourData> allComponents)
+    {
+        foreach (var component in allComponents)
+        {
+            var type = component.Type;
+            foreach (var method in type.Methods)
+            {
+                if (!method.IsAbstract) continue;
+                ConvertAbstractMethodToVirtual(method);
+            }
+        }
+    }
+
+    private void ConvertAbstractMethodToVirtual(MethodDefinition method)
+    {
+        method.IsAbstract = false;
+        method.IsVirtual = true;
+
+        var notImplementedExceptionConstructor = interopMaker.Helper.ResolveMethodOrThrow("System.Void System.NotImplementedException::.ctor()");
+        
+        var il = method.Body.GetILProcessor();
+        il.Emit(OpCodes.Newobj, interopMaker.MainAssembly.MainModule.ImportReference(notImplementedExceptionConstructor));
+        il.Emit(OpCodes.Throw);
     }
 
     private void HideUnsupportedTypeInIl2Cpp(List<MonoBehaviourData> allComponents)
@@ -91,8 +117,13 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
         {
             return false;
         }
-        
-        return interopMaker.Helper.IsChildOf(resolvedType, "Il2CppInterop.Runtime.InteropTypes.Il2CppObjectBase");
+
+        if (interopMaker.Helper.IsChildOf(resolvedType, "Il2CppInterop.Runtime.InteropTypes.Il2CppObjectBase"))
+        {
+            return resolvedType.Module.Assembly != interopMaker.MainAssembly;
+        }
+
+        return false;
     }
 
     private void DoSerializedFieldsInterop(List<MonoBehaviourData> allComponents)
@@ -119,58 +150,94 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
             var deserializationMethod = CreateDeserializationMethod(deserializationFields);
             component.Type.Methods.Add(deserializationMethod);
             var nearestAwakeMethod = interopMaker.Helper.FindNearestMethod(component.Type, method => method.Name == "Awake");
-            var awakeMethod = FindOrCreateAwakeMethod(component, nearestAwakeMethod);
-            AddDeserializationMethodCallInTopOfAwakeMethod(awakeMethod, deserializationMethod, nearestAwakeMethod);
+            Log.Verbose($"[{component.Type.Name}]: Nearest awake method -> {nearestAwakeMethod?.FullName ?? "unknown"}");
+            var awakeMethod = FindOrCreateAwakeMethod(component, nearestAwakeMethod, out var parentAwakeMethod);
+            AddDeserializationMethodCallInTopOfAwakeMethod(awakeMethod, deserializationMethod, parentAwakeMethod);
         }
     }
 
-    private void AddDeserializationMethodCallInTopOfAwakeMethod(MethodDefinition awakeMethod, MethodDefinition deserializationMethod, MethodDefinition? nearestAwakeMethod)
+    private void AddDeserializationMethodCallInTopOfAwakeMethod(MethodDefinition awakeMethod, MethodDefinition deserializationMethod, MethodDefinition? parentAwakeMethod)
     {
         var il = awakeMethod.Body.GetILProcessor();
         il.Prepend([
             il.Create(OpCodes.Ldarg_0),
             il.Create(OpCodes.Call, interopMaker.MainAssembly.MainModule.ImportReference(deserializationMethod))
         ]);
-        if (nearestAwakeMethod != null && nearestAwakeMethod != awakeMethod)
+        if (parentAwakeMethod != null && !awakeMethod.Body.Instructions.Any(x => x.OpCode == OpCodes.Call && x.Operand is MethodReference xMethod && xMethod.FullName == parentAwakeMethod.FullName))
         {
             il.Prepend([
                 il.Create(OpCodes.Ldarg_0),
-                il.Create(OpCodes.Call, interopMaker.MainAssembly.MainModule.ImportReference(nearestAwakeMethod))
+                il.Create(OpCodes.Call, interopMaker.MainAssembly.MainModule.ImportReference(parentAwakeMethod))
             ]);
         }
     }
-    
-    private MethodDefinition FindOrCreateAwakeMethod(MonoBehaviourData component, MethodDefinition? awakeMethod)
+
+    private MethodDefinition? EnsureParentAwakeMethodAccess(TypeDefinition type)
     {
-        // No awake method found in parent or in current class
-        if (awakeMethod == null)
+        var parentAwakeMethod = interopMaker.Helper.FindNearestMethod(type, method => method.DeclaringType.FullName != type.FullName && method.Name == "Awake");
+        if (parentAwakeMethod == null) return null;
+        if (parentAwakeMethod.IsPrivate)
         {
-            awakeMethod = CreateEmptyAwakeMethod(MethodAttributes.Private);
-            component.Type.Methods.Add(awakeMethod);
-            return awakeMethod;
+            parentAwakeMethod.IsPrivate = false;
+            parentAwakeMethod.IsFamily = true;
+        }
+        if (!parentAwakeMethod.IsVirtual)
+        {
+            parentAwakeMethod.IsVirtual = true;
+        }
+
+        return parentAwakeMethod;
+    }
+    
+    private MethodDefinition FindOrCreateAwakeMethod(MonoBehaviourData component, MethodDefinition? nearestAwakeMethod, out MethodDefinition? parentAwakeMethodResult)
+    {
+        Log.Verbose($"[{component.Type.Name}] {nameof(FindOrCreateAwakeMethod)} {nearestAwakeMethod?.FullName}");
+        // No awake method found in parent or in current class
+        if (nearestAwakeMethod == null)
+        {
+            var newAwakeMethod = CreateEmptyAwakeMethod(MethodAttributes.Private);
+            component.Type.Methods.Add(newAwakeMethod);
+            Log.Verbose($"|||| [{component.Type.Name}] {nameof(FindOrCreateAwakeMethod)} {nearestAwakeMethod?.FullName} {newAwakeMethod.FullName}");
+            parentAwakeMethodResult = null;
+            return newAwakeMethod;
         }
         // Awake method found in current class
-        if (awakeMethod.DeclaringType.FullName == component.Type.FullName)
+        if (nearestAwakeMethod.DeclaringType.FullName == component.Type.FullName)
         {
-            return awakeMethod;
+            var parentAwakeMethod = EnsureParentAwakeMethodAccess(component.Type);
+            // Parent class has a generated Awake method. So we need to make current Awake an override and ensure parent Awake method is call in child Awake method override.
+            if (parentAwakeMethod != null)
+            {
+                nearestAwakeMethod.IsPrivate = false;
+                nearestAwakeMethod.IsPublic = parentAwakeMethod.IsPublic;
+                nearestAwakeMethod.IsFamily = parentAwakeMethod.IsFamily;
+                nearestAwakeMethod.IsVirtual = true;
+                nearestAwakeMethod.IsHideBySig = true;
+            }
+            parentAwakeMethodResult = parentAwakeMethod;
+            Log.Verbose($"|||| [{component.Type.Name}] {nameof(FindOrCreateAwakeMethod)} {nearestAwakeMethod.FullName} {nearestAwakeMethod.FullName}");
+            return nearestAwakeMethod;
         }
         // Awake method found in parent class
-        if (awakeMethod.IsPrivate)
+        if (nearestAwakeMethod.IsPrivate)
         {
-            awakeMethod.IsPrivate = false;
-            awakeMethod.IsFamily = true;
+            nearestAwakeMethod.IsPrivate = false;
+            nearestAwakeMethod.IsFamily = true;
         }
-        if (!awakeMethod.IsVirtual)
+        if (!nearestAwakeMethod.IsVirtual)
         {
-            awakeMethod.IsVirtual = true;
+            nearestAwakeMethod.IsVirtual = true;
         }
         var attributes = MethodAttributes.Virtual | MethodAttributes.HideBySig;
-        if (awakeMethod.IsFamily)
+        if (nearestAwakeMethod.IsFamily)
         {
             attributes |= MethodAttributes.Family;
         }
-        awakeMethod = CreateEmptyAwakeMethod(attributes);
+        var awakeMethod = CreateEmptyAwakeMethod(attributes);
         component.Type.Methods.Add(awakeMethod);
+        
+        Log.Verbose($"|||| [{component.Type.Name}] {nameof(FindOrCreateAwakeMethod)} {nearestAwakeMethod?.FullName} {awakeMethod.FullName}");
+        parentAwakeMethodResult = nearestAwakeMethod;
         
         return awakeMethod;
     }
@@ -193,9 +260,12 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
         foreach (var (serializedField, il2CppField) in deserializationFields)
         {
             var il2CppType = GetInteropFieldTypeDefinition(serializedField);
-            var genericIl2CppType = interopMaker.MainAssembly.MainModule.ImportReference(il2CppType.MakeGenericInstanceType(serializedField.FieldType));
+            Log.Verbose($"[{nameof(CreateDeserializationMethod)}] ==> {il2CppType.FullName} {il2CppType.HasGenericParameters}");
             var il2CppGetMethod = interopMaker.MainAssembly.MainModule.ImportReference(il2CppType.Methods.First(x => x.Name == "Get"));
-            il2CppGetMethod.DeclaringType = genericIl2CppType;
+            if (il2CppType.HasGenericParameters)
+            {
+                il2CppGetMethod.DeclaringType = interopMaker.MainAssembly.MainModule.ImportReference(il2CppType.MakeGenericInstanceType(serializedField.FieldType));
+            }
             
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_0);

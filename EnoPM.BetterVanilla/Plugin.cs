@@ -6,7 +6,6 @@ using BepInEx.Unity.IL2CPP;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core;
 using HarmonyLib;
-using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla;
@@ -30,6 +29,7 @@ public class Plugin : BasePlugin
         ConfigFile = Config;
         
         ModConfigs.Load();
+        HarmonyPatcher.PatchAll();
         CustomButtonsManager.RegisterAssembly(Assembly.GetExecutingAssembly());
 
         UiObject = new GameObject("BetterVanillaUi")
@@ -39,7 +39,6 @@ public class Plugin : BasePlugin
         };
         
         AddComponent<StartupBehaviour>();
-        HarmonyPatcher.PatchAll();
         Log.LogInfo($"Plugin {PluginProps.Guid} is loaded!");
     }
 }

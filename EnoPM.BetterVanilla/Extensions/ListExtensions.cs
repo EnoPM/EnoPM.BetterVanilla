@@ -69,4 +69,9 @@ public static class ListExtensions
         
         return cache;
     }
+
+    public static Il2CppSystem.Collections.Generic.List<T> ToIl2Cpp<T>(this List<T> list)
+    {
+        return list.ToIl2CppList();
+    }
 }

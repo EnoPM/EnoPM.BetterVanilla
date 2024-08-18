@@ -1,22 +1,23 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace EnoPM.BetterVanilla.Components;
 
 public abstract class TabController : MonoBehaviour
 {
     public static readonly List<TabController> AllTabs = [];
-    public Button tabHeaderPrefab;
+    public Sprite tabHeaderSprite;
+    public string tabHeaderTitle;
     
-    private Button _headerButton;
+    private TabHeaderController _header;
 
     protected virtual void Awake()
     {
-        _headerButton = Instantiate(tabHeaderPrefab, ModMenuController.Instance.tabHeadersContainer.transform);
-        _headerButton.onClick.AddListener((UnityAction)Show);
+        _header = ModMenuController.Instance.CreateTabHeader();
+        _header.SetSprite(tabHeaderSprite);
+        _header.SetTitleText(tabHeaderTitle);
+        _header.button.onClick.AddListener((UnityAction)Show);
         gameObject.SetActive(false);
         AllTabs.Add(this);
     }
@@ -30,13 +31,13 @@ public abstract class TabController : MonoBehaviour
     {
         ModMenuController.Instance.CloseOpenedTab();
         gameObject.SetActive(true);
-        _headerButton.interactable = false;
+        _header.button.interactable = false;
     }
 
     public void Hide()
     {
         gameObject.SetActive(false);
-        _headerButton.interactable = true;
+        _header.button.interactable = true;
     }
 
     public bool IsOpened()

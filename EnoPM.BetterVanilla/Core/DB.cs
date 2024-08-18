@@ -10,6 +10,7 @@ public static class DB
 {
     private static readonly JsonBinaryDatabase<PlayerDatabase> PlayerDatabase;
     private static readonly JsonBinaryDatabase<OutfitsDatabase> OutfitsDatabase;
+    private static readonly JsonBinaryDatabase<PresetsDatabase> PresetsDatabase;
 
     static DB()
     {
@@ -36,10 +37,12 @@ public static class DB
         
         PlayerDatabase = new JsonBinaryDatabase<PlayerDatabase>(Path.Combine(baseDirectory, "player.dat"));
         OutfitsDatabase = new JsonBinaryDatabase<OutfitsDatabase>(Path.Combine(baseDirectory, "outfits.dat"));
+        PresetsDatabase = new JsonBinaryDatabase<PresetsDatabase>(Path.Combine(baseDirectory, "settings.dat"));
     }
 
     public static PlayerDatabase Player => PlayerDatabase.Data;
     public static OutfitsDatabase Outfits => OutfitsDatabase.Data;
+    public static PresetsDatabase Presets => PresetsDatabase.Data;
 
     public static DressingOutfit SaveCurrentOutfit(string name)
     {
@@ -100,4 +103,6 @@ public static class DB
         
         PlayerDatabase.Save();
     }
+
+    public static void SavePresets() => PresetsDatabase.Save();
 }

@@ -4,7 +4,9 @@ using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils;
 using Cpp2IL.Core.Extensions;
 using EnoPM.BetterVanilla.Core;
+using EnoPM.BetterVanilla.Patches;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace EnoPM.BetterVanilla.Components;
 

@@ -1,3 +1,4 @@
+using EnoPM.BetterVanilla.Core;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Components;
@@ -5,35 +6,35 @@ namespace EnoPM.BetterVanilla.Components;
 public class SettingsTabController : TabController
 {
     public GameObject settingsContainer;
+    public string categoryId;
     
     public GameObject toggleSettingPrefab;
     public GameObject dropdownSettingPrefab;
+    public GameObject sliderSettingPrefab;
 
     private void Start()
     {
-        Plugin.Logger.LogMessage($"{nameof(SettingsTabController)} started!");
-
-        InitOptions();
+        Plugin.Logger.LogMessage($"{nameof(SettingsTabController)} for category: {categoryId}");
+        ModSettings.InitUi(this);
     }
 
-    private void InitOptions()
-    {
-        var toggleOption = CreateToggleOption();
-        toggleOption.SetTitle("Toggle Option Demo");
-        toggleOption.SetValue(false);
-
-        var dropdownOption = CreateDropdownOption();
-        dropdownOption.SetTitle("Dropdown Option Demo");
-        dropdownOption.SetValue(1);
-    }
-
-    private ToggleSettingItem CreateToggleOption()
+    public ToggleSettingItem CreateToggleOption()
     {
         return Instantiate(toggleSettingPrefab, settingsContainer.transform).GetComponent<ToggleSettingItem>();
     }
     
-    private DropdownSettingItem CreateDropdownOption()
+    public DropdownSettingItem CreateDropdownOption()
     {
         return Instantiate(dropdownSettingPrefab, settingsContainer.transform).GetComponent<DropdownSettingItem>();
+    }
+
+    public SliderSettingItem CreateSliderOption()
+    {
+        return Instantiate(sliderSettingPrefab, settingsContainer.transform).GetComponent<SliderSettingItem>();
+    }
+
+    private void OnEnable()
+    {
+        CustomSettingCategory.GetCategory(categoryId)?.RefreshEditableState();
     }
 }

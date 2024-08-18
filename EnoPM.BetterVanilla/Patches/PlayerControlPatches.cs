@@ -4,6 +4,7 @@ using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Extensions;
 using HarmonyLib;
 using Hazel;
+using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Patches;
 
@@ -48,7 +49,10 @@ internal static class PlayerControlPatches
     [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.Start))]
     private static void StartPrefix(PlayerControl __instance)
     {
-        if (!__instance.AmOwner) return;
-        DataManager.Player.Stats.Level = 254;
+        if (__instance.AmOwner)
+        {
+            DataManager.Player.Stats.Level = 254;
+        }
+        
     }
 }

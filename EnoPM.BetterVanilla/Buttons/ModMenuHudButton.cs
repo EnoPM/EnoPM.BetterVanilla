@@ -26,4 +26,9 @@ public sealed class ModMenuHudButton : CustomGameplayButton
         base.OnClicked();
         ModMenuController.Instance.Open();
     }
+
+    protected override bool CanClick()
+    {
+        return base.CanClick() && ModMenuController.Instance;
+    }
 }
