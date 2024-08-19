@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using EnoPM.BetterVanilla.Attributes;
 using EnoPM.BetterVanilla.Buttons;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Data;
-using EnoPM.BetterVanilla.Extensions;
+using EnoPM.BetterVanilla.Core.Attributes;
+using EnoPM.BetterVanilla.Core.Data;
+using EnoPM.BetterVanilla.Core.Extensions;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Components;

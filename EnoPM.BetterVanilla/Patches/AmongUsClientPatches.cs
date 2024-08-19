@@ -14,4 +14,10 @@ internal static class AmongUsClientPatches
             ZoomBehaviour.Instance.ResetZoom();
         }
     }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(AmongUsClient.OnBecomeHost))]
+    private static void OnBecomeHostPostfix(AmongUsClient __instance)
+    {
+        // TODO: Setup vanilla settings from BetterVanilla storage
+    }
 }

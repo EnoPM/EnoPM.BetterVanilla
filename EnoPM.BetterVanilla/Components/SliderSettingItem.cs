@@ -34,17 +34,6 @@ public class SliderSettingItem : SettingItem
         slider.maxValue = _maxValue;
         RefreshValueText();
     }
-    
-    public override void SetEditable(bool isEditable)
-    {
-        slider.interactable = isEditable;
-        decrementButton.interactable = isEditable;
-        incrementButton.interactable = isEditable;
-        if (isEditable)
-        {
-            RefreshButtonsState();
-        }
-    }
 
     private void FixedUpdate()
     {
@@ -141,7 +130,7 @@ public class SliderSettingItem : SettingItem
         valueText.SetText($"{_prefix}{(float)Math.Round(slider.value, 2)}{_suffix}");
     }
 
-    private void RefreshButtonsState()
+    public void RefreshButtonsState()
     {
         var value = slider.value;
         decrementButton.interactable = value > _minValue;

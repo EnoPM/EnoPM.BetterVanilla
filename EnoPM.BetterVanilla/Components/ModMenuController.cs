@@ -47,15 +47,18 @@ public class ModMenuController : MonoBehaviour
 
     private TTabController InstantiateTab<TTabController>(GameObject prefab) where TTabController : TabController
     {
-        var tab = Instantiate(prefab, tabBodiesContainer.transform).GetComponent<TTabController>();
-        Plugin.Logger.LogMessage($"Instantiated TabController {typeof(TTabController).Name}: {tab.name}");
-        return tab;
+        return Instantiate(prefab, tabBodiesContainer.transform).GetComponent<TTabController>();
     }
 
     public void Open()
     {
         canvas.SetActive(true);
         _overlayBlocker.Block();
+        if (PlayerControl.LocalPlayer)
+        {
+            PlayerControl.LocalPlayer.moveable = false;
+            PlayerControl.LocalPlayer.NetTransform.Halt();
+        }
         
         if (TabController.AllTabs.Any(x => x.IsOpened())) return;
         var allowedTab = TabController.AllTabs.FirstOrDefault(x => x.IsAllowed());
@@ -66,6 +69,11 @@ public class ModMenuController : MonoBehaviour
     {
         canvas.SetActive(false);
         _overlayBlocker.Unblock();
+        if (PlayerControl.LocalPlayer)
+        {
+            PlayerControl.LocalPlayer.moveable = true;
+            PlayerControl.LocalPlayer.NetTransform.Halt();
+        }
     }
 
     public void CloseOpenedTab()

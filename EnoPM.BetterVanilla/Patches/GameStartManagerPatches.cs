@@ -1,4 +1,7 @@
-﻿using HarmonyLib;
+﻿using AmongUs.GameOptions;
+using HarmonyLib;
+using InnerNet;
+using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Patches;
 
@@ -12,16 +15,20 @@ internal static class GameStartManagerPatches
     {
         PlayerControlPatches.CheaterOwnerIds.Clear();
     }
-    
-    [HarmonyPrefix, HarmonyPatch(nameof(GameStartManager.Update))]
-    private static void UpdatePrefix(GameStartManager __instance)
-    {
-        __instance.MinPlayers = 1;
-    }
 
     [HarmonyPostfix, HarmonyPatch(nameof(GameStartManager.ReallyBegin))]
     private static void ReallyBeginPostfix()
     {
         PlayersCount = PlayerControl.AllPlayerControls.Count;
+    }
+    
+    [HarmonyPrefix, HarmonyPatch(nameof(GameStartManager.Update))]
+    private static bool UpdatePrefix(GameStartManager __instance)
+    {
+        if (!GameData.Instance || !GameManager.Instance) return false;
+        
+        __instance.MinPlayers = 1;
+
+        return true;
     }
 }

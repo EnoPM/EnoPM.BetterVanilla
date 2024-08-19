@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Extensions;
+using EnoPM.BetterVanilla.Core.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 

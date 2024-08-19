@@ -1,4 +1,4 @@
-using EnoPM.BetterVanilla.Data.Database;
+using EnoPM.BetterVanilla.Core.Data.Database;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

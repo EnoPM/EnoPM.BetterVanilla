@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Data.Database;
+using EnoPM.BetterVanilla.Core.Data.Database;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

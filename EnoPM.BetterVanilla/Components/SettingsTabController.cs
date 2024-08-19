@@ -1,4 +1,3 @@
-using EnoPM.BetterVanilla.Core;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Components;
@@ -31,10 +30,5 @@ public class SettingsTabController : TabController
     public SliderSettingItem CreateSliderOption()
     {
         return Instantiate(sliderSettingPrefab, settingsContainer.transform).GetComponent<SliderSettingItem>();
-    }
-
-    private void OnEnable()
-    {
-        CustomSettingCategory.GetCategory(categoryId)?.RefreshEditableState();
     }
 }

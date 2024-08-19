@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EnoPM.BetterVanilla.Extensions;
+using EnoPM.BetterVanilla.Core.Extensions;
 using TMPro;
 using UnityEngine.Events;
 
@@ -48,9 +48,4 @@ public class DropdownSettingItem : SettingItem
     }
     
     public int GetSettingValue() => dropdown.value;
-    
-    public override void SetEditable(bool isEditable)
-    {
-        dropdown.interactable = isEditable;
-    }
 }

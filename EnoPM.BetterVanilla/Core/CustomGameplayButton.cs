@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils;
-using EnoPM.BetterVanilla.Data;
+using EnoPM.BetterVanilla.Core.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

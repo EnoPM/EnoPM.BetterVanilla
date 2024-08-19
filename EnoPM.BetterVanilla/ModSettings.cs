@@ -1,32 +1,17 @@
 ﻿using EnoPM.BetterVanilla.Components;
-using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Data;
+using EnoPM.BetterVanilla.Core.Settings;
 
 namespace EnoPM.BetterVanilla;
 
 public static class ModSettings
 {
-    public static readonly CustomSettingCategory LocalCategory;
-    public static readonly CustomSettingCategory HostCategory;
-    public static readonly CustomSettingCategory RolesCategory;
-    
-    public static readonly BoolSetting ShowTasksAndRoleAfterDeath;
-    public static readonly EnumSetting<SettingTeamPreferences> TeamPreference;
-    public static readonly FloatSetting Cooldown;
-
-    public static readonly VanillaSettingsManager VanillaSettings;
+    public static readonly HostSettingsManager Host;
+    public static readonly LocalSettingsManager Local;
 
     static ModSettings()
     {
-        LocalCategory = new CustomSettingCategory("LocalSettings");
-        HostCategory = new CustomSettingCategory("HostSettings", IsHostSettingsEditable);
-        RolesCategory = new CustomSettingCategory("RolesSettings");
-        
-        ShowTasksAndRoleAfterDeath = LocalCategory.Bool("ShowTasksAndRoleAfterDeath", "Display tasks and role");
-        TeamPreference = LocalCategory.Enum("TeamAssignmentPreference", "Team assignment preference", SettingTeamPreferences.Both);
-        Cooldown = LocalCategory.Float("Cooldown", "My Float Setting", new NumberRange(10f, 120f), 2.5f, suffix: "s");
-
-        VanillaSettings = new VanillaSettingsManager(HostCategory);
+        Host = new HostSettingsManager();
+        Local = new LocalSettingsManager();
     }
 
     public static void InitUi(SettingsTabController controller)
@@ -39,7 +24,7 @@ public static class ModSettings
         }
     }
 
-    private static bool IsHostSettingsEditable() => AmongUsClient.Instance && AmongUsClient.Instance.AmHost;
+    private static bool IsHostSettingsEditable() => AmongUsClient.Instance && !AmongUsClient.Instance.AmHost;
     
     
 }

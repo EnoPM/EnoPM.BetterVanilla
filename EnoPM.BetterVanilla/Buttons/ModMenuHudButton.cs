@@ -1,8 +1,8 @@
 ﻿using System;
-using EnoPM.BetterVanilla.Attributes;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Data;
+using EnoPM.BetterVanilla.Core.Attributes;
+using EnoPM.BetterVanilla.Core.Data;
 
 namespace EnoPM.BetterVanilla.Buttons;
 

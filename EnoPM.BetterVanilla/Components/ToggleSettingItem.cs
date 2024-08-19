@@ -25,9 +25,4 @@ public class ToggleSettingItem : SettingItem
     }
 
     public bool GetSettingValue() => toggle.isOn;
-
-    public override void SetEditable(bool isEditable)
-    {
-        toggle.interactable = isEditable;
-    }
 }

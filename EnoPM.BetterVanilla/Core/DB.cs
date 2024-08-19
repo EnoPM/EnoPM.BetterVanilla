@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using AmongUs.Data;
-using EnoPM.BetterVanilla.Data.Database;
+using EnoPM.BetterVanilla.Core.Data.Database;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Core;
@@ -105,4 +105,5 @@ public static class DB
     }
 
     public static void SavePresets() => PresetsDatabase.Save();
+    public static void SavePlayer() => PlayerDatabase.Save();
 }

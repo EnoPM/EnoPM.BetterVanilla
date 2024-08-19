@@ -22,10 +22,6 @@
         <EmbeddedResource Include="Resources\**" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="MessagePack" Version="3.0.134-beta" />
-    </ItemGroup>
-
     <Import Project="../CommonProps/AmongUsPlugin.props" />
 
     <Target Name="RunAfterBuild" AfterTargets="Build">

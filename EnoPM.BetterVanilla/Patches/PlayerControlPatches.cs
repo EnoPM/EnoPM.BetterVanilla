@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using AmongUs.Data;
 using EnoPM.BetterVanilla.Components;
-using EnoPM.BetterVanilla.Extensions;
+using EnoPM.BetterVanilla.Core;
+using EnoPM.BetterVanilla.Core.Extensions;
 using HarmonyLib;
 using Hazel;
 using UnityEngine;
@@ -46,13 +47,16 @@ internal static class PlayerControlPatches
         }
     }
 
-    [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.Start))]
-    private static void StartPrefix(PlayerControl __instance)
+    [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.RpcSetLevel))]
+    private static void RpcSetLevelPrefix(PlayerControl __instance, ref uint level)
     {
-        if (__instance.AmOwner)
+        if (!__instance.AmOwner) return;
+        if (DB.Player.PlayerExp < DataManager.Player.Stats.Xp)
         {
-            DataManager.Player.Stats.Level = 254;
+            DB.Player.PlayerExp += DataManager.Player.Stats.Xp;
+            DB.Player.PlayerLevel = XpManager.CalculateLevel(DB.Player.PlayerExp);
+            DB.SavePlayer();
         }
-        
+        level = DB.Player.PlayerLevel;
     }
 }

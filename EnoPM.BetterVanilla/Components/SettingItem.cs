@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EnoPM.BetterVanilla.Core.Settings;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +11,13 @@ public abstract class SettingItem : MonoBehaviour
     public TextMeshProUGUI titleText;
 
     private readonly List<Action> _onValueChangedActions = [];
+    
+    private CustomSetting Setting { get; set; }
+
+    public void SetSetting(CustomSetting setting)
+    {
+        Setting = setting;
+    }
 
     public void SetTitle(string title)
     {
@@ -29,5 +37,8 @@ public abstract class SettingItem : MonoBehaviour
         }
     }
 
-    public abstract void SetEditable(bool isEditable);
+    protected void Update()
+    {
+        Setting?.UiUpdate();
+    }
 }

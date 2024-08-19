@@ -1,4 +1,4 @@
-﻿using EnoPM.BetterVanilla.Extensions;
+﻿using EnoPM.BetterVanilla.Core.Extensions;
 using HarmonyLib;
 
 namespace EnoPM.BetterVanilla.Patches;
