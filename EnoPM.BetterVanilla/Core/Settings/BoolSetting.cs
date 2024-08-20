@@ -1,5 +1,6 @@
 ﻿using System;
 using EnoPM.BetterVanilla.Components;
+using Hazel;
 
 namespace EnoPM.BetterVanilla.Core.Settings;
 
@@ -56,5 +57,14 @@ public sealed class BoolSetting : CustomSetting
         base.UiUpdate();
         var isEditable = IsEditable();
         ToggleSettingBehaviour.toggle.interactable = isEditable;
+    }
+
+    protected override void SetValueFromMessageReader(MessageReader reader)
+    {
+        SetValue(reader.ReadBoolean());
+    }
+    protected override void WriteValueInMessageWriter(MessageWriter writer)
+    {
+        writer.Write(_value);
     }
 }

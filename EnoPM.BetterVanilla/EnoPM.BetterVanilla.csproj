@@ -3,8 +3,8 @@
     <PropertyGroup>
         <PluginName>EnoPM.BetterVanilla</PluginName>
         <PluginGuid>eno.pm.bettervanilla</PluginGuid>
-        <PluginVersion>1.0.0</PluginVersion>
-        <AmongUsGameLibsVersion>2024.6.18</AmongUsGameLibsVersion>
+        <PluginVersion>1.0.8</PluginVersion>
+        <AmongUsGameLibsVersion>2024.8.13</AmongUsGameLibsVersion>
         <Description>Among Us Plugin made with AmongUsDevKit</Description>
         <GameDirectoryPath>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Latest\</GameDirectoryPath>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

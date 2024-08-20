@@ -12,34 +12,47 @@ namespace EnoPM.BetterVanilla.Components;
 
 public class DressingOutfitTabController : TabController
 {
-    public TMP_InputField outfitNameField;
+    public static DressingOutfitTabController Instance { get; private set; }
+    
     public Button saveOutfitButton;
     public GameObject outfitsContainerContent;
     public GameObject savedOutfitItemPrefab;
 
     internal readonly List<SavedOutfitController> SavedOutfits = [];
 
+    public void RefreshSelectedOutfit()
+    {
+        foreach (var outfit in SavedOutfits)
+        {
+            if (!outfit.button || outfit.Outfit == null) continue;
+            outfit.button.interactable = !outfit.Outfit.IsEquipped();
+        }
+    }
+
+    private void OnEnable()
+    {
+        RefreshSelectedOutfit();
+    }
+
+    private void Start()
+    {
+        RefreshSelectedOutfit();
+    }
+
     protected override void Awake()
     {
         base.Awake();
         saveOutfitButton.onClick.AddListener((UnityAction)OnSaveOutfitButtonClick);
-        outfitNameField.onValueChanged.AddListener((UnityAction<string>)OnOutfitNameFieldChange);
-        saveOutfitButton.interactable = false;
         
         RefreshSavedOutfits();
-    }
-
-    private void OnOutfitNameFieldChange(string value)
-    {
-        saveOutfitButton.interactable = !string.IsNullOrWhiteSpace(value) && !DB.Outfits.Outfits.Any(x => string.Equals(x.Name, value, StringComparison.InvariantCultureIgnoreCase));
+        Instance = this;
     }
 
     private void OnSaveOutfitButtonClick()
     {
-        if (string.IsNullOrWhiteSpace(outfitNameField.text)) return;
-        var outfit = DB.SaveCurrentOutfit(outfitNameField.text);
+        var outfit = DB.SaveCurrentOutfit();
+        if (outfit == null) return;
         RegisterOutfit(outfit);
-        outfitNameField.text = string.Empty;
     }
 
     private void ClearSavedOutfits()
@@ -68,6 +81,4 @@ public class DressingOutfitTabController : TabController
         outfitItem.Outfit = outfit;
         SavedOutfits.Add(outfitItem);
     }
-    
-    
 }

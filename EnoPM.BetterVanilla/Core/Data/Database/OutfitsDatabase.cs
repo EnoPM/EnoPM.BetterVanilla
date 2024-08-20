@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using AmongUs.Data;
 
 namespace EnoPM.BetterVanilla.Core.Data.Database;
 
@@ -11,9 +12,6 @@ public sealed class OutfitsDatabase
 
 public sealed class DressingOutfit
 {
-    [JsonPropertyName("a")]
-    public string Name { get; set; }
-
     [JsonPropertyName("b")]
     public string Hat { get; set; }
 
@@ -31,11 +29,31 @@ public sealed class DressingOutfit
     
     public void ApplyOutfitToLocalPlayer()
     {
-        DB.ApplyOutfit(Name);
+        DB.ApplyOutfit(this);
     }
 
     public void Delete()
     {
-        DB.DeleteOutfit(Name);
+        DB.DeleteOutfit(this);
+    }
+
+    public bool IsEquipped()
+    {
+        if (DataManager.Player.Customization.Hat != Hat) return false;
+        if (DataManager.Player.Customization.Skin != Skin) return false;
+        if (DataManager.Player.Customization.Visor != Visor) return false;
+        if (DataManager.Player.Customization.Pet != Pet) return false;
+        if (DataManager.Player.Customization.NamePlate != Nameplate) return false;
+        return true;
+    }
+
+    public bool IsSame(DressingOutfit other)
+    {
+        if (Hat != other.Hat) return false;
+        if (Skin != other.Skin) return false;
+        if (Visor != other.Visor) return false;
+        if (Pet != other.Pet) return false;
+        if (Nameplate != other.Nameplate) return false;
+        return true;
     }
 }

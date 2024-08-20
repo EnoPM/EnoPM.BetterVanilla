@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using AmongUs.Data;
 using EnoPM.BetterVanilla.Core.Data.Database;
 using UnityEngine;
@@ -38,13 +39,15 @@ public static class DB
         PlayerDatabase = new JsonBinaryDatabase<PlayerDatabase>(Path.Combine(baseDirectory, "player.dat"));
         OutfitsDatabase = new JsonBinaryDatabase<OutfitsDatabase>(Path.Combine(baseDirectory, "outfits.dat"));
         PresetsDatabase = new JsonBinaryDatabase<PresetsDatabase>(Path.Combine(baseDirectory, "settings.dat"));
+        
+        FeatureLocker.Reload();
     }
 
     public static PlayerDatabase Player => PlayerDatabase.Data;
     public static OutfitsDatabase Outfits => OutfitsDatabase.Data;
     public static PresetsDatabase Presets => PresetsDatabase.Data;
 
-    public static DressingOutfit SaveCurrentOutfit(string name)
+    public static DressingOutfit SaveCurrentOutfit()
     {
         var player = PlayerControl.LocalPlayer;
         if (!player || !player.Data) return null;
@@ -52,25 +55,26 @@ public static class DB
         if (outfit == null) return null;
         var dressingOutfit = new DressingOutfit
         {
-            Name = name,
             Hat = outfit.HatId,
             Skin = outfit.SkinId,
             Visor = outfit.VisorId,
             Pet = outfit.PetId,
             Nameplate = outfit.NamePlateId
         };
+        if (Outfits.Outfits.Any(x => x.IsSame(dressingOutfit)))
+        {
+            return null;
+        }
         Outfits.Outfits.Add(dressingOutfit);
         OutfitsDatabase.Save();
 
         return dressingOutfit;
     }
 
-    public static void ApplyOutfit(string name)
+    public static void ApplyOutfit(DressingOutfit outfit)
     {
         var player = PlayerControl.LocalPlayer;
         if (!player || !player.Data) return;
-        var outfit = Outfits.Outfits.Find(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
-        if (outfit == null) return;
         DataManager.Player.Customization.Hat = outfit.Hat;
         player.RpcSetHat(outfit.Hat);
         DataManager.Player.Customization.Skin = outfit.Skin;
@@ -83,14 +87,14 @@ public static class DB
         player.RpcSetNamePlate(outfit.Nameplate);
     }
     
-    public static void DeleteOutfit(string name)
+    public static void DeleteOutfit(DressingOutfit outfitToDelete)
     {
-        var outfit = Outfits.Outfits.Find(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+        var outfit = Outfits.Outfits.Find(x => x.IsSame(outfitToDelete));
         Outfits.Outfits.Remove(outfit);
         OutfitsDatabase.Save();
     }
 
-    public static void RefreshPlayerNameAndLevel()
+    public static void RefreshPlayerName()
     {
         var client = AmongUsClient.Instance.GetClient(AmongUsClient.Instance.ClientId);
         if (client == null)
@@ -99,7 +103,6 @@ public static class DB
         }
         
         Player.PlayerName = client.PlayerName;
-        Player.PlayerLevel = client.PlayerLevel;
         
         PlayerDatabase.Save();
     }

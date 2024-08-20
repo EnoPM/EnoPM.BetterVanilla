@@ -7,7 +7,7 @@ namespace EnoPM.BetterVanilla.Core.Extensions;
 public static class ListExtensions
 {
     private static readonly Random Random = new();
-    
+
     public static List<T> PickRandom<T>(this List<T> list, int count = 1)
     {
         var picked = 0;
@@ -27,6 +27,39 @@ public static class ListExtensions
         var toRemove = list[Random.Next(0, list.Count)];
         list.Remove(toRemove);
         return toRemove;
+    }
+
+    public static T PickOneRandom<T>(this List<T> list, List<T> included, List<T> excluded)
+    {
+        if (included.Count == 0 && excluded.Count == 0)
+        {
+            return list.PickOneRandom();
+        }
+        var tempList = new List<T>(list);
+        foreach (var excludedItem in excluded)
+        {
+            while (tempList.Contains(excludedItem))
+            {
+                tempList.Remove(excludedItem);
+            }
+        }
+        if (tempList.Count == 0)
+        {
+            return list.PickOneRandom();
+        }
+        var tempList2 = tempList.Where(included.Contains).ToList();
+        if (tempList2.Count == 0)
+        {
+            var toRemove = tempList.PickOneRandom();
+            list.Remove(toRemove);
+            return toRemove;
+        }
+        else
+        {
+            var toRemove = list.PickOneRandom();
+            list.Remove(toRemove);
+            return toRemove;
+        }
     }
 
     public static T GetOneRandom<T>(this List<T> list)
@@ -66,7 +99,7 @@ public static class ListExtensions
         {
             cache.Remove(item);
         }
-        
+
         return cache;
     }
 

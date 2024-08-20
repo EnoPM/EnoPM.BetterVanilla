@@ -11,6 +11,8 @@ internal static class EndGameManagerPatches
     [HarmonyPostfix, HarmonyPatch(nameof(EndGameManager.ShowButtons))]
     private static void ShowButtonsPostfix(EndGameManager __instance)
     {
+        RoleManagerPatches.PlayerTeamPreferences.Clear();
+        if (!ModSettings.Local.AutoRejoinPreviousLobby) return;
         __instance.Navigation.SetupAutoRejoin();
     }
 
@@ -37,7 +39,7 @@ internal static class EndGameManagerPatches
             yield return new WaitForEndOfFrame();
         }
 
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(3f);
 
         var rejoinButton = endGameNavigation.PlayAgainButton.gameObject.GetComponent<PassiveButton>();
         if (rejoinButton && rejoinButton.enabled)

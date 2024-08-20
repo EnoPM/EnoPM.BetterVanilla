@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core.Attributes;
+using Hazel;
 
 namespace EnoPM.BetterVanilla.Core.Settings;
 
@@ -53,6 +54,7 @@ public sealed class EnumSetting<TEnum> : CustomSetting where TEnum : struct
     public void SetValue(TEnum value)
     {
         _value = value;
+        DropdownSettingBehaviour?.SetValue(_values[_value]);
     }
 
     public override void CreateSettingUi(SettingsTabController settingsTabController)
@@ -85,5 +87,14 @@ public sealed class EnumSetting<TEnum> : CustomSetting where TEnum : struct
         base.UiUpdate();
         var isEditable = IsEditable();
         DropdownSettingBehaviour.dropdown.interactable = isEditable;
+    }
+
+    protected override void SetValueFromMessageReader(MessageReader reader)
+    {
+        SetValue(Enum.Parse<TEnum>(reader.ReadString()));
+    }
+    protected override void WriteValueInMessageWriter(MessageWriter writer)
+    {
+        writer.Write(_value.ToString());
     }
 }

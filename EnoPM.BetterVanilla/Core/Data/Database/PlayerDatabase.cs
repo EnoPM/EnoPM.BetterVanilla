@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace EnoPM.BetterVanilla.Core.Data.Database;
 
@@ -12,4 +13,7 @@ public sealed class PlayerDatabase
 
     [JsonPropertyName("c")]
     public uint PlayerLevel { get; set; }
+
+    [JsonPropertyName("d")]
+    public HashSet<string> FeatureCodes { get; set; } = [];
 }

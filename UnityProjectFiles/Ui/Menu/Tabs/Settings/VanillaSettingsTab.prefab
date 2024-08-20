@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feccce7d8e614e7d963c24b1ac075308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabHeaderSprite: {fileID: 21300000, guid: 6d4fa084eaa1d8147bdfb7e9e6d75994, type: 3}
+  tabHeaderSprite: {fileID: 21300000, guid: 9df3b01d1ba3a054daeedcc23983f736, type: 3}
   tabHeaderTitle: Host Settings
   settingsContainer: {fileID: 6700661864828295976}
   categoryId: HostSettings

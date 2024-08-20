@@ -1,3 +1,5 @@
+using System;
+using EnoPM.BetterVanilla.Core.Settings;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Components;
@@ -14,7 +16,12 @@ public class SettingsTabController : TabController
     private void Start()
     {
         Plugin.Logger.LogMessage($"{nameof(SettingsTabController)} for category: {categoryId}");
-        ModSettings.InitUi(this);
+        ModSettings.OnSettingsTabControllerReady(this);
+    }
+
+    private void Update()
+    {
+        CustomSetting.CheckLockedSettings(categoryId);
     }
 
     public ToggleSettingItem CreateToggleOption()

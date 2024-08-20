@@ -31,23 +31,11 @@ public class ZoomBehaviour : MonoBehaviour
     {
         if (!Utils.IsGameStarted || !Utils.AmDead || Utils.AmImpostor) return;
 
-        if (Input.GetKeyDown(ModConfigs.ZoomOutKey))
+        var value = (float)ModSettings.Local.ZoomValueOnDeath;
+        if (!Mathf.Approximately(value, CameraOrthographicSize))
         {
-            ZoomOut();
-        }
-        else if (Input.GetKeyDown(ModConfigs.ZoomInKey) || Input.mouseScrollDelta.y > 0)
-        {
-            ZoomIn();
-        }
-
-        if (HudManager.Instance.Chat.IsOpenOrOpening) return;
-        if (Input.mouseScrollDelta.y < 0)
-        {
-            ZoomOut();
-        }
-        else if (Input.mouseScrollDelta.y > 0)
-        {
-            ZoomIn();
+            SetZoom(value);
+            UpdateZoom();
         }
     }
 
@@ -65,7 +53,7 @@ public class ZoomBehaviour : MonoBehaviour
 
     internal void ResetZoom() => SetZoom(MinOrthographicSize);
 
-    private void SetZoom(float value)
+    public void SetZoom(float value)
     {
         CameraOrthographicSize = value;
         if (CameraOrthographicSize > MaxOrthographicSize)

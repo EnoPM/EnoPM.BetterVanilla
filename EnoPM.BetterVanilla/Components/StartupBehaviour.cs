@@ -25,7 +25,7 @@ public sealed class StartupBehaviour : MonoBehaviour
 
     private void OnLogged(AssetBundle assetBundle)
     {
-        DB.RefreshPlayerNameAndLevel();
+        DB.RefreshPlayerName();
         CreateMenu(assetBundle);
     }
     

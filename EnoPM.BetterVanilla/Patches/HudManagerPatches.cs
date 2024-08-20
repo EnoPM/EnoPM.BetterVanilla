@@ -12,11 +12,4 @@ internal static class HudManagerPatches
         __instance.gameObject.AddComponent<ZoomBehaviour>();
         __instance.gameObject.AddComponent<CustomButtonsManager>();
     }
-    
-    [HarmonyPostfix, HarmonyPatch(nameof(HudManager.Update))]
-    private static void UpdatePostfix(HudManager __instance)
-    {
-        if (MeetingHud.Instance || !Utils.IsGameStarted || __instance.Chat.isActiveAndEnabled) return;
-        __instance.Chat.SetVisible(true);
-    }
 }

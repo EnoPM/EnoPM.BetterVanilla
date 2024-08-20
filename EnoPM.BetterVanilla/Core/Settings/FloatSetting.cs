@@ -1,6 +1,7 @@
 ﻿using System;
 using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core.Data;
+using Hazel;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Core.Settings;
@@ -106,5 +107,14 @@ public sealed class FloatSetting : CustomSetting
         {
             SliderSettingBehaviour.RefreshButtonsState();
         }
+    }
+    
+    protected override void SetValueFromMessageReader(MessageReader reader)
+    {
+        SetValue(reader.ReadSingle());
+    }
+    protected override void WriteValueInMessageWriter(MessageWriter writer)
+    {
+        writer.Write(_value);
     }
 }

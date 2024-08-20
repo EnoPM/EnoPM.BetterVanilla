@@ -9,7 +9,7 @@ public static class PlayerPurchasesDataPatches
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerPurchasesData.GetPurchase))]
     private static void GetPurchasePostfix(ref bool __result)
     {
-        if (!ModConfigs.IsExperimental) return;
+        if (ModSettings.Local.AllowModdedCosmetics.IsLocked() || !ModSettings.Local.AllowModdedCosmetics) return;
         __result = true;
     }
 }

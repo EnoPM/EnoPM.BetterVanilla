@@ -1,30 +1,35 @@
-﻿using System;
-using EnoPM.BetterVanilla.Components;
+﻿using EnoPM.BetterVanilla.Components;
 using EnoPM.BetterVanilla.Core;
-using EnoPM.BetterVanilla.Core.Attributes;
-using EnoPM.BetterVanilla.Core.Data;
 
 namespace EnoPM.BetterVanilla.Buttons;
 
-[ButtonConfig(
-    position: ButtonPositions.BottomLeft
-)]
 public sealed class ModMenuHudButton : CustomGameplayButton
 {
+    public static ModMenuHudButton Instance { get; private set; }
+    
     private void Start()
     {
-        LabelText.SetText("Better Vanilla");
+        LabelText.SetText("Menu");
         MaxCooldown = 0f;
         SetUsesRemainingActive(false);
         SetLabelActive(true);
-        SetLabelOutlineColor(Utils.ColorFromHex("#2A70C8FF"));
+        var color = Utils.ColorFromHex("#2A70C8FF");
+        SetLabelOutlineColor(color);
+        SetLabelFaceColor(color);
         SetSprite(Utils.LoadSpriteFromResource("EnoPM.BetterVanilla.Resources.ModMenuButton.png"));
+
+        Instance = this;
     }
 
     public override void OnClicked()
     {
         base.OnClicked();
         ModMenuController.Instance.Open();
+    }
+
+    protected override bool IsVisible()
+    {
+        return base.IsVisible() && true;
     }
 
     protected override bool CanClick()

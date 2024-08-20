@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.Data;
-using BepInEx.Unity.IL2CPP.Utils;
 using EnoPM.BetterVanilla.Core;
 using HarmonyLib;
 using Hazel;
@@ -65,9 +63,9 @@ internal static class ChatControllerPatches
         AddPrivateChat(sender, receiver, message);
     }
 
-    private static void AddPrivateChat(PlayerControl sender, PlayerControl receiver, string message)
+    public static void AddPrivateChat(PlayerControl sender, PlayerControl receiver, string message)
     {
-        DestroyableSingleton<HudManager>.Instance.Chat.AddPrivateChat(sender, receiver, message);
+        HudManager.Instance.Chat.AddPrivateChat(sender, receiver, message);
     }
     
     private const string CommandPrefix = "/";
@@ -75,7 +73,6 @@ internal static class ChatControllerPatches
     {
         { "kick", KickCommand },
         { "ban", BanCommand },
-        { "tasks", TasksCommand },
         { "tp", TpCommand },
         { "w", WhisperCommand },
         { "r", ReplyCommand }
@@ -93,14 +90,9 @@ internal static class ChatControllerPatches
         var rawMessage = string.Join(" ", arguments);
         var target = PlayerControl.AllPlayerControls.ToArray()
             .Where(x => rawMessage.ToLowerInvariant().StartsWith(x.Data.PlayerName.ToLowerInvariant())).MinBy(x => rawMessage[x.Data.PlayerName.Length..].Length);
-        if (target == null || AmongUsClient.Instance == null) return false;
+        if (!target || !AmongUsClient.Instance) return false;
         var message = rawMessage[(target.Data.PlayerName.Length + 1)..];
-        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, PrivateMessageRpcId,
-            SendOption.Reliable, target.OwnerId);
-        writer.Write(target.OwnerId);
-        writer.Write(message);
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        AddPrivateChat(PlayerControl.LocalPlayer, target, message);
+        PlayerControl.LocalPlayer.RpcSendPrivateMessage(target, message);
         return true;
     }
 
@@ -128,13 +120,6 @@ internal static class ChatControllerPatches
         return true;
     }
     
-    private static bool TasksCommand(List<string> arguments)
-    {
-        if (!ModConfigs.IsExperimental || !Utils.AmDead || MeetingHud.Instance) return false;
-        HudManager.Instance.StartCoroutine(CoFinishMyTasks());
-        return true;
-    }
-    
     private static bool TpCommand(List<string> arguments)
     {
         if (arguments.Count == 0 || !Utils.AmDead || MeetingHud.Instance) return false;
@@ -143,26 +128,6 @@ internal static class ChatControllerPatches
         if (!target) return false;
         PlayerControl.LocalPlayer.transform.position = target.transform.position;
         return true;
-    }
-    
-    private static IEnumerator CoFinishMyTasks()
-    {
-        var localPlayer = PlayerControl.LocalPlayer;
-        if (localPlayer.myTasks == null) yield break;
-        foreach (var task in localPlayer.myTasks)
-        {
-            if (!task.IsComplete)
-            {
-                var t = task.TryCast<NormalPlayerTask>();
-                if (t != null)
-                {
-                    t.taskStep = t.MaxStep;
-                }
-                task.Complete();
-                localPlayer.RpcCompleteTask(task.Id);
-                yield return new WaitForSeconds(0.5f);
-            }
-        }
     }
 
     private static void AddPrivateChat(this ChatController controller, PlayerControl sender, PlayerControl receiver, string chatText)

@@ -17,10 +17,6 @@ internal static class ModConfigs
     private static readonly ConfigEntry<string> LessThanHalfTasksDoneColorEntry;
     private static readonly ConfigEntry<string> MoreThanHalfTasksDoneColorEntry;
     private static readonly ConfigEntry<string> AllTasksDoneColorEntry;
-    
-    internal static bool IsExperimental { get; set; }
-    internal static bool CheckAmDead { get; set; }
-    internal static bool CheckAmImpostor { get; set; }
     internal static KeyCode ZoomInKey { get; set; }
     internal static KeyCode ZoomOutKey { get; set; }
     internal static Color CheaterColor { get; set; }
@@ -50,10 +46,6 @@ internal static class ModConfigs
 
     internal static void Load()
     {
-        IsExperimental = ExperimentalCodeEntry.Value != string.Empty && Utils.CalculateSHA256(ExperimentalCodeEntry.Value) == ExperimentalHash;
-        CheckAmDead = false;
-        CheckAmImpostor = false;
-        
         ZoomInKey = ZoomInKeyEntry.Value;
         ZoomOutKey = ZoomOutKeyEntry.Value;
         

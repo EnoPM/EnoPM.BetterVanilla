@@ -8,9 +8,13 @@ namespace EnoPM.BetterVanilla.Components
 {
     public class SavedOutfitController : MonoBehaviour
     {
-        public TextMeshProUGUI outfitNameText;
         public Button button;
         public Button deleteButton;
+        public Image hatPreview;
+        public Image skinPreview;
+        public Image visorPreview;
+        public Image petPreview;
+        public Image nameplatePreview;
 
         private void Awake()
         {

@@ -26,12 +26,13 @@ internal static class Utils
         return Assembly.GetExecutingAssembly().LoadSpriteFromResources(path);
     }
     
-    internal static bool AmDead => !ModConfigs.CheckAmDead || (PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data != null &&
-                                                              PlayerControl.LocalPlayer.Data.IsDead);
-    internal static bool AmImpostor => !ModConfigs.CheckAmImpostor || (PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data != null &&
-                                                                       PlayerControl.LocalPlayer.Data.Role != null &&
-                                                                       PlayerControl.LocalPlayer.Data.Role.IsImpostor);
+    internal static bool AmDead => (!ModSettings.Local.DisableInfosChecks.IsLocked() && ModSettings.Local.DisableInfosChecks) || (PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data != null &&
+                                                                                                                                              PlayerControl.LocalPlayer.Data.IsDead);
+    internal static bool AmImpostor => (!ModSettings.Local.DisableInfosChecks.IsLocked() && ModSettings.Local.DisableInfosChecks) || (PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data != null &&
+                                                                                                                                      PlayerControl.LocalPlayer.Data.Role != null &&
+                                                                                                                                      PlayerControl.LocalPlayer.Data.Role.IsImpostor);
     internal static bool IsGameStarted => AmongUsClient.Instance && (AmongUsClient.Instance.IsGameStarted || DestroyableSingleton<TutorialManager>.InstanceExists);
+    internal static bool IsRealGameStarted() => AmongUsClient.Instance && AmongUsClient.Instance.IsGameStarted;
     
     public static bool IsLocalPlayer(byte playerId)
     {

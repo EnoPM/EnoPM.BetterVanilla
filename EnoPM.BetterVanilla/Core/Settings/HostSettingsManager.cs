@@ -11,6 +11,8 @@ public sealed class HostSettingsManager
     public readonly CustomSettingCategory Category;
     
     public readonly EnumSetting<AmongUsMaps> Map;
+    public readonly FloatSetting ReactorCountdown;
+    public readonly BoolSetting TeamPreferencesAllowed;
     public readonly FloatSetting ImpostorsCount;
     public readonly FloatSetting ImpostorsKillCooldown;
     public readonly FloatSetting ImpostorsVision;
@@ -32,70 +34,88 @@ public sealed class HostSettingsManager
     public HostSettingsManager()
     {
         Category = new CustomSettingCategory("HostSettings", IsCategoryInteractable);
+
+        TeamPreferencesAllowed = Category.Bool("TeamPreferencesAllowed", "Allow Team Preferences", true, CustomSetting.SaveTypes.HostToClient);
         
-        Map = Category.Enum("Map", "Map", AmongUsMaps.Skeld);
+        Map = Category.Enum("Map", "Map", AmongUsMaps.Skeld, saveType: CustomSetting.SaveTypes.HostToClient);
         Map.ValueChanged += EnumValueChanged;
+
+        ReactorCountdown = Category.Float("ReactorCountdown", "Reactor Countdown", new NumberRange(10f, 120f), suffix: "s", defaultValue: 60f, isEditableFunc: IsReactorModifiableMap, saveType: CustomSetting.SaveTypes.HostToClient);
         
-        ImpostorsCount = Category.Float("ImpostorsCount", "Impostors", new NumberRange(1f, 3f), stepSize: 1f, defaultValue: 1f);
+        ImpostorsCount = Category.Float("ImpostorsCount", "Impostors", new NumberRange(1f, 3f), stepSize: 1f, defaultValue: 1f, saveType: CustomSetting.SaveTypes.HostToClient);
         ImpostorsCount.ValueChanged += FloatValueChanged;
         
-        ImpostorsKillCooldown = Category.Float("ImpostorsKillCooldown", "Kill Cooldown", new NumberRange(10f, 60f), stepSize: 0.5f, defaultValue: 25f, suffix: "s");
+        ImpostorsKillCooldown = Category.Float("ImpostorsKillCooldown", "Kill Cooldown", new NumberRange(10f, 60f), stepSize: 0.5f, defaultValue: 25f, suffix: "s", saveType: CustomSetting.SaveTypes.HostToClient);
         ImpostorsKillCooldown.ValueChanged += FloatValueChanged;
         
-        ImpostorsVision = Category.Float("ImpostorsVision", "Impostor Vision", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 1.25f, suffix: "x");
+        ImpostorsVision = Category.Float("ImpostorsVision", "Impostor Vision", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 1.25f, suffix: "x", saveType: CustomSetting.SaveTypes.HostToClient);
         ImpostorsVision.ValueChanged += FloatValueChanged;
         
-        ImpostorsKillDistance = Category.Enum("ImpostorsKillDistance", "Kill Distance", defaultValue: ImpostorKillDistances.Short);
+        ImpostorsKillDistance = Category.Enum("ImpostorsKillDistance", "Kill Distance", defaultValue: ImpostorKillDistances.Short, saveType: CustomSetting.SaveTypes.HostToClient);
         ImpostorsKillDistance.ValueChanged += EnumValueChanged;
         
-        PlayerSpeed = Category.Float("PlayerSpeed", "Player Speed", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 1f, suffix: "x");
+        PlayerSpeed = Category.Float("PlayerSpeed", "Player Speed", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 1f, suffix: "x", saveType: CustomSetting.SaveTypes.HostToClient);
         PlayerSpeed.ValueChanged += FloatValueChanged;
         
-        CrewmateVision = Category.Float("CrewmateVision", "Crewmate Vision", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 0.5f, suffix: "x");
+        CrewmateVision = Category.Float("CrewmateVision", "Crewmate Vision", new NumberRange(0.1f, 3f), stepSize: 0.05f, defaultValue: 0.5f, suffix: "x", saveType: CustomSetting.SaveTypes.HostToClient);
         CrewmateVision.ValueChanged += FloatValueChanged;
         
-        EmergencyMeetingsCount = Category.Float("EmergencyMeetingsCount", "Emergency Meetings", new NumberRange(1f, 15f), stepSize: 1f, defaultValue: 1f);
+        EmergencyMeetingsCount = Category.Float("EmergencyMeetingsCount", "Emergency Meetings", new NumberRange(1f, 15f), stepSize: 1f, defaultValue: 1f, saveType: CustomSetting.SaveTypes.HostToClient);
         EmergencyMeetingsCount.ValueChanged += FloatValueChanged;
         
-        EmergencyMeetingsCooldown = Category.Float("EmergencyMeetingsCooldown", "Emergency Cooldown", new NumberRange(0f, 120f), stepSize: 1f, defaultValue: 15f, suffix: "s");
+        EmergencyMeetingsCooldown = Category.Float("EmergencyMeetingsCooldown", "Emergency Cooldown", new NumberRange(0f, 120f), stepSize: 1f, defaultValue: 15f, suffix: "s", saveType: CustomSetting.SaveTypes.HostToClient);
         EmergencyMeetingsCooldown.ValueChanged += FloatValueChanged;
         
-        DiscussionTime = Category.Float("DiscussionTime", "Discussion Time", new NumberRange(0f, 120f), stepSize: 1f, defaultValue: 0f, suffix: "s");
+        DiscussionTime = Category.Float("DiscussionTime", "Discussion Time", new NumberRange(0f, 120f), stepSize: 1f, defaultValue: 0f, suffix: "s", saveType: CustomSetting.SaveTypes.HostToClient);
         DiscussionTime.ValueChanged += FloatValueChanged;
         
-        VotingTime = Category.Float("VotingTime", "Voting Time", new NumberRange(0f, 300f), stepSize: 1f, defaultValue: 160f, suffix: "s");
+        VotingTime = Category.Float("VotingTime", "Voting Time", new NumberRange(0f, 300f), stepSize: 1f, defaultValue: 160f, suffix: "s", saveType: CustomSetting.SaveTypes.HostToClient);
         VotingTime.ValueChanged += FloatValueChanged;
         
-        AnonymousVotes = Category.Bool("AnonymousVotes", "Anonymous Votes", true);
+        AnonymousVotes = Category.Bool("AnonymousVotes", "Anonymous Votes", true, saveType: CustomSetting.SaveTypes.HostToClient);
         AnonymousVotes.ValueChanged += BoolValueChanged;
         
-        ConfirmEjects = Category.Bool("ConfirmEjects", "Confirm Ejects");
+        ConfirmEjects = Category.Bool("ConfirmEjects", "Confirm Ejects", saveType: CustomSetting.SaveTypes.HostToClient);
         ConfirmEjects.ValueChanged += BoolValueChanged;
         
-        TaskBarUpdate = Category.Enum("TaskBarUpdate", "Task Bar Updates", defaultValue: TaskBarUpdates.Meetings);
+        TaskBarUpdate = Category.Enum("TaskBarUpdate", "Task Bar Updates", defaultValue: TaskBarUpdates.Meetings, saveType: CustomSetting.SaveTypes.HostToClient);
         TaskBarUpdate.ValueChanged += EnumValueChanged;
         
-        CommonTasks = Category.Float("CommonTasks", "Common Tasks", new NumberRange(1f, 4f), stepSize: 1f, defaultValue: 2f);
+        CommonTasks = Category.Float("CommonTasks", "Common Tasks", new NumberRange(1f, 4f), stepSize: 1f, defaultValue: 2f, saveType: CustomSetting.SaveTypes.HostToClient);
         CommonTasks.ValueChanged += FloatValueChanged;
         
-        LongTasks = Category.Float("LongTasks", "Long Tasks", new NumberRange(1f, 6f), stepSize: 1f, defaultValue: 3f);
+        LongTasks = Category.Float("LongTasks", "Long Tasks", new NumberRange(1f, 6f), stepSize: 1f, defaultValue: 3f, saveType: CustomSetting.SaveTypes.HostToClient);
         LongTasks.ValueChanged += FloatValueChanged;
         
-        ShortTasks = Category.Float("ShortTasks", "Short Tasks", new NumberRange(1f, 23f), stepSize: 1f, defaultValue: 5f);
+        ShortTasks = Category.Float("ShortTasks", "Short Tasks", new NumberRange(1f, 23f), stepSize: 1f, defaultValue: 5f, saveType: CustomSetting.SaveTypes.HostToClient);
         ShortTasks.ValueChanged += FloatValueChanged;
         
-        VisualTasks = Category.Bool("VisualTasks", "Visual Tasks");
+        VisualTasks = Category.Bool("VisualTasks", "Visual Tasks", saveType: CustomSetting.SaveTypes.HostToClient);
         VisualTasks.ValueChanged += BoolValueChanged;
     }
 
-    private bool IsCategoryInteractable()
+    private bool IsReactorModifiableMap() => IsCategoryInteractable() && Map == AmongUsMaps.Polus;
+
+    private static bool IsCategoryInteractable()
     {
-        return AmongUsClient.Instance && AmongUsClient.Instance.AmHost;
+        return AmongUsClient.Instance && AmongUsClient.Instance.AmHost && !Utils.IsGameStarted;
     }
 
-    private void FloatValueChanged(float _) => UpdateAllSettingsAndSync();
-    private void BoolValueChanged(bool _) => UpdateAllSettingsAndSync();
-    private void EnumValueChanged<TEnum>(TEnum _) where TEnum : struct => UpdateAllSettingsAndSync();
+    private void FloatValueChanged(float _)
+    {
+        if (!AmongUsClient.Instance || ! AmongUsClient.Instance.AmHost) return;
+        UpdateAllSettingsAndSync();
+    }
+    private void BoolValueChanged(bool _)
+    {
+        if (!AmongUsClient.Instance || ! AmongUsClient.Instance.AmHost) return;
+        UpdateAllSettingsAndSync();
+    }
+    private void EnumValueChanged<TEnum>(TEnum _) where TEnum : struct
+    {
+        if (!AmongUsClient.Instance || ! AmongUsClient.Instance.AmHost) return;
+        UpdateAllSettingsAndSync();
+    }
 
     private void UpdateAllSettingsAndSync()
     {

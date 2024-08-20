@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 using EnoPM.BetterVanilla.Core.Data;
 using EnoPM.BetterVanilla.Core.Extensions;
 using MonoMod.Utils;
+using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Core;
 
@@ -12,16 +13,17 @@ public class CustomRoleAssignments
 {
     private const int TicketsPerPlayer = 20;
     private const int TicketsPenaltyForNonPreferredTeam = 15;
-    
+
     private readonly IGameOptions _currentOptions;
     private readonly int _numImpostors;
     private readonly List<PlayerControl> _allPlayers = [];
     private readonly List<PlayerControl> _remainingPlayers = [];
-    private readonly Dictionary<byte, SettingTeamPreferences> _playerPreferences;
+    private readonly Dictionary<byte, SettingTeamPreferences> _playerPreferences = [];
+    private readonly Dictionary<byte, SettingTeamPreferences> _playerForcedAssignments = [];
     private readonly List<RoleTypes> _allCrewmateRoles = [];
     private readonly List<RoleTypes> _allImpostorRoles = [];
-    
-    public CustomRoleAssignments(Dictionary<byte, SettingTeamPreferences> playerPreferences = null)
+
+    public CustomRoleAssignments()
     {
         foreach (var playerControl in PlayerControl.AllPlayerControls)
         {
@@ -30,12 +32,37 @@ public class CustomRoleAssignments
             if (playerControl.Data.Disconnected || playerControl.Data.IsDead) continue;
             _allPlayers.Add(playerControl);
         }
-        
+
         _currentOptions = GameOptionsManager.Instance.CurrentGameOptions;
         _numImpostors = GameOptionsManager.Instance.CurrentGameOptions.GetAdjustedNumImpostors(_allPlayers.Count);
-        _playerPreferences = playerPreferences ?? [];
         _remainingPlayers.AddRange(_allPlayers);
         SetupRoles();
+    }
+
+    public void SetTeamPreference(byte playerId, SettingTeamPreferences preference)
+    {
+        _playerPreferences[playerId] = preference;
+    }
+
+    public void SetTeamPreferences(Dictionary<byte, SettingTeamPreferences> preferences)
+    {
+        foreach (var preference in preferences)
+        {
+            SetTeamPreference(preference.Key, preference.Value);
+        }
+    }
+
+    public void SetForcedAssignment(byte playerId, SettingTeamPreferences preference)
+    {
+        _playerForcedAssignments[playerId] = preference;
+    }
+
+    public void SetForcedAssignments(Dictionary<byte, SettingTeamPreferences> preferences)
+    {
+        foreach (var preference in preferences)
+        {
+            SetForcedAssignment(preference.Key, preference.Value);
+        }
     }
 
     private void SetupRoles()
@@ -50,7 +77,7 @@ public class CustomRoleAssignments
             var chance = roleOptions.GetChancePerGame(roleType);
             if (chance == 0 || amount == 0) continue;
             var hasChanceRate = chance < 100;
-            
+
             for (var i = 0; i < amount; i++)
             {
                 if (!hasChanceRate || HashRandom.Next(101) < chance)
@@ -71,9 +98,11 @@ public class CustomRoleAssignments
     private List<byte> CreateDraw(RoleTeamTypes team, bool ignorePlayerPreferences = false)
     {
         var draw = new List<byte>();
-        var teamPreference = GetPreferenceCorrespondence(team);
+        var teamPreference = ConvertRoleTeamTypeToTeamPreference(team);
+        var oppositeTeamPreference = GetOpposite(teamPreference);
         foreach (var player in _remainingPlayers)
         {
+            var forcedAssignation = GetForcedAssignmentForPlayer(player);
             var playerId = player.PlayerId;
             var tickets = TicketsPerPlayer;
             var playerPreference = GetPreferenceForPlayer(player);
@@ -82,9 +111,12 @@ public class CustomRoleAssignments
                 tickets -= TicketsPenaltyForNonPreferredTeam;
             }
 
-            for (var i = 0; i < tickets; i++)
+            if (forcedAssignation == SettingTeamPreferences.Both || forcedAssignation != oppositeTeamPreference)
             {
-                draw.Add(playerId);
+                for (var i = 0; i < tickets; i++)
+                {
+                    draw.Add(playerId);
+                }
             }
         }
 
@@ -92,12 +124,20 @@ public class CustomRoleAssignments
     }
 
     private SettingTeamPreferences GetPreferenceForPlayer(PlayerControl player) => _playerPreferences.GetValueOrDefault(player.PlayerId, SettingTeamPreferences.Both);
+    private SettingTeamPreferences GetForcedAssignmentForPlayer(PlayerControl player) => _playerForcedAssignments.GetValueOrDefault(player.PlayerId, SettingTeamPreferences.Both);
 
-    private static SettingTeamPreferences GetPreferenceCorrespondence(RoleTeamTypes teamType) => teamType switch
+    private static SettingTeamPreferences ConvertRoleTeamTypeToTeamPreference(RoleTeamTypes teamType) => teamType switch
     {
         RoleTeamTypes.Crewmate => SettingTeamPreferences.Crewmate,
         RoleTeamTypes.Impostor => SettingTeamPreferences.Impostor,
         _ => throw new ArgumentOutOfRangeException(nameof(teamType), $"Unable to find Preference correspondence for {teamType.ToString()}")
+    };
+
+    private static SettingTeamPreferences? GetOpposite(SettingTeamPreferences preference) => preference switch
+    {
+        SettingTeamPreferences.Crewmate => SettingTeamPreferences.Impostor,
+        SettingTeamPreferences.Impostor => SettingTeamPreferences.Crewmate,
+        _ => null
     };
 
     private List<PlayerControl> PickRandomPlayersFromDraw(List<byte> draw, int amount)
@@ -108,13 +148,15 @@ public class CustomRoleAssignments
         {
             if (draw.Count == 0)
             {
-                throw new ArgumentException($"No enough tickets to pick {amount} players", nameof(draw));
+                return result;
+                // throw new ArgumentException($"No enough tickets to pick {amount} players", nameof(draw));
             }
+
             var playerId = draw.PickOneRandom();
             var player = _remainingPlayers.First(x => x.PlayerId == playerId);
             result.Add(player);
             _remainingPlayers.Remove(player);
-            
+
             while (draw.Contains(playerId))
             {
                 draw.Remove(playerId);
@@ -126,7 +168,9 @@ public class CustomRoleAssignments
 
     private List<PlayerControl> GetTeam(RoleTeamTypes teamType, int teamSize)
     {
-        return PickRandomPlayersFromDraw(CreateDraw(teamType), teamSize);
+        var draw = CreateDraw(teamType, !ModSettings.Host.TeamPreferencesAllowed);
+        var result = PickRandomPlayersFromDraw(draw, teamSize);
+        return result;
     }
 
     private static Dictionary<PlayerControl, RoleTypes> GetRolesAssignation(List<PlayerControl> players, List<RoleTypes> roles, RoleTypes defaultRole)
@@ -140,22 +184,19 @@ public class CustomRoleAssignments
 
         return result;
     }
-    
+
     public void StartAssignation()
     {
-        var impostorsCount = _numImpostors;
+        var impostorsCount = Mathf.Max(1, _numImpostors);
         var impostorTeam = GetTeam(RoleTeamTypes.Impostor, impostorsCount);
-        
+
         var crewmatesCount = _remainingPlayers.Count;
         var crewmateTeam = GetTeam(RoleTeamTypes.Crewmate, crewmatesCount);
-        
-        Plugin.Logger.LogMessage($"Impostor Team: {impostorsCount} {impostorTeam.Count}");
-        Plugin.Logger.LogMessage($"Crewmate Team: {crewmatesCount} {crewmateTeam.Count}");
         
         var playerRoles = new Dictionary<PlayerControl, RoleTypes>();
         playerRoles.AddRange(GetRolesAssignation(impostorTeam, _allImpostorRoles, RoleTypes.Impostor));
         playerRoles.AddRange(GetRolesAssignation(crewmateTeam, _allCrewmateRoles, RoleTypes.Crewmate));
-        
+
         SendRolesAssignation(playerRoles);
     }
 

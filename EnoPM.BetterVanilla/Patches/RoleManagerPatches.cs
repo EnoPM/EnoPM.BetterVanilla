@@ -1,17 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using AmongUs.GameOptions;
-using Il2CppSystem.Collections.Generic;
-using BepInEx.Unity.IL2CPP.Utils.Collections;
 using EnoPM.BetterVanilla.Core;
 using EnoPM.BetterVanilla.Core.Data;
 using HarmonyLib;
-using InnerNet;
 
 namespace EnoPM.BetterVanilla.Patches;
 
 [HarmonyPatch(typeof(RoleManager))]
 internal static class RoleManagerPatches
 {
+    internal static readonly Dictionary<byte, SettingTeamPreferences> PlayerForcedTeams = [];
+    internal static readonly Dictionary<byte, SettingTeamPreferences> PlayerTeamPreferences = [];
+    
     [HarmonyPrefix, HarmonyPatch(nameof(RoleManager.SelectRoles))]
     private static bool SelectRolesPrefix(RoleManager __instance)
     {
@@ -19,8 +19,17 @@ internal static class RoleManagerPatches
         {
             return true;
         }
+
+        PlayerTeamPreferences.TryAdd(PlayerControl.LocalPlayer.PlayerId, ModSettings.Local.TeamPreference);
+        if (!ModSettings.Local.ForcedTeamAssignment.IsLocked())
+        {
+            PlayerForcedTeams.TryAdd(PlayerControl.LocalPlayer.PlayerId, ModSettings.Local.ForcedTeamAssignment);
+        }
         
-        var customAssignment = new CustomRoleAssignments(new System.Collections.Generic.Dictionary<byte, SettingTeamPreferences> { {PlayerControl.LocalPlayer.PlayerId, SettingTeamPreferences.Crewmate} });
+        var customAssignment = new CustomRoleAssignments();
+        customAssignment.SetTeamPreferences(PlayerTeamPreferences);
+        customAssignment.SetForcedAssignments(PlayerForcedTeams);
+        PlayerTeamPreferences.Clear();
         customAssignment.StartAssignation();
         return false;
     }

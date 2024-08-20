@@ -10,6 +10,7 @@ internal static class NetworkedPlayerInfoExtensions
     {
         var role = info.Role;
         var amDead = Utils.AmDead;
+        var shouldShowRolesAndTasks = (bool)ModSettings.Local.DisplayRolesAndTasksAfterDeath;
         var isHost = Utils.IsHost(info.Object);
         var isDisconnected = info.Disconnected;
         var isCheater = info.Object && PlayerControlPatches.CheaterOwnerIds.Contains(info.Object.OwnerId);
@@ -30,7 +31,7 @@ internal static class NetworkedPlayerInfoExtensions
         {
             text += Utils.Cs(ModConfigs.ImpostorColor, "Disconnected");
         }
-        if (role != null && Utils.IsGameStarted && (amDead || Utils.IsLocalPlayer(info.PlayerId)))
+        if (shouldShowRolesAndTasks && role && Utils.IsGameStarted && (amDead || Utils.IsLocalPlayer(info.PlayerId)))
         {
             if (isHost || isDisconnected)
             {

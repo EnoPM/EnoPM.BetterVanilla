@@ -217,6 +217,11 @@ public abstract class CustomGameplayButton : MonoBehaviour
 
         Data = new CustomGameplayButtonData(type);
     }
+
+    public void UpdateParent(Transform parent)
+    {
+        GameObject.transform.SetParent(parent);
+    }
     
     private void OnDestroy()
     {
@@ -225,6 +230,11 @@ public abstract class CustomGameplayButton : MonoBehaviour
     
     protected virtual void Update()
     {
+        if (!IsVisible())
+        {
+            GameObject.SetActive(false);
+            return;
+        }
         if (Data.HasEffect && IsEffectActive)
         {
             SetEnabled(true);
@@ -331,6 +341,7 @@ public abstract class CustomGameplayButton : MonoBehaviour
     }
     
     protected virtual bool CanClick() => true;
+    protected virtual bool IsVisible() => true;
     
     protected virtual bool IsCoolingDown() => true;
     

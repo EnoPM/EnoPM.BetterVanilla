@@ -35,7 +35,10 @@ internal static class Program
         }
         interopMaker.LoadDependencies();
         interopMaker.RemoveAssemblyNameSuffix(".Mono");
-        interopMaker.RandomizeAssemblyVersion();
+        if (args.HasVersionRandomizerFlag)
+        {
+            interopMaker.RandomizeAssemblyVersion();
+        }
         interopMaker.RegisterPluginEntryPoint();
         
         var monoBehaviourInterop = new MonoBehaviourInterop(interopMaker);

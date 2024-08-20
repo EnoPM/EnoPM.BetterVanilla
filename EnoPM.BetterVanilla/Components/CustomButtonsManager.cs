@@ -4,7 +4,6 @@ using System.Reflection;
 using EnoPM.BetterVanilla.Buttons;
 using EnoPM.BetterVanilla.Core;
 using EnoPM.BetterVanilla.Core.Attributes;
-using EnoPM.BetterVanilla.Core.Data;
 using EnoPM.BetterVanilla.Core.Extensions;
 using UnityEngine;
 
@@ -12,12 +11,11 @@ namespace EnoPM.BetterVanilla.Components;
 
 public class CustomButtonsManager : MonoBehaviour
 {
-    private static readonly List<RegisteredCustomButton> ButtonTypes = [];
+    private static readonly List<Type> ButtonTypes = [];
 
     private void Start()
     {
-        Plugin.Logger.LogMessage($"ButtonTypes: {ButtonTypes.Count}");
-        AddButton<ModMenuHudButton>();
+        AddButton<ModMenuHudButton>(ModSettings.Local.ModMenuButtonPosition);
     }
 
     public static void RegisterAssembly(Assembly assembly)
@@ -42,22 +40,15 @@ public class CustomButtonsManager : MonoBehaviour
     private static void RegisterType(Type type)
     {
         if (type == typeof(CustomGameplayButton) || !type.IsAssignableTo(typeof(CustomGameplayButton))) return;
-        var attribute = type.GetCustomAttribute<ButtonConfigAttribute>();
-        if (attribute == null)
-        {
-            Plugin.Logger.LogWarning($"Unable to load CustomButton type {type.FullName}. Attribute ButtonConfig is missing");
-            return;
-        }
-        ButtonTypes.Add(new RegisteredCustomButton(type, attribute));
+        ButtonTypes.Add(type);
     }
     
     public static CustomButtonsManager Instance { get; internal set; }
     
-    private GameObject RightBottomContainer { get; set; }
-    private GameObject LeftBottomContainer { get; set; }
+    private GameObject BaseContainer { get; set; }
 
     private List<CustomGameplayButton> Buttons { get; } = [];
-    private Dictionary<ButtonPositions, GameObject> Positions { get; set; }
+    public Dictionary<ButtonPositions, GameObject> Positions { get; set; }
 
     private void Awake()
     {
@@ -66,19 +57,34 @@ public class CustomButtonsManager : MonoBehaviour
             throw new Exception($"{nameof(CustomButtonsManager)} must be a singleton");
         }
         Instance = this;
-        RightBottomContainer = HudManager.Instance.UseButton.transform.parent.gameObject;
-        LeftBottomContainer = Instantiate(RightBottomContainer, RightBottomContainer.transform.parent);
-        LeftBottomContainer.name = "LeftBottom";
-        LeftBottomContainer.DestroyChildren();
-        var aspectPosition = LeftBottomContainer.GetComponent<AspectPosition>();
-        aspectPosition.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-        aspectPosition.AdjustPosition();
+        BaseContainer = HudManager.Instance.UseButton.transform.parent.gameObject;
         
         Positions = new Dictionary<ButtonPositions, GameObject>
         {
-            { ButtonPositions.BottomLeft, LeftBottomContainer },
-            { ButtonPositions.BottomRight, RightBottomContainer }
+            { ButtonPositions.BottomRight, BaseContainer }
         };
+        
+        RegisterDerived(ButtonPositions.BottomLeft, AspectPosition.EdgeAlignments.LeftBottom);
+        RegisterDerived(ButtonPositions.MiddleLeft, AspectPosition.EdgeAlignments.Left);
+        RegisterDerived(ButtonPositions.TopLeft, AspectPosition.EdgeAlignments.LeftTop);
+    }
+
+    private void RegisterDerived(ButtonPositions position, AspectPosition.EdgeAlignments edgeAlignment)
+    {
+        if (Positions.ContainsKey(position)) return;
+        Positions.Add(position, CreateDerived(edgeAlignment));
+    }
+
+    private GameObject CreateDerived(AspectPosition.EdgeAlignments alignment)
+    {
+        var derived = Instantiate(BaseContainer, BaseContainer.transform.parent);
+        derived.name = alignment.ToString();
+        derived.DestroyChildren();
+        var aspectPosition = derived.GetComponent<AspectPosition>();
+        aspectPosition.Alignment = alignment;
+        aspectPosition.AdjustPosition();
+
+        return derived;
     }
 
     private void OnDestroy()
@@ -94,11 +100,10 @@ public class CustomButtonsManager : MonoBehaviour
         }
     }
     
-    public T AddButton<T>() where T : CustomGameplayButton
+    public T AddButton<T>(ButtonPositions buttonPosition) where T : CustomGameplayButton
     {
         var type = typeof(T);
-        var data = ButtonTypes.Find(x => x.Type == type);
-        var button = Positions[data.Config.Position].AddComponent<T>();
+        var button = Positions[buttonPosition].AddComponent<T>();
         button.SetActive(true);
         Buttons.Add(button);
         return button;
@@ -112,9 +117,18 @@ public class CustomButtonsManager : MonoBehaviour
         return button as T;
     }
     
-    private class RegisteredCustomButton(Type type, ButtonConfigAttribute config)
+    public enum ButtonPositions
     {
-        public readonly Type Type = type;
-        public readonly ButtonConfigAttribute Config = config;
+        [DisplayAs("Bottom Right")]
+        BottomRight,
+    
+        [DisplayAs("Bottom Left")]
+        BottomLeft,
+    
+        [DisplayAs("Middle Left")]
+        MiddleLeft,
+    
+        [DisplayAs("Top Left")]
+        TopLeft
     }
 }

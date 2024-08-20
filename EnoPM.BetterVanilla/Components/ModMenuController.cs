@@ -1,6 +1,5 @@
 using System.Linq;
 using EnoPM.BetterVanilla.Core;
-using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,11 +12,14 @@ public class ModMenuController : MonoBehaviour
     public static ModMenuController Instance { get; private set; }
 
     public GameObject canvas;
+    public GameObject window;
     public Button closeButton;
     public GameObject tabHeadersContainer;
     public GameObject tabBodiesContainer;
+    public Button iconButton;
     
     public GameObject tabHeaderPrefab;
+    public GameObject featureCodePopupPrefab;
     
     public GameObject outfitsTabPrefab;
     public GameObject localSettingsTabPrefab;
@@ -25,10 +27,9 @@ public class ModMenuController : MonoBehaviour
     public GameObject rolesSettingsTabPrefab;
     
     private readonly PassiveButtonsBlocker _overlayBlocker = new();
-    
     public SettingsTabController LocalSettingsTab { get; set; }
     public SettingsTabController VanillaSettingsTab { get; set; }
-    public SettingsTabController RolesSettingsTab { get; set; }
+    //public SettingsTabController RolesSettingsTab { get; set; }
     public DressingOutfitTabController DressingOutfitTab { get; set; }
     
 
@@ -36,10 +37,11 @@ public class ModMenuController : MonoBehaviour
     {
         Instance = this;
         closeButton.onClick.AddListener((UnityAction)Close);
+        iconButton.onClick.AddListener((UnityAction)OnIconButtonClick);
 
         LocalSettingsTab = InstantiateTab<SettingsTabController>(localSettingsTabPrefab);
         VanillaSettingsTab = InstantiateTab<SettingsTabController>(vanillaSettingsTabPrefab);
-        RolesSettingsTab = InstantiateTab<SettingsTabController>(rolesSettingsTabPrefab);
+        //RolesSettingsTab = InstantiateTab<SettingsTabController>(rolesSettingsTabPrefab);
         DressingOutfitTab = InstantiateTab<DressingOutfitTabController>(outfitsTabPrefab);
         
         canvas.SetActive(false);
@@ -50,15 +52,15 @@ public class ModMenuController : MonoBehaviour
         return Instantiate(prefab, tabBodiesContainer.transform).GetComponent<TTabController>();
     }
 
+    private void OnIconButtonClick()
+    {
+        Instantiate(featureCodePopupPrefab, window.transform);
+    }
+
     public void Open()
     {
         canvas.SetActive(true);
         _overlayBlocker.Block();
-        if (PlayerControl.LocalPlayer)
-        {
-            PlayerControl.LocalPlayer.moveable = false;
-            PlayerControl.LocalPlayer.NetTransform.Halt();
-        }
         
         if (TabController.AllTabs.Any(x => x.IsOpened())) return;
         var allowedTab = TabController.AllTabs.FirstOrDefault(x => x.IsAllowed());
@@ -69,11 +71,6 @@ public class ModMenuController : MonoBehaviour
     {
         canvas.SetActive(false);
         _overlayBlocker.Unblock();
-        if (PlayerControl.LocalPlayer)
-        {
-            PlayerControl.LocalPlayer.moveable = true;
-            PlayerControl.LocalPlayer.NetTransform.Halt();
-        }
     }
 
     public void CloseOpenedTab()

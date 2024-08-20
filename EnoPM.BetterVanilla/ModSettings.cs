@@ -14,7 +14,7 @@ public static class ModSettings
         Local = new LocalSettingsManager();
     }
 
-    public static void InitUi(SettingsTabController controller)
+    public static void OnSettingsTabControllerReady(SettingsTabController controller)
     {
         var category = CustomSettingCategory.GetCategory(controller.categoryId);
         if (category == null) return;
@@ -23,8 +23,4 @@ public static class ModSettings
             setting.CreateSettingUi(controller);
         }
     }
-
-    private static bool IsHostSettingsEditable() => AmongUsClient.Instance && !AmongUsClient.Instance.AmHost;
-    
-    
 }
