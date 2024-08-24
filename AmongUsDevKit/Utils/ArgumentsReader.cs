@@ -13,6 +13,7 @@ internal sealed class ArgumentsReader
     public bool HasDeferredFlag => HasFlag("deferred", 'd');
     public bool HasVerboseFlag => HasFlag("verbose", 'v');
     public bool HasVersionRandomizerFlag => HasFlag("randomizer", 'r');
+    public bool HasUnityProjectFlag => HasFlag("unity", 'u');
 
     #endregion
 

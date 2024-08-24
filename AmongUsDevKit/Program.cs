@@ -26,6 +26,7 @@ internal static class Program
     {
         var input = args.Consume();
         var output = args.Consume();
+        var unityProjectPath = args.HasUnityProjectFlag ? args.Consume() : null;
         var libraryDirectories = args.RemainingArguments;
 
         var interopMaker = new InteropMaker(input);
@@ -42,7 +43,7 @@ internal static class Program
         interopMaker.RegisterPluginEntryPoint();
         
         var monoBehaviourInterop = new MonoBehaviourInterop(interopMaker);
-        monoBehaviourInterop.Run();
+        monoBehaviourInterop.Run(unityProjectPath);
         
         interopMaker.Save(output);
     }

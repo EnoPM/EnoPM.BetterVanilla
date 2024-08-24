@@ -11,8 +11,6 @@ namespace EnoPM.BetterVanilla.Patches;
 [HarmonyPatch(typeof(ProgressionScreen))]
 internal static class ProgressionScreenPatches
 {
-    private static Coroutine DoAnimationsCoroutine { get; set; }
-
     [HarmonyPrefix, HarmonyPatch(typeof(ProgressionScreen._DoAnimations_d__14), nameof(ProgressionScreen._DoAnimations_d__14.MoveNext))]
     private static bool _DoAnimations_d__14MoveNextPrefix(ProgressionScreen._DoAnimations_d__14 __instance)
     {
@@ -69,7 +67,6 @@ internal static class ProgressionScreenPatches
             }
         }
         yield return progressionScreen.AnimatePodsAndBeans();
-        DoAnimationsCoroutine = null;
     }
 
     private static IEnumerator AnimateXpAndLevelUp(ProgressionScreen progressionScreen)

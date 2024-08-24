@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EnoPM.BetterVanilla.Core;
+using HarmonyLib;
 
 namespace EnoPM.BetterVanilla.Patches;
 
@@ -10,7 +11,8 @@ internal static class GameStartManagerPatches
     [HarmonyPostfix, HarmonyPatch(nameof(GameStartManager.Start))]
     private static void StartPostfix()
     {
-        PlayerControlPatches.CheaterOwnerIds.Clear();
+        CheatsManager.AumUsers.Clear();
+        CheatsManager.SickoUsers.Clear();
         ModSettings.Host.UpdateAllSettings();
     }
 

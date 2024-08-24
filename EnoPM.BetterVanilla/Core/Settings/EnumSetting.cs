@@ -26,7 +26,7 @@ public sealed class EnumSetting<TEnum> : CustomSetting where TEnum : struct
         var enumType = typeof(TEnum);
         if (!enumType.IsEnum)
         {
-            throw new ArgumentException("Type must be an enum", nameof(TEnum));
+            throw new ArgumentException("Type must be an enum", enumType.FullName);
         }
 
         var enumValues = Enum.GetValues(enumType);

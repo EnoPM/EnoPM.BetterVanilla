@@ -9,7 +9,7 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
 {
     private static readonly Log.PersonalLogger Logger = Log.CreateLogger(nameof(MonoBehaviourInterop));
 
-    public void Run()
+    public void Run(string? unityProjectPath = null)
     {
         Log.Production(nameof(MonoBehaviourInterop), ConsoleColor.Cyan);
 
@@ -31,10 +31,57 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
             Log.Verbose($"MonoBehaviour found: {component.Type.FullName} (serialized fields: {component.SerializedFields.Count})", ConsoleColor.Magenta);
         }
 
+        if (unityProjectPath != null)
+        {
+            CreateUnityProjectClasses(components, unityProjectPath);
+        }
+        
         DoSerializedFieldsInterop(components);
         HideUnsupportedTypeInIl2Cpp(components);
         CreateMonoBehavioursRegisterer(components);
         RemoveAbstractItems(components);
+    }
+
+    private static void CreateUnityProjectClasses(List<MonoBehaviourData> allComponents, string unityProjectPath)
+    {
+        var generatedDirectory = Path.Combine(unityProjectPath, "Assets", "AmongUsDevKit.Generated");
+        if (!Directory.Exists(generatedDirectory))
+        {
+            Directory.CreateDirectory(generatedDirectory);
+        }
+        var generatedFiles = new List<string>();
+        foreach (var component in allComponents)
+        {
+            var csharpGenerator = new UnityProjectMonoBehaviourCsharpFile(component.Type, component.SerializedFields);
+            var fileContent = csharpGenerator.GenerateCsharpFile();
+            var fileName = $"{component.Type.Name.Replace("/", ".")}.cs";
+            var path = component.Type.Namespace.Split(".");
+            var fileDirectory = Path.Combine(generatedDirectory, Path.Combine(path));
+            if (!Directory.Exists(fileDirectory))
+            {
+                Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = Path.Combine(fileDirectory, fileName);
+            File.WriteAllText(filePath, fileContent);
+            generatedFiles.Add(filePath);
+            generatedFiles.Add($"{filePath}.meta");
+        }
+        
+        OnlyKeepsAllowedFiles(generatedFiles, generatedDirectory);
+    }
+
+    private static void OnlyKeepsAllowedFiles(List<string> allowedFilePaths, string directoryToExplore)
+    {
+        foreach (var filePath in Directory.GetFiles(directoryToExplore))
+        {
+            if (allowedFilePaths.Contains(filePath)) continue;
+            File.Delete(filePath);
+        }
+
+        foreach (var directoryPath in Directory.GetDirectories(directoryToExplore))
+        {
+            OnlyKeepsAllowedFiles(allowedFilePaths, directoryPath);
+        }
     }
 
     private void RemoveAbstractItems(List<MonoBehaviourData> allComponents)

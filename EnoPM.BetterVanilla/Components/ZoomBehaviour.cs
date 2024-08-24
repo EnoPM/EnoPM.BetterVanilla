@@ -1,6 +1,4 @@
-﻿using EnoPM.BetterVanilla.Core;
-using Il2CppInterop.Runtime.Injection;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Components;
 

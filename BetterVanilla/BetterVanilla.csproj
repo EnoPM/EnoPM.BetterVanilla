@@ -1,0 +1,77 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="$(SolutionDir)/AmongUsSolutionConfig.props" />
+    
+    <PropertyGroup>
+        <RootNamespace>BetterVanilla</RootNamespace>
+        <PluginName>BetterVanilla</PluginName>
+        <PluginGuid>bettervanilla.eno.pm</PluginGuid>
+        <PluginVersion>1.1.0</PluginVersion>
+        <AmongUsGameLibsVersion>2024.8.13</AmongUsGameLibsVersion>
+        <Description>Enhanced Among Us experience</Description>
+        <GameDirectoryPath>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Latest\</GameDirectoryPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>$(PluginName).Mono</AssemblyName>
+        <Version>$(PluginVersion)</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json
+        </RestoreAdditionalProjectSources>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="$(AmongUsGameLibsVersion)" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"/>
+        <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.692"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Assets\**"/>
+        <EmbeddedResource Remove="Runs\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Assets\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Runs\**"/>
+        <None Remove="Runs\**"/>
+    </ItemGroup>
+
+    <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
+        <PropertyGroup>
+            <GeneratedText><![CDATA[
+namespace $(RootNamespace).Compiler%3B
+internal static class GeneratedProps
+{
+    public const string Guid = "$(PluginGuid)"%3B
+    public const string Name = "$(PluginName)"%3B
+    public const string Version = "$(PluginVersion)"%3B
+}
+  ]]></GeneratedText>
+            <GeneratedFilePath>$(IntermediateOutputPath)PluginProps.Generated.cs</GeneratedFilePath>
+        </PropertyGroup>
+        <ItemGroup>
+            <Compile Include="$(GeneratedFilePath)"/>
+            <FileWrites Include="$(GeneratedFilePath)"/>
+        </ItemGroup>
+        <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)" WriteOnlyWhenDifferent="true" Overwrite="true"/>
+    </Target>
+
+    <Target Name="RunAfterBuild" AfterTargets="Build">
+        <Exec Command="$(SolutionDir)\AmongUsDevKit\bin\Release\net8.0\AmongUsDevKit.exe enhance &quot;$(TargetPath)&quot; &quot;$(UnityGameDirectory)\BepInEx\plugins\$(PluginName).dll&quot; &quot;$(UnityEngineProjectDirectory)&quot; &quot;$(UnityGameDirectory)\BepInEx\interop&quot; &quot;$(UnityGameDirectory)\BepInEx\core&quot; &quot;$(UnityGameDirectory)\dotnet&quot; -v -u" />
+    </Target>
+</Project>

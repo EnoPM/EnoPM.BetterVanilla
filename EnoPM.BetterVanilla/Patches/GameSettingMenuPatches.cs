@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Patches;
+/*
 
 [HarmonyPatch(typeof(GameSettingMenu))]
 internal static class GameSettingMenuPatches
@@ -37,3 +38,5 @@ internal static class GameSettingMenuPatches
         tabNum = 2;
     }
 }
+
+*/

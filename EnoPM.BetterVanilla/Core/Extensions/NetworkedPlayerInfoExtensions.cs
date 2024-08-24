@@ -1,5 +1,4 @@
 ﻿using System;
-using EnoPM.BetterVanilla.Patches;
 using UnityEngine;
 
 namespace EnoPM.BetterVanilla.Core.Extensions;
@@ -13,7 +12,7 @@ internal static class NetworkedPlayerInfoExtensions
         var shouldShowRolesAndTasks = (bool)ModSettings.Local.DisplayRolesAndTasksAfterDeath;
         var isHost = Utils.IsHost(info.Object);
         var isDisconnected = info.Disconnected;
-        var isCheater = info.Object && PlayerControlPatches.CheaterOwnerIds.Contains(info.Object.OwnerId);
+        var isCheater = info.Object && info.Object.IsCheater();
         var text = "<size=70%>";
         if (isCheater)
         {

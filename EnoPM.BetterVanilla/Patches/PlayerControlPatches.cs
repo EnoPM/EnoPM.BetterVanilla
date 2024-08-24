@@ -16,8 +16,6 @@ namespace EnoPM.BetterVanilla.Patches;
 [HarmonyPatch(typeof(PlayerControl))]
 internal static class PlayerControlPatches
 {
-    internal static readonly List<int> CheaterOwnerIds = [];
-    
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
     private static void FixedUpdatePostfix(PlayerControl __instance)
     {
@@ -31,7 +29,17 @@ internal static class PlayerControlPatches
 	    if (!__instance.AmOwner) return;
 	    __instance.gameObject.AddComponent<AutoTaskFinisher>();
     }
+    
+    [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.HandleRpc))]
+    private static bool HandleRpcPrefix(PlayerControl __instance, byte callId, MessageReader reader)
+    {
+	    CheatsManager.HandleRPCBeforeCheck(__instance, callId, reader);
 
+	    //return !CheatsManager.ShouldCancelRpc(__instance, callId, reader);
+	    return true;
+    }
+
+    
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerControl.HandleRpc))]
     private static void HandleRpcPostfix(PlayerControl __instance, byte callId, MessageReader reader)
     {
@@ -39,15 +47,6 @@ internal static class PlayerControlPatches
         {
             case CustomRpcManager.RpcId:
                 __instance.HandleCustomRpc(reader);
-                break;
-            case ChatControllerPatches.PrivateMessageRpcId:
-                ChatControllerPatches.HandlePrivateMessageRpc(__instance, reader);
-                break;
-            case 85:
-                if (!CheaterOwnerIds.Contains(__instance.OwnerId))
-                {
-                    CheaterOwnerIds.Add(__instance.OwnerId);
-                }
                 break;
         }
     }
