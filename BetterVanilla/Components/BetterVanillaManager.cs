@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components.Menu;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
@@ -51,6 +53,22 @@ public sealed class BetterVanillaManager : MonoBehaviour
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
     }
+    
+    private void Start()
+    {
+        this.StartCoroutine(CoStart());
+    }
+
+    private IEnumerator CoStart()
+    {
+        while (!ModManager.InstanceExists)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        
+        ModManager.Instance.ShowModStamp();
+        Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
+    }
 
     public BetterPlayerControl GetPlayerById(byte playerId)
     {
@@ -60,11 +78,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public BetterPlayerControl GetPlayerByOwnerId(int ownerId)
     {
         return AllPlayers.Find(x => x.Player && x.Player.OwnerId == ownerId);
-    }
-    
-    private void Start()
-    {
-        Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
     }
 
     private static TType AttachManager<TType>() where TType : new()

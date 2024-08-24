@@ -42,11 +42,12 @@ public static partial class PlayerControlRpcExtensions
 
     public static void CustomSpawnHandshake(this PlayerControl pc)
     {
+        if (!PlayerControl.LocalPlayer) return;
         var localOptions = BetterVanillaManager.Instance.LocalOptions;
-        pc.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
+        PlayerControl.LocalPlayer.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
         if (!pc.AmOwner && !localOptions.ForcedTeamAssignment.IsLocked())
         {
-            pc.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
     }
 

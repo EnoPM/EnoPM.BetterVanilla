@@ -31,7 +31,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!Player.Data || !Player.cosmetics)
+        while (!Player || !Player.Data || !Player.cosmetics || !Player.cosmetics.nameText)
         {
             yield return null;
         }
@@ -50,7 +50,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void Update()
     {
-        if (Player.Data && Player.cosmetics)
+        if (Player.Data && Player.cosmetics && InfosText)
         {
             var isActive = ConditionUtils.AmDead() || Player.AmOwner || !ConditionUtils.IsGameStarted();
             InfosText.gameObject.SetActive(isActive);
