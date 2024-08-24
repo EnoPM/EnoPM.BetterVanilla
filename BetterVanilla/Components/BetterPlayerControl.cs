@@ -12,8 +12,6 @@ public class BetterPlayerControl : MonoBehaviour
 {
     public PlayerControl Player { get; private set; }
     public TextMeshPro InfosText { get; private set; }
-    
-    private int _previousColorId = -1;
 
     private void Awake()
     {
@@ -54,12 +52,6 @@ public class BetterPlayerControl : MonoBehaviour
     {
         if (Player.Data && Player.cosmetics)
         {
-            if (Player.cosmetics.ColorId != _previousColorId)
-            {
-                _previousColorId = Player.cosmetics.ColorId;
-                Player.cosmetics.nameText.color = Palette.PlayerColors[Player.cosmetics.ColorId];
-            }
-            
             var isActive = ConditionUtils.AmDead() || Player.AmOwner || !ConditionUtils.IsGameStarted();
             InfosText.gameObject.SetActive(isActive);
             if (isActive)
