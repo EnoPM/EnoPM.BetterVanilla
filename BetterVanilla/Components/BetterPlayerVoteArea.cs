@@ -32,7 +32,7 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!VoteArea || !VoteArea.NameText)
+        while (!VoteArea || !VoteArea.NameText || MeetingHud.Instance.state == MeetingHud.VoteStates.Animating)
         {
             yield return new WaitForEndOfFrame();
         }
