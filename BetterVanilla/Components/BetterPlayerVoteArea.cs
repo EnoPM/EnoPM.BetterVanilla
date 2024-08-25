@@ -32,7 +32,7 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!VoteArea || !VoteArea.NameText || MeetingHud.Instance.state == MeetingHud.VoteStates.Animating)
+        while (!VoteArea || !VoteArea.NameText)
         {
             yield return new WaitForEndOfFrame();
         }
@@ -41,11 +41,18 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
         var pos = InfosText.transform.localPosition;
         pos.y = 0.2f;
         InfosText.transform.localPosition = pos;
+        InfosText.SetText(string.Empty);
     }
 
     private void Update()
     {
         if (!InfosText) return;
+        if (MeetingHud.Instance.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
+        {
+            InfosText.gameObject.SetActive(false);
+            return;
+            
+        }
         var player = BetterVanillaManager.Instance.AllPlayers.Find(x => x.Player.PlayerId == VoteArea.TargetPlayerId);
         if (!player)
         {
@@ -53,5 +60,6 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
             return;
         }
         InfosText.SetText(player.GetBetterInfosText());
+        InfosText.gameObject.SetActive(true);
     }
 }

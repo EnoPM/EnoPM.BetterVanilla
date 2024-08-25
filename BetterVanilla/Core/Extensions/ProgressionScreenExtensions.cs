@@ -13,7 +13,7 @@ public static class ProgressionScreenExtensions
         yield return Effects.Wait(0.2f);
         if (((int)xpGainedResult.MaxLevel != (int)DataManager.Player.Stats.Level || (int)xpGainedResult.OldLevel != (int)xpGainedResult.NewLevel) && xpGainedResult.GrantedXp > 0U)
         {
-            Ls.LogInfo($"Running vanilla AnimateXpAndLevelUp");
+            Ls.LogInfo("Running vanilla AnimateXpAndLevelUp");
             yield return progressionScreen.AnimateXpAndLevelUp(xpGainedResult);
         }
         else
@@ -23,6 +23,7 @@ public static class ProgressionScreenExtensions
             progressionScreen.InitModdedProgressionScreen();
             if (xpManager.MaxLevel != DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel && xpManager.GrantedXp > 0)
             {
+                xpManager.ApplyCache();
                 yield return progressionScreen.CoAnimateXpAndLevelUp();
             }
         }
@@ -132,6 +133,6 @@ public static class ProgressionScreenExtensions
             })));
             yield return progressionScreen.AnimateXpBarFill(0U, newXpAmount);
         }
-        xpManager.ApplyAndClearCache();
+        xpManager.ClearCache();
     }
 }

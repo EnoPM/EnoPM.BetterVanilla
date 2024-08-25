@@ -55,13 +55,17 @@ public sealed class XpManager
         LevelledUp = OldXpAmount + GrantedXp >= XpRequiredToLevelUp;
     }
 
-    public void ApplyAndClearCache()
+    public void ApplyCache()
     {
-        Ls.LogMessage($"{nameof(XpManager)} {nameof(ApplyAndClearCache)}");
         var db = BetterVanillaManager.Instance.Database;
         db.Data.PlayerExp = NewXp;
         db.Data.PlayerLevel = CalculateLevel(NewXp);
         db.Save();
+    }
+
+    public void ClearCache()
+    {
+        Ls.LogMessage($"{nameof(XpManager)} {nameof(ClearCache)}");
         
         OldLevel = 0;
         OldXpAmount = 0;
