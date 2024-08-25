@@ -6,9 +6,9 @@
         <RootNamespace>BetterVanilla</RootNamespace>
         <PluginName>BetterVanilla</PluginName>
         <PluginGuid>bettervanilla.eno.pm</PluginGuid>
-        <PluginVersion>1.1.1</PluginVersion>
+        <PluginVersion>1.1.2</PluginVersion>
         <AmongUsGameLibsVersion>2024.8.13</AmongUsGameLibsVersion>
-        <Description>Enhanced Among Us experience</Description>
+        <Description>Enhanced Among Us Vanilla experience</Description>
         <GameDirectoryPath>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Latest\</GameDirectoryPath>
     </PropertyGroup>
 
@@ -33,8 +33,7 @@
     <ItemGroup>
         <PackageReference Include="AmongUs.GameLibs.Steam" Version="$(AmongUsGameLibsVersion)" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"/>
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.692"/>
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.697" />
     </ItemGroup>
 
     <ItemGroup>

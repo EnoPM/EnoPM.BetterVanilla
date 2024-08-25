@@ -48,7 +48,7 @@ public sealed class HomeTab : MonoBehaviour
     {
         finishTaskButton.interactable = IsFinishTasksButtonInteractable();
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        var canZoom = zoomBehaviour && ConditionUtils.AmDead();
+        var canZoom = zoomBehaviour && ConditionUtils.AmDead() && !ConditionUtils.AmImpostor();
         zoomInButton.interactable = canZoom && zoomBehaviour.CanIncrement(ZoomIncrementValue);
         zoomOutButton.interactable = canZoom && zoomBehaviour.CanDecrement(ZoomIncrementValue);
         if (zoomBehaviour)

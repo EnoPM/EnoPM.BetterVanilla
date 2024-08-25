@@ -545,7 +545,6 @@ internal sealed class MonoBehaviourInterop(InteropMaker interopMaker)
     private static bool IsUnitySerializedField(FieldDefinition field)
     {
         if (field.IsLiteral || field.IsStatic || field.IsPrivate || field.IsFamilyOrAssembly || field.IsInitOnly) return false;
-        if (field.HasCustomAttributes && field.HasCustomAttribute("AmongUsDevKit.Api.DoNotInteropThisFieldAttribute")) return false;
         return (!field.HasCustomAttributes || !field.HasCustomAttribute("System.NonSerializedAttribute")) && field.IsPublic;
     }
 
