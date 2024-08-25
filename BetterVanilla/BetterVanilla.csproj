@@ -33,8 +33,7 @@
     <ItemGroup>
         <PackageReference Include="AmongUs.GameLibs.Steam" Version="$(AmongUsGameLibsVersion)" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"/>
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.692"/>
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.697" />
     </ItemGroup>
 
     <ItemGroup>

@@ -128,10 +128,6 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
 
     public float GetZoomValue()
     {
-        if (IsMeeting)
-        {
-            return CachedCameraOrthographicSize;
-        }
-        return CameraOrthographicSize;
+        return IsMeeting ? CachedCameraOrthographicSize : CameraOrthographicSize;
     }
 }
