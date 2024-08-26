@@ -45,23 +45,30 @@ public sealed class XpManager
 
     public void SetupCache(ProgressionManager.XpGrantResult xpGrantResult)
     {
-        OldXpAmount = BetterVanillaManager.Instance.Database.Data.PlayerExp;
-        OldLevel = CalculateLevel(OldXpAmount);
+        var currentXp = BetterVanillaManager.Instance.Database.Data.PlayerExp;
+        var currentLevel = CalculateLevel(currentXp);
+        var xpRequiredToCurrentLevel = CalculateXpForLevel(currentLevel);
+        OldXpAmount = currentXp - xpRequiredToCurrentLevel;
+        OldLevel = currentLevel;
         GrantedXp = xpGrantResult.GrantedXp;
         NewXp = OldXpAmount + GrantedXp;
         NewLevel = OldLevel == MaxLevel ? OldLevel : OldLevel + 1;
-        XpRequiredToLevelUp = CalculateXpForLevel(NewLevel);
-        XpRequiredToLevelUpNextLevel = CalculateXpForLevel(NewLevel + 1);
+        XpRequiredToLevelUp = CalculateXpForLevel(NewLevel) - xpRequiredToCurrentLevel;
+        XpRequiredToLevelUpNextLevel = CalculateXpForLevel(NewLevel + 1) - xpRequiredToCurrentLevel;
         LevelledUp = OldXpAmount + GrantedXp >= XpRequiredToLevelUp;
     }
 
-    public void ApplyAndClearCache()
+    public void ApplyCache()
     {
-        Ls.LogMessage($"{nameof(XpManager)} {nameof(ApplyAndClearCache)}");
         var db = BetterVanillaManager.Instance.Database;
-        db.Data.PlayerExp = NewXp;
+        db.Data.PlayerExp += GrantedXp;
         db.Data.PlayerLevel = CalculateLevel(NewXp);
         db.Save();
+    }
+
+    public void ClearCache()
+    {
+        Ls.LogMessage($"{nameof(XpManager)} {nameof(ClearCache)}");
         
         OldLevel = 0;
         OldXpAmount = 0;

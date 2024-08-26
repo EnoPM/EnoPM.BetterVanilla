@@ -59,14 +59,16 @@ public sealed class HomeTab : MonoBehaviour
 
     private static void OnZoomInButtonClick()
     {
-        if (!BetterVanillaManager.Instance.ZoomBehaviour || !BetterVanillaManager.Instance.ZoomBehaviour.CanIncrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
-        BetterVanillaManager.Instance.ZoomBehaviour.Increment(ZoomIncrementValue);
+        var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
+        if (!zoomBehaviour || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
+        zoomBehaviour.Increment(ZoomIncrementValue);
     }
 
     private static void OnZoomOutButtonClick()
     {
-        if (!BetterVanillaManager.Instance.ZoomBehaviour || !BetterVanillaManager.Instance.ZoomBehaviour.CanDecrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
-        BetterVanillaManager.Instance.ZoomBehaviour.Decrement(ZoomIncrementValue);
+        var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
+        if (!zoomBehaviour || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
+        zoomBehaviour.Decrement(ZoomIncrementValue);
     }
 
     public void RefreshUnlockedFeatures()
