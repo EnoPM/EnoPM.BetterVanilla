@@ -2,7 +2,7 @@
 
 namespace BetterVanilla.Core.Extensions;
 
-public static class MessageWriterPatches
+public static class MessageWriterExtensions
 {
     public static void SendImmediately(this MessageWriter writer)
     {

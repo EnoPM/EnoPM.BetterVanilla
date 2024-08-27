@@ -20,7 +20,7 @@ public static class MapBehaviourExtensions
     
     public static void BetterFixedUpdate(this MapBehaviour mapBehaviour)
     {
-        if (MapMode != MapOptions.Modes.Normal || !BetterVanillaManager.Instance.LocalOptions.DisplayPlayersInMapAfterDeath.Value || ConditionUtils.AmAlive() || MeetingHud.Instance)
+        if (MapMode != MapOptions.Modes.Normal || !BetterVanillaManager.Instance.LocalOptions.DisplayPlayersInMapAfterDeath.Value || MeetingHud.Instance || ConditionUtils.AmAlive() || ConditionUtils.AmImpostor())
         {
             foreach (var kvp in AllPlayers)
             {

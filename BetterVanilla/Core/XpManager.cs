@@ -62,7 +62,7 @@ public sealed class XpManager
     {
         var db = BetterVanillaManager.Instance.Database;
         db.Data.PlayerExp += GrantedXp;
-        db.Data.PlayerLevel = CalculateLevel(NewXp);
+        db.Data.PlayerLevel = CalculateLevel(db.Data.PlayerExp);
         db.Save();
     }
 

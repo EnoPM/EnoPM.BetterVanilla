@@ -109,7 +109,7 @@ public sealed class BetterRoleAssignments
             var playerId = player.PlayerId;
             var playerPreference = GetPreferenceForPlayer(player);
 
-            int weight = BaseWeight; // Poids de base
+            var weight = BaseWeight; // Poids de base
 
             // Ajuster le poids en fonction des préférences du joueur
             if (!ignorePlayerPreferences && playerPreference != TeamPreferences.Both && playerPreference != teamPreference)
