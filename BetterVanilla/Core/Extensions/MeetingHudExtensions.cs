@@ -29,8 +29,6 @@ public static class MeetingHudExtensions
 
     public static void CastVote(byte voterId, byte votedId)
     {
-        Ls.LogMessage($"Casted vote, voter: {voterId}, voted: {votedId}");
-        
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         var voted = BetterVanillaManager.Instance.GetPlayerById(votedId);
 
@@ -39,8 +37,6 @@ public static class MeetingHudExtensions
             Ls.LogError($"Unable to find voter by id {voterId}");
             return;
         }
-        
-        Ls.LogMessage($"Casted vote, voter: {voter.Player.Data.PlayerName}, voted: {voted?.Player?.Data?.PlayerName}");
         
         LogVote(voter, voted);
 
