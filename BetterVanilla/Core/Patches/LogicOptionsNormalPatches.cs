@@ -10,7 +10,7 @@ internal static class LogicOptionsNormalPatches
     [HarmonyPostfix, HarmonyPatch(nameof(LogicOptionsNormal.GetAnonymousVotes))]
     private static void GetAnonymousVotesPostfix(ref bool __result)
     {
-        if (__result && ConditionUtils.AmDead() && BetterVanillaManager.Instance.LocalOptions.DisplayVoteColorsAfterDeath.Value)
+        if (__result && LocalConditions.ShouldRevealVoteColors())
         {
             __result = false;
         }

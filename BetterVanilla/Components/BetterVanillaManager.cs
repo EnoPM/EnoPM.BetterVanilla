@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Compiler;
 using BetterVanilla.Components.Menu;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
+using HarmonyLib;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -15,6 +17,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
 {
     public static BetterVanillaManager Instance { get; private set; }
 
+    private readonly Harmony _harmony = new (GeneratedProps.Guid);
     public readonly List<BetterPlayerControl> AllPlayers = [];
     public readonly Dictionary<int, TeamPreferences> AllTeamPreferences = [];
     public readonly Dictionary<int, TeamPreferences> AllForcedTeamAssignments = [];
@@ -52,10 +55,13 @@ public sealed class BetterVanillaManager : MonoBehaviour
         uiBundle.Unload(false);
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
+        
+        Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is loaded!");
     }
     
     private void Start()
     {
+        _harmony.PatchAll();
         this.StartCoroutine(CoStart());
     }
 
@@ -68,6 +74,8 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         ModManager.Instance.ShowModStamp();
         Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
+        
+        Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is started!");
     }
 
     public BetterPlayerControl GetPlayerById(byte playerId)

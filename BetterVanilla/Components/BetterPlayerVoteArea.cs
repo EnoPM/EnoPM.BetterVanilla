@@ -45,7 +45,7 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
 
     private void Update()
     {
-        if (!InfosText) return;
+        if (!InfosText || !MeetingHud.Instance) return;
         if (MeetingHud.Instance.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
         {
             InfosText.gameObject.SetActive(false);

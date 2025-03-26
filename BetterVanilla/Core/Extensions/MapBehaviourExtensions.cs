@@ -17,18 +17,23 @@ public static class MapBehaviourExtensions
     {
         MapMode = opts.Mode;
     }
+
+    private static void DisableAllPlayerIcons()
+    {
+        foreach (var (_, sr) in AllPlayers)
+        {
+            if (!sr) continue;
+            sr.gameObject.SetActive(false);
+        }
+    }
+
+    private static readonly List<MapOptions.Modes> AllowedModes = [MapOptions.Modes.Normal, MapOptions.Modes.Sabotage];
     
     public static void BetterFixedUpdate(this MapBehaviour mapBehaviour)
     {
-        if (MapMode != MapOptions.Modes.Normal || !BetterVanillaManager.Instance.LocalOptions.DisplayPlayersInMapAfterDeath.Value || MeetingHud.Instance || ConditionUtils.AmAlive() || ConditionUtils.AmImpostor())
+        if (!LocalConditions.ShouldRevealPlayerPositionsInMap(MapMode))
         {
-            foreach (var kvp in AllPlayers)
-            {
-                if (kvp.Value)
-                {
-                    kvp.Value.gameObject.SetActive(false);
-                }
-            }
+            DisableAllPlayerIcons();
             return;
         }
         if (!ShipStatus.Instance) return;
@@ -49,7 +54,7 @@ public static class MapBehaviourExtensions
                 }
                 sr.material.SetColor(OutlineColor, Color.white);
             }
-            sr.gameObject.SetActive(true);
+            sr.gameObject.SetActive(!pc.Data.Disconnected);
             var material = sr.material;
             material.SetFloat(OutlineSize, pc.Data.Role && pc.Data.Role.IsImpostor ? 1f : 0f);
             sr.color = pc.Data.IsDead || pc.Data.Disconnected ? Palette.DisabledClear : Palette.EnabledColor;

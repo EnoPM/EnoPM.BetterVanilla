@@ -52,7 +52,7 @@ public class BetterPlayerControl : MonoBehaviour
     {
         if (Player.Data && Player.cosmetics && InfosText)
         {
-            var isActive = ConditionUtils.AmDead() || Player.AmOwner || !ConditionUtils.IsGameStarted();
+            var isActive = LocalConditions.AmDead() || Player.AmOwner || !LocalConditions.IsGameStarted();
             InfosText.gameObject.SetActive(isActive);
             if (isActive)
             {
@@ -85,55 +85,61 @@ public class BetterPlayerControl : MonoBehaviour
         return (done, total);
     }
 
+    private void SetupCheaterInfoText(ref List<string> infos)
+    {
+        if (!IsCheater()) return;
+        infos.Add(ColorUtils.ColoredString(ColorUtils.CheaterColor, "Cheater"));
+    }
+
+    private void SetupHostOrDisconnectedInfoText(ref List<string> infos)
+    {
+        if (AmongUsClient.Instance && Player.OwnerId == AmongUsClient.Instance.HostId)
+        {
+            infos.Add(ColorUtils.ColoredString(ColorUtils.HostColor, "Host"));
+        }
+        else if (Player.Data.Disconnected)
+        {
+            infos.Add(ColorUtils.ColoredString(ColorUtils.ImpostorColor, "Disconnected"));
+        }
+    }
+
+    private void SetupRoleOrTaskInfoText(ref List<string> infos)
+    {
+        if (!LocalConditions.ShouldShowRolesAndTasks(Player)) return;
+        var role = Player.Data.Role;
+        if (!role) return;
+        if (role.IsImpostor)
+        {
+            var roleName = Player.Data.IsDead ? StringNames.Impostor : role.StringName;
+            infos.Add(ColorUtils.ColoredString(ColorUtils.ImpostorColor, TranslationController.Instance.GetString(roleName)));
+        }
+        else
+        {
+            var (done, total) = GetTasksCount();
+            var half = Mathf.RoundToInt(total / 2f);
+            var color = ColorUtils.NoTasksDoneColor;
+            if (done > 0 && done < half)
+            {
+                color = ColorUtils.LessThanHalfTasksDoneColor;
+            }
+            else if (done >= total)
+            {
+                color = ColorUtils.AllTasksDoneColor;
+            }
+            else if (done > 0 && done >= half)
+            {
+                color = ColorUtils.MoreThanHalfTasksDoneColor;
+            }
+            infos.Add(ColorUtils.ColoredString(color, $"{done}/{total}"));
+        }
+    }
+
     public string GetBetterInfosText()
     {
-        var role = Player.Data.Role;
-        var amDead = ConditionUtils.AmDead();
-        var shouldShowRolesAndTasks = Player == PlayerControl.LocalPlayer || BetterVanillaManager.Instance.LocalOptions.DisplayRolesAndTasksAfterDeath.Value;
-        var isHost = Player.OwnerId == AmongUsClient.Instance.HostId;
-        var isDisconnected = Player.Data.Disconnected;
-        var isCheater = IsCheater();
-        var texts = new List<string>();
-        if (isCheater)
-        {
-            texts.Add(ColorUtils.ColoredString(ColorUtils.CheaterColor, "Cheater"));
-        }
-        if (isHost)
-        {
-            texts.Add(ColorUtils.ColoredString(ColorUtils.HostColor, "Host"));
-        }
-        else if (isDisconnected)
-        {
-            texts.Add(ColorUtils.ColoredString(ColorUtils.ImpostorColor, "Disconnected"));
-        }
-        if (shouldShowRolesAndTasks && role && ConditionUtils.IsGameStarted() && (amDead || Player == PlayerControl.LocalPlayer))
-        {
-            if (role.IsImpostor)
-            {
-                texts.Add(ColorUtils.ColoredString(ColorUtils.ImpostorColor, TranslationController.Instance.GetString(StringNames.Impostor)));
-            }
-            else
-            {
-                var (done, total) = GetTasksCount();
-                var half = Mathf.RoundToInt(total / 2f);
-                var color = ColorUtils.NoTasksDoneColor;
-                if (done > 0 && done < half)
-                {
-                    color = ColorUtils.LessThanHalfTasksDoneColor;
-                }
-                else if (done >= total)
-                {
-                    color = ColorUtils.AllTasksDoneColor;
-                }
-                else if (done > 0 && done >= half)
-                {
-                    color = ColorUtils.MoreThanHalfTasksDoneColor;
-                }
-                texts.Add(ColorUtils.ColoredString(color, $"{done}/{total}"));
-            }
-        }
-
-
-        return $"<size=70%>{string.Join(" - ", texts)}</size>";
+        var infos = new List<string>();
+        SetupCheaterInfoText(ref infos);
+        SetupHostOrDisconnectedInfoText(ref infos);
+        SetupRoleOrTaskInfoText(ref infos);
+        return $"<size=70%>{string.Join(" - ", infos)}</size>";
     }
 }

@@ -2,8 +2,8 @@
 using System.Collections;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
-using BetterVanilla.Core.Helpers;
 using Innersloth.Assets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -101,7 +101,7 @@ public sealed class SavedOutfitItem : MonoBehaviour
 
     private void OnClick()
     {
-        if (ConditionUtils.IsGameStarted()) return;
+        if (LocalConditions.IsGameStarted()) return;
         var player = PlayerControl.LocalPlayer;
         if (!player || !player.Data) return;
         DataManager.Player.Customization.Hat = OutfitData.Hat;

@@ -21,7 +21,7 @@ internal static class RoleManagerPatches
         {
             manager.AllTeamPreferences[PlayerControl.LocalPlayer.OwnerId] = manager.LocalOptions.TeamPreference.ParseValue(TeamPreferences.Both);
         }
-        if (!manager.LocalOptions.ForcedTeamAssignment.IsLocked())
+        if (LocalConditions.IsForcedTeamAssignmentAllowed())
         {
             manager.AllForcedTeamAssignments[PlayerControl.LocalPlayer.OwnerId] = manager.LocalOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both);
         }

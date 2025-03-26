@@ -30,7 +30,7 @@ public static partial class PlayerControlRpcExtensions
     {
         var localOptions = BetterVanillaManager.Instance.LocalOptions;
         pc.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
-        if (!localOptions.ForcedTeamAssignment.IsLocked())
+        if (LocalConditions.IsForcedTeamAssignmentAllowed())
         {
             pc.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
@@ -45,7 +45,7 @@ public static partial class PlayerControlRpcExtensions
         if (!PlayerControl.LocalPlayer) return;
         var localOptions = BetterVanillaManager.Instance.LocalOptions;
         PlayerControl.LocalPlayer.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
-        if (!pc.AmOwner && !localOptions.ForcedTeamAssignment.IsLocked())
+        if (!pc.AmOwner && LocalConditions.IsForcedTeamAssignmentAllowed())
         {
             PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }

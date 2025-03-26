@@ -15,7 +15,32 @@ public static partial class PlayerControlRpcExtensions
         PrivateChatMessage,
         ShareHostOption,
         BulkShareHostToClientSettingChange,
+        SetMeetingVote
     }
+
+    #region MeetingVotes
+
+    public static void RpcSetMeetingVote(this PlayerControl sender, byte voterId, byte votedId)
+    {
+        if (AmongUsClient.Instance.AmClient)
+        {
+            MeetingHudExtensions.CastVote(voterId, votedId);
+        }
+        var writer = sender.StartRpcImmediately(RpcIds.SetMeetingVote);
+        writer.Write(voterId);
+        writer.Write(votedId);
+        writer.SendImmediately();
+    }
+
+    [RpcHandler(RpcIds.SetMeetingVote)]
+    private static void SetMeetingVoteHandler(this PlayerControl sender, MessageReader reader)
+    {
+        var voterId = reader.ReadByte();
+        var votedId = reader.ReadByte();
+        MeetingHudExtensions.CastVote(voterId, votedId);
+    }
+
+    #endregion
 
     #region TeamPreference
     

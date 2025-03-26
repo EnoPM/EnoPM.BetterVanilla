@@ -66,7 +66,7 @@ public static class PlayerControlExtensions
 
     public static bool CanFinishTask(this PlayerControl player)
     {
-        return player && player.Data && player.Data.IsDead && player.Data.Role && !player.Data.Role.IsImpostor && ConditionUtils.IsGameStarted();
+        return player && player.Data && player.Data.IsDead && player.Data.Role && !player.Data.Role.IsImpostor && LocalConditions.IsGameStarted();
     }
 
     public static IEnumerator CoBetterStart(this PlayerControl pc)

@@ -7,20 +7,20 @@ namespace BetterVanilla.Core.Patches;
 internal static class GameStartManagerPatches
 {
     private static int PlayersCount { get; set; }
-    
+
     [HarmonyPostfix, HarmonyPatch(nameof(GameStartManager.Start))]
     private static void StartPostfix()
     {
         BetterVanillaManager.Instance.Cheaters.SickoUsers.Clear();
         BetterVanillaManager.Instance.Cheaters.AumUsers.Clear();
     }
-    
+
     [HarmonyPostfix, HarmonyPatch(nameof(GameStartManager.ReallyBegin))]
     private static void ReallyBeginPostfix()
     {
         PlayersCount = PlayerControl.AllPlayerControls.Count;
     }
-    
+
     [HarmonyPrefix, HarmonyPatch(nameof(GameStartManager.Update))]
     private static bool UpdatePrefix(GameStartManager __instance)
     {
@@ -33,11 +33,9 @@ internal static class GameStartManagerPatches
         {
             PlayersCount = __instance.LastPlayerCount;
         }
-        var disableRequirementOption = BetterVanillaManager.Instance.LocalOptions.DisableGameStartRequirement;
-        var playerRequirementDisabled = disableRequirementOption.IsLocked() || !disableRequirementOption.Value;
 
         var oldMinPlayers = __instance.MinPlayers;
-        __instance.MinPlayers = playerRequirementDisabled ? 4 : 1;
+        __instance.MinPlayers = LocalConditions.ShouldDisableGameStartRequirement() ? 1 : 4;
         if (oldMinPlayers != __instance.MinPlayers)
         {
             __instance.LastPlayerCount--;

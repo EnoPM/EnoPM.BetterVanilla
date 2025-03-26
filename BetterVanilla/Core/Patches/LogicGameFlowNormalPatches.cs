@@ -1,5 +1,4 @@
-﻿using BetterVanilla.Components;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
 
@@ -10,7 +9,6 @@ internal static class LogicGameFlowNormalPatches
     [HarmonyPatch(nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
     private static bool ShouldCheckForEndGame()
     {
-        var option = BetterVanillaManager.Instance.LocalOptions.DisableEndGameChecks;
-        return option.IsLocked() || !option.Value;
+        return !LocalConditions.ShouldDisableGameEndRequirement();
     }
 }

@@ -6,8 +6,6 @@ namespace BetterVanilla.Core.Patches;
 [HarmonyPatch(typeof(MapBehaviour))]
 internal static class MapBehaviourPatches
 {
-    
-
     [HarmonyPostfix, HarmonyPatch(nameof(MapBehaviour.FixedUpdate))]
     private static void FixedUpdatePostfix(MapBehaviour __instance)
     {

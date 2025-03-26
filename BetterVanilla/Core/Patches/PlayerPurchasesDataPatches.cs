@@ -9,7 +9,7 @@ internal static class PlayerPurchasesDataPatches
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerPurchasesData.GetPurchase))]
     private static void GetPurchasePostfix(ref bool __result)
     {
-        if (BetterVanillaManager.Instance.LocalOptions.AllowModdedCosmetics.IsLocked() || !BetterVanillaManager.Instance.LocalOptions.AllowModdedCosmetics.Value)
+        if (!LocalConditions.ShouldUnlockModdedCosmetics())
         {
             return;
         }

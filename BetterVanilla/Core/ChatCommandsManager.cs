@@ -18,7 +18,7 @@ public sealed class ChatCommandsManager
         { "ban", BanCommandHandler },
         { "tp", TpCommandHandler },
         { "w", WhisperCommandHandler },
-        { "r", ReplyCommandHandler }
+        { "r", ReplyCommandHandler },
     };
 
     public bool IsChatCommand(string message)
@@ -75,7 +75,7 @@ public sealed class ChatCommandsManager
     
     private static bool TpCommandHandler(List<string> arguments)
     {
-        if (arguments.Count == 0 || ConditionUtils.AmDead() || MeetingHud.Instance) return false;
+        if (arguments.Count == 0 || !LocalConditions.AmDead() || MeetingHud.Instance) return false;
         var playerName = string.Join(" ", arguments);
         var target = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.Data.PlayerName.Equals(playerName));
         if (!target) return false;

@@ -1,6 +1,6 @@
 ﻿using System;
 using BetterVanilla.Components.BaseComponents;
-using BetterVanilla.Core.Helpers;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Options;
 using TMPro;
 using UnityEngine;
@@ -73,7 +73,7 @@ public sealed class NumberSettingBehaviour : BaseSettingBehaviour
     private void OnIncreaseButtonClick()
     {
         if (Mathf.Approximately(Value, ValidRange.max)) return;
-        var multiplier = ValidRange.max - ValidRange.min >= IncrementMultiplier * Increment && ConditionUtils.IsIncrementMultiplierKeyPressed() ? IncrementMultiplier : 1;
+        var multiplier = ValidRange.max - ValidRange.min >= IncrementMultiplier * Increment && LocalConditions.IsIncrementMultiplierKeyPressed() ? IncrementMultiplier : 1;
         Value = ValidRange.Clamp(Value + Increment * multiplier);
         UpdateOptionValue();
         UpdateValueText();
@@ -83,7 +83,7 @@ public sealed class NumberSettingBehaviour : BaseSettingBehaviour
     private void OnDecreaseButtonClick()
     {
         if (Mathf.Approximately(Value, ValidRange.min)) return;
-        var multiplier = ValidRange.max - ValidRange.min >= IncrementMultiplier * Increment && ConditionUtils.IsIncrementMultiplierKeyPressed() ? IncrementMultiplier : 1;
+        var multiplier = ValidRange.max - ValidRange.min >= IncrementMultiplier * Increment && LocalConditions.IsIncrementMultiplierKeyPressed() ? IncrementMultiplier : 1;
         Value = ValidRange.Clamp(Value - Increment * multiplier);
         UpdateOptionValue();
         UpdateValueText();

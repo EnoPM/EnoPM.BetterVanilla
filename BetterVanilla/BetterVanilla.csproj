@@ -6,8 +6,8 @@
         <RootNamespace>BetterVanilla</RootNamespace>
         <PluginName>BetterVanilla</PluginName>
         <PluginGuid>bettervanilla.eno.pm</PluginGuid>
-        <PluginVersion>1.1.4</PluginVersion>
-        <AmongUsGameLibsVersion>2024.8.13</AmongUsGameLibsVersion>
+        <PluginVersion>1.1.5</PluginVersion>
+        <AmongUsGameLibsVersion>2025.3.25</AmongUsGameLibsVersion>
         <Description>Enhanced Among Us Vanilla experience</Description>
         <GameDirectoryPath>C:\Program Files (x86)\Steam\steamapps\common\Among Us - Latest\</GameDirectoryPath>
     </PropertyGroup>

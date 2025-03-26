@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils;
-using BetterVanilla.Components;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
@@ -9,19 +8,18 @@ public static class EndGameNavigationExtensions
 {
     public static void SetupPlayAgain(this EndGameNavigation navigation)
     {
-        if (!BetterVanillaManager.Instance.LocalOptions.AutoPlayAgain.Value)
-        {
-            return;
-        }
+        if (!LocalConditions.ShouldAutoPlayAgain()) return;
         navigation.StartCoroutine(navigation.CoPlayAgain());
     }
 
     private static IEnumerator CoPlayAgain(this EndGameNavigation navigation)
     {
-        while (!navigation.PlayAgainButton.enabled)
+        while (!navigation.ContinueButton.activeSelf)
         {
             yield return new WaitForEndOfFrame();
         }
+        
+        yield return new WaitForSeconds(3f);
 
         var continueButton = navigation.ContinueButton.GetComponentInChildren<PassiveButton>();
         if (continueButton && continueButton.enabled)

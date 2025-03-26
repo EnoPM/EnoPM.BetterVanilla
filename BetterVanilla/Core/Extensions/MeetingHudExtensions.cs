@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BetterVanilla.Components;
-using BetterVanilla.Core.Helpers;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
@@ -18,6 +17,20 @@ public static class MeetingHudExtensions
 
     public static void BetterCastVote(this MeetingHud meetingHud, byte voterId, byte votedId)
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+        var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
+        if (!voter)
+        {
+            Ls.LogWarning($"Player {voterId} has not been found in BetterCastVote.");
+            return;
+        }
+        PlayerControl.LocalPlayer.RpcSetMeetingVote(voterId, votedId);
+    }
+
+    public static void CastVote(byte voterId, byte votedId)
+    {
+        Ls.LogMessage($"Casted vote, voter: {voterId}, voted: {votedId}");
+        
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         var voted = BetterVanillaManager.Instance.GetPlayerById(votedId);
 
@@ -26,6 +39,8 @@ public static class MeetingHudExtensions
             Ls.LogError($"Unable to find voter by id {voterId}");
             return;
         }
+        
+        Ls.LogMessage($"Casted vote, voter: {voter.Player.Data.PlayerName}, voted: {voted?.Player?.Data?.PlayerName}");
         
         LogVote(voter, voted);
 
@@ -40,9 +55,8 @@ public static class MeetingHudExtensions
 
     public static void BetterUpdate(this MeetingHud meetingHud)
     {
-        var localOptions = BetterVanillaManager.Instance.LocalOptions;
-        var shouldRevealVotes = localOptions.DisplayVotesAfterDeath.Value && ConditionUtils.AmDead();
-        var shouldRevealVoteColors = localOptions.DisplayVoteColorsAfterDeath.Value && ConditionUtils.AmDead();
+        var shouldRevealVotes = LocalConditions.ShouldRevealVotes();
+        var shouldRevealVoteColors = LocalConditions.ShouldRevealVoteColors();
         
         if (meetingHud.state is MeetingHud.VoteStates.Results or MeetingHud.VoteStates.Proceeding)
         {
@@ -120,10 +134,7 @@ public static class MeetingHudExtensions
     
     private static void LogVote(BetterPlayerControl voter, BetterPlayerControl suspect)
     {
-        var localOptions = BetterVanillaManager.Instance.LocalOptions;
-        if (ConditionUtils.AmDead() && localOptions.DisplayVoteColorsAfterDeath.Value && localOptions.DisplayVotesAfterDeath.Value)
-        {
-            Ls.LogMessage($"{voter.Player.Data.PlayerName} voted for {(suspect ? suspect.Player.Data.PlayerName : "skip")}");
-        }
+        if (!LocalConditions.ShouldRevealVotes() || !LocalConditions.ShouldRevealVoteColors()) return;
+        Ls.LogMessage($"{voter.Player.Data.PlayerName} voted for {(suspect ? suspect.Player.Data.PlayerName : "skip")}");
     }
 }

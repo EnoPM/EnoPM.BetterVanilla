@@ -2,6 +2,7 @@
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Compiler;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
 using TMPro;
@@ -48,7 +49,7 @@ public sealed class HomeTab : MonoBehaviour
     {
         finishTaskButton.interactable = IsFinishTasksButtonInteractable();
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        var canZoom = zoomBehaviour && ConditionUtils.AmDead() && !ConditionUtils.AmImpostor();
+        var canZoom = LocalConditions.CanZoom();
         zoomInButton.interactable = canZoom && zoomBehaviour.CanIncrement(ZoomIncrementValue);
         zoomOutButton.interactable = canZoom && zoomBehaviour.CanDecrement(ZoomIncrementValue);
         if (zoomBehaviour)
@@ -60,14 +61,14 @@ public sealed class HomeTab : MonoBehaviour
     private static void OnZoomInButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (!zoomBehaviour || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
+        if (!zoomBehaviour || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
         zoomBehaviour.Increment(ZoomIncrementValue);
     }
 
     private static void OnZoomOutButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (!zoomBehaviour || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || ConditionUtils.AmAlive()) return;
+        if (!zoomBehaviour || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
         zoomBehaviour.Decrement(ZoomIncrementValue);
     }
 
