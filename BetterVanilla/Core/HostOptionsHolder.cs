@@ -7,6 +7,7 @@ public sealed class HostOptionsHolder
 {
     private readonly HostCategory _category;
     
+    public readonly BoolHostOption AllowDeadVoteDisplay;
     public readonly BoolHostOption AllowTeamPreference;
     public readonly FloatHostOption PolusReactorCountdown;
 
@@ -14,6 +15,7 @@ public sealed class HostOptionsHolder
     {
         _category = new HostCategory("Better Vanilla");
 
+        AllowDeadVoteDisplay = _category.CreateBool("DeadVoteDisplayAllowed", "Allow realtime vote display", true);
         AllowTeamPreference = _category.CreateBool("TeamPreferenceAllowed", "Allow Team Preferences", true);
         PolusReactorCountdown = _category.CreateFloat("PolusReactorCountdown", "Polus Reactor Countdown", 60f, 1f, new FloatRange(15f, 120f), "0.0", false, NumberSuffixes.Seconds);
     }

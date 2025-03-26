@@ -1,12 +1,12 @@
 ![Logo](https://github.com/EnoPM/EnoPM.BetterVanilla/blob/master/Images/BetterVanillaLogo.png)
 
 # Installation (EN)
-- Download [BetterVanilla v1.1.5.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.1.5/BetterVanilla.v1.1.5.zip)
+- Download [BetterVanilla v1.1.6.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.1.6/BetterVanilla.v1.1.6.zip)
 - Extract the contents of the archive into the Among Us game folder (Steam or Epic Games).
 - Launch the Among Us game.
 
 # Installation (FR)
-- Télécharger [BetterVanilla v1.1.5.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.1.5/BetterVanilla.v1.1.5.zip)
+- Télécharger [BetterVanilla v1.1.6.zip](https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.1.6/BetterVanilla.v1.1.6.zip)
 - Extraire le contenu de l'archive dans le dossier du jeu Among Us (Steam ou Epic Games).
 - Lancer Among Us.
 

@@ -17,7 +17,7 @@ public static class MeetingHudExtensions
 
     public static void BetterCastVote(this MeetingHud meetingHud, byte voterId, byte votedId)
     {
-        if (!AmongUsClient.Instance.AmHost) return;
+        if (!AmongUsClient.Instance.AmHost || !BetterVanillaManager.Instance.HostOptions.AllowDeadVoteDisplay.GetBool()) return;
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         if (!voter)
         {
@@ -51,51 +51,61 @@ public static class MeetingHudExtensions
 
     public static void BetterUpdate(this MeetingHud meetingHud)
     {
-        var shouldRevealVotes = LocalConditions.ShouldRevealVotes();
-        var shouldRevealVoteColors = LocalConditions.ShouldRevealVoteColors();
-        
         if (meetingHud.state is MeetingHud.VoteStates.Results or MeetingHud.VoteStates.Proceeding)
         {
-            foreach (var vote in CachedVotes.Where(x => x.Renderer))
-            {
-                vote.Renderer.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
-                Object.Destroy(vote.Renderer);
-            }
+            DeleteAllCachedVoteSpreaders();
         }
         else
         {
-            var shouldUpdateColor = PreviousDisplayColorState != shouldRevealVoteColors;
-            if (shouldUpdateColor)
+            meetingHud.UpdateAllCachedVoteSpreaders();
+        }
+    }
+    
+    private static void DeleteAllCachedVoteSpreaders()
+    {
+        foreach (var vote in CachedVotes.Where(x => x.Renderer))
+        {
+            vote.Renderer.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
+            Object.Destroy(vote.Renderer);
+        }
+    }
+
+    private static void UpdateAllCachedVoteSpreaders(this MeetingHud meetingHud)
+    {
+        var shouldRevealVotes = LocalConditions.ShouldRevealVotes();
+        var shouldRevealVoteColors = LocalConditions.ShouldRevealVoteColors();
+        
+        var shouldUpdateColor = PreviousDisplayColorState != shouldRevealVoteColors;
+        if (shouldUpdateColor)
+        {
+            PreviousDisplayColorState = shouldRevealVoteColors;
+        }
+        if (meetingHud.SkippedVoting)
+        {
+            meetingHud.SkippedVoting.SetActive(shouldRevealVotes);
+        }
+        foreach (var vote in CachedVotes)
+        {
+            var created = false;
+            if (!vote.Renderer)
             {
-                PreviousDisplayColorState = shouldRevealVoteColors;
+                meetingHud.CreateBetterVoteIcon(vote);
+                created = true;
             }
-            if (meetingHud.SkippedVoting)
+            if ((shouldUpdateColor || created) && vote.Renderer)
             {
-                meetingHud.SkippedVoting.SetActive(shouldRevealVotes);
+                if (!shouldRevealVoteColors)
+                {
+                    PlayerMaterial.SetColors(Palette.DisabledGrey, vote.Renderer);
+                }
+                else
+                {
+                    PlayerMaterial.SetColors(vote.Voter.Player.Data.DefaultOutfit.ColorId, vote.Renderer);
+                }
             }
-            foreach (var vote in CachedVotes)
+            if (vote.Renderer)
             {
-                var created = false;
-                if (!vote.Renderer)
-                {
-                    meetingHud.CreateBetterVoteIcon(vote);
-                    created = true;
-                }
-                if ((shouldUpdateColor || created) && vote.Renderer)
-                {
-                    if (!shouldRevealVoteColors)
-                    {
-                        PlayerMaterial.SetColors(Palette.DisabledGrey, vote.Renderer);
-                    }
-                    else
-                    {
-                        PlayerMaterial.SetColors(vote.Voter.Player.Data.DefaultOutfit.ColorId, vote.Renderer);
-                    }
-                }
-                if (vote.Renderer)
-                {
-                    vote.Renderer.enabled = shouldRevealVotes;
-                }
+                vote.Renderer.enabled = shouldRevealVotes;
             }
         }
     }

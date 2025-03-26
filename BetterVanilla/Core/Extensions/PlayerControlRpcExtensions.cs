@@ -35,6 +35,7 @@ public static partial class PlayerControlRpcExtensions
     [RpcHandler(RpcIds.SetMeetingVote)]
     private static void SetMeetingVoteHandler(this PlayerControl sender, MessageReader reader)
     {
+        Ls.LogMessage($"[RPC CALLED] SetMeetingVoteHandler");
         var voterId = reader.ReadByte();
         var votedId = reader.ReadByte();
         MeetingHudExtensions.CastVote(voterId, votedId);
