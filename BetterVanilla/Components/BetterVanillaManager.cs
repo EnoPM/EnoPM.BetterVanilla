@@ -52,10 +52,15 @@ public sealed class BetterVanillaManager : MonoBehaviour
         MenuButton = AttachComponent<ModMenuButton>(uiBundle, "Assets/Ui/Components/ModMenuButton.prefab");
         Updater = AttachComponent<ModUpdater>(uiBundle, "Assets/Ui/Windows/ModUpdaterUi.prefab");
         Menu = AttachComponent<ModMenu>(uiBundle, "Assets/Ui/Windows/ModMenuUi.prefab");
-        VentSprite = uiBundle.LoadAsset<Sprite>("Assets/Sprites/Vent.png");
-        VentSprite.hideFlags = HideFlags.HideAndDontSave;
         
         uiBundle.Unload(false);
+        
+        var gameBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.game");
+        
+        VentSprite = gameBundle.LoadAsset<Sprite>("Assets/Sprites/Vent.png");
+        VentSprite.hideFlags = HideFlags.HideAndDontSave;
+        
+        gameBundle.Unload(false);
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
         
