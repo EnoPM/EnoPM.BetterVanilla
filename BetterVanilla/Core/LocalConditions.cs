@@ -94,4 +94,9 @@ public static class LocalConditions
     {
         return !Options.AllowModdedCosmetics.IsLocked() && Options.AllowModdedCosmetics.Value;
     }
+
+    public static bool ShouldRevealVentPositionsInMap()
+    {
+        return Options.DisplayVentsInMap.Value;
+    }
 }

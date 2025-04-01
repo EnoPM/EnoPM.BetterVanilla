@@ -6,6 +6,7 @@ namespace BetterVanilla.Core;
 
 public sealed class LocalOptionsHolder
 {
+    public readonly BoolLocalOption DisplayVentsInMap;
     public readonly BoolLocalOption DisplayRolesAndTasksAfterDeath;
     public readonly BoolLocalOption DisplayPlayersInMapAfterDeath;
     public readonly BoolLocalOption DisplayVotesAfterDeath;
@@ -24,6 +25,7 @@ public sealed class LocalOptionsHolder
     {
         var category = new LocalCategory("Local Settings");
 
+        DisplayVentsInMap = category.CreateBool("DisplayVentsInMap", "Display vents in map", true);
         DisplayRolesAndTasksAfterDeath = category.CreateBool("DisplayRolesAndTasksAfterDeath", "Display roles and tasks after death", true);
         DisplayPlayersInMapAfterDeath = category.CreateBool("DisplayPlayersInMapAfterDeath", "Display players in map after death", true);
         DisplayVotesAfterDeath = category.CreateBool("DisplayVotesAfterDeath", "Display votes after death", true);

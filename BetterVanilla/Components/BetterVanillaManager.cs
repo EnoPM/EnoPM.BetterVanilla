@@ -32,6 +32,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
     private ModUpdater Updater { get; set; }
     public ModMenu Menu { get; private set; }
     public ZoomBehaviourManager ZoomBehaviour { get; set; }
+    public Sprite VentSprite { get; private set; }
     
     private void Awake()
     {
@@ -51,6 +52,8 @@ public sealed class BetterVanillaManager : MonoBehaviour
         MenuButton = AttachComponent<ModMenuButton>(uiBundle, "Assets/Ui/Components/ModMenuButton.prefab");
         Updater = AttachComponent<ModUpdater>(uiBundle, "Assets/Ui/Windows/ModUpdaterUi.prefab");
         Menu = AttachComponent<ModMenu>(uiBundle, "Assets/Ui/Windows/ModMenuUi.prefab");
+        VentSprite = uiBundle.LoadAsset<Sprite>("Assets/Sprites/Vent.png");
+        VentSprite.hideFlags = HideFlags.HideAndDontSave;
         
         uiBundle.Unload(false);
 
