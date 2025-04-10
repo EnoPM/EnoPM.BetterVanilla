@@ -9,10 +9,14 @@ public static class ColorUtils
     public static readonly Color CheaterColor = Palette.ImpostorRed;
     public static readonly Color HostColor = Color.magenta;
     public static readonly Color ImpostorColor = Palette.ImpostorRed;
-    public static readonly Color NoTasksDoneColor = new(0.76f, 0.16f, 0.52f, 1f);
-    public static readonly Color LessThanHalfTasksDoneColor = new(0.79f, 0.40f, 0.63f, 1f);
-    public static readonly Color MoreThanHalfTasksDoneColor = new(0.9f, 0.76f, 0.78f, 1f);
-    public static readonly Color AllTasksDoneColor = new(0.34f, 1f, 0.69f, 1f);
+    private static readonly Color NoTasksDoneColor = new(0.76f, 0.16f, 0.52f, 1f);
+    private static readonly Color AllTasksDoneColor = new(0.34f, 1f, 0.69f, 1f);
+
+    public static Color TaskCountColor(int done, int total)
+    {
+        var percent = (float)done / total;
+        return Color.Lerp(NoTasksDoneColor, AllTasksDoneColor, percent);
+    }
     
     private static byte ToByte(float f)
     {

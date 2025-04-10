@@ -116,20 +116,7 @@ public class BetterPlayerControl : MonoBehaviour
         else
         {
             var (done, total) = GetTasksCount();
-            var half = Mathf.RoundToInt(total / 2f);
-            var color = ColorUtils.NoTasksDoneColor;
-            if (done > 0 && done < half)
-            {
-                color = ColorUtils.LessThanHalfTasksDoneColor;
-            }
-            else if (done >= total)
-            {
-                color = ColorUtils.AllTasksDoneColor;
-            }
-            else if (done > 0 && done >= half)
-            {
-                color = ColorUtils.MoreThanHalfTasksDoneColor;
-            }
+            var color = ColorUtils.TaskCountColor(done, total);
             infos.Add(ColorUtils.ColoredString(color, $"{done}/{total}"));
         }
     }

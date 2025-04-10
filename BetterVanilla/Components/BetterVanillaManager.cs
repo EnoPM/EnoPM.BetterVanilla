@@ -39,19 +39,19 @@ public sealed class BetterVanillaManager : MonoBehaviour
         if (Instance) throw new Exception($"{nameof(BetterVanillaManager)} must be a singleton");
         Instance = this;
         
-        Database = AttachManager<DatabaseManager>();
-        Features = AttachManager<FeaturesManager>();
-        ChatCommands = AttachManager<ChatCommandsManager>();
-        HostOptions = AttachManager<HostOptionsHolder>();
-        LocalOptions = AttachManager<LocalOptionsHolder>();
-        Cheaters = AttachManager<CheatersManager>();
-        Xp = AttachManager<XpManager>();
+        Database = new DatabaseManager();
+        Features = new FeaturesManager();
+        ChatCommands = new ChatCommandsManager();
+        HostOptions = new HostOptionsHolder();
+        LocalOptions = new LocalOptionsHolder();
+        Cheaters = new CheatersManager();
+        Xp = new XpManager();
 
         var uiBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.ui");
 
-        MenuButton = AttachComponent<ModMenuButton>(uiBundle, "Assets/Ui/Components/ModMenuButton.prefab");
-        Updater = AttachComponent<ModUpdater>(uiBundle, "Assets/Ui/Windows/ModUpdaterUi.prefab");
-        Menu = AttachComponent<ModMenu>(uiBundle, "Assets/Ui/Windows/ModMenuUi.prefab");
+        MenuButton = Instantiate(uiBundle.LoadComponent<ModMenuButton>("Assets/Ui/Components/ModMenuButton.prefab"), transform);
+        Updater = Instantiate(uiBundle.LoadComponent<ModUpdater>("Assets/Ui/Windows/ModUpdaterUi.prefab"), transform);
+        Menu = Instantiate(uiBundle.LoadComponent<ModMenu>("Assets/Ui/Windows/ModMenuUi.prefab"), transform);
         
         uiBundle.Unload(false);
         
@@ -94,16 +94,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public BetterPlayerControl GetPlayerByOwnerId(int ownerId)
     {
         return AllPlayers.Find(x => x.Player && x.Player.OwnerId == ownerId);
-    }
-
-    private static TType AttachManager<TType>() where TType : new()
-    {
-        return new TType();
-    }
-
-    private TComponent AttachComponent<TComponent>(AssetBundle bundle, string path) where TComponent : MonoBehaviour
-    {
-        return Instantiate(bundle.LoadComponent<TComponent>(path), transform);
     }
 
     private static void OnPlayerJoined(PlayerControl player)
