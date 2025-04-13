@@ -22,6 +22,7 @@ public sealed class HomeTab : MonoBehaviour
     public RectTransform finishTaskProgressBarContainer;
     public RectTransform finishTaskProgressBarRect;
     public TextMeshProUGUI finishTaskProgressBarText;
+    public Button sponsorButton;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public sealed class HomeTab : MonoBehaviour
         finishTaskButton.onClick.AddListener(new Action(OnFinishTasksButtonClick));
         zoomInButton.onClick.AddListener(new Action(OnZoomInButtonClick));
         zoomOutButton.onClick.AddListener(new Action(OnZoomOutButtonClick));
+        sponsorButton.onClick.AddListener(new Action(OnSponsorButtonClick));
         versionText.SetText($"v{GeneratedProps.Version}");
         zoomValueText.SetText("3.0x");
         submitFeatureCodeButton.interactable = false;
@@ -51,6 +53,11 @@ public sealed class HomeTab : MonoBehaviour
         {
             zoomValueText.SetText($"{zoomBehaviour.GetZoomValue()}x");
         }
+    }
+
+    private static void OnSponsorButtonClick()
+    {
+        Application.OpenURL("https://buymeacoffee.com/enopm");
     }
 
     private static void OnZoomInButtonClick()
