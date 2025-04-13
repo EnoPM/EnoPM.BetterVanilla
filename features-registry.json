@@ -7,5 +7,39 @@
     "81133C46C6DAACD12259989C7D8D385BE47AF65385F9C3D5BFAFEDD2A5C44FD0": ["seriesgone#6069"],
     "98F47935FFDEEDC0F716F87A5C332AA77222DF4EAF4FF61E1989EE95B1671B77": ["seriesgone#6069"],
     "FE3C8AB240748CE91A143E7E61CA6C3D0996D55C23F8F3A7BC42A47BB26B7514": ["seriesgone#6069"]
+  },
+  "task_rations": {
+    "SubmitScan": {
+      "min_duration": 8,
+      "max_duration": 10
+    },
+    "PrimeShields": {
+      "min_duration": 3,
+      "max_duration": 6
+    },
+    "FuelEngines": {
+      "duration": 35
+    },
+    "ChartCourse": {
+      "min_duration": 3,
+      "max_duration": 7
+    },
+    "StartReactor": {
+      "min_duration": 25,
+      "max_duration": 50
+    },
+    "SwipeCard": {
+      "min_duration": 2,
+      "max_duration": 12
+    },
+    "ClearAsteroids": {
+      "min_duration": 14,
+      "max_duration": 22
+    },
+    "UploadData": 24,
+    "InspectSample": {
+      "duration": 3,
+      "step_delay": 60
+    }
   }
 }
