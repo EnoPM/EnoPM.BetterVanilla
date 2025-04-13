@@ -4,6 +4,7 @@ using System.Linq;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using InnerNet;
 using UnityEngine;
@@ -102,7 +103,7 @@ public static class PlayerControlExtensions
             pc.RpcSetPet(DataManager.Player.Customization.Pet);
             pc.RpcSetHat(DataManager.Player.Customization.Hat);
             pc.RpcSetSkin(DataManager.Player.Customization.Skin);
-            if (DestroyableSingleton<HatManager>.Instance.GetHatById(DataManager.Player.Customization.Hat).BlocksVisors)
+            if (HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat).BlocksVisors)
             {
                 DataManager.Player.Customization.Visor = "visor_EmptyVisor";
             }

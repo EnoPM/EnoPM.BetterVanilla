@@ -40,12 +40,12 @@ public sealed class LocalOptionsHolder
         DisableGameStartRequirement = category.CreateBool("DisableGameStartRequirement", "Disable Start Game Player Requirement", false);
         ForcedTeamAssignment = category.CreateEnum("ForcedTeamAssignment", "Forced Team Assignment", TeamPreferences.Both);
         
-        AllowModdedCosmetics.LockWithPassword("BBB7513CC9488F1FFBCF53A294B3D15FACF4457BC6019B8200A48952232BCC59");
-        DisableAmDeadCheck.LockWithPassword("FD1C2CCC2801F102F08A0D72724813B8EF7BD8CBA50E145816AF9BFD917CF31E");
-        DisableAmImpostorCheck.LockWithPassword("FD1C2CCC2801F102F08A0D72724813B8EF7BD8CBA50E145816AF9BFD917CF31E");
-        DisableEndGameChecks.LockWithPassword("FD1C2CCC2801F102F08A0D72724813B8EF7BD8CBA50E145816AF9BFD917CF31E");
-        DisableGameStartRequirement.LockWithPassword("FD1C2CCC2801F102F08A0D72724813B8EF7BD8CBA50E145816AF9BFD917CF31E");
-        ForcedTeamAssignment.LockWithPassword("6C86869BCDDD51E006515334CCBD1CD2F374ADC7369D28F69C29E24D4D0B9EE0");
+        AllowModdedCosmetics.LockWithPassword("A617504DA5A04943DE0CF0C85FF2DA7B7C387C6B6D2950E1DF8CB8D0E4D69FCE");
+        DisableAmDeadCheck.LockWithPassword("A21B151BDA9AD098622868D3B7EBB5B0BB819EBD7C25B6504BDAAE9FF1FF8C0F");
+        DisableAmImpostorCheck.LockWithPassword("B640EC50173A2DAC2056F2926027D3BBDDEFB9A1468627A36164D4101519DDAA");
+        DisableEndGameChecks.LockWithPassword("81133C46C6DAACD12259989C7D8D385BE47AF65385F9C3D5BFAFEDD2A5C44FD0");
+        DisableGameStartRequirement.LockWithPassword("98F47935FFDEEDC0F716F87A5C332AA77222DF4EAF4FF61E1989EE95B1671B77");
+        ForcedTeamAssignment.LockWithPassword("FE3C8AB240748CE91A143E7E61CA6C3D0996D55C23F8F3A7BC42A47BB26B7514");
 
         TeamPreference.ValueChanged += OnTeamPreferenceValueChanged;
         ForcedTeamAssignment.ValueChanged += OnForcedTeamAssignmentValueChanged;

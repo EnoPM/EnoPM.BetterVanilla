@@ -22,4 +22,7 @@ public sealed class LocalData
 
     [JsonPropertyName("presets")]
     public List<LocalPresetData> Presets { get; set; } = [];
+    
+    [JsonPropertyName("task_times")]
+    public Dictionary<string, List<float>> TaskTimes { get; set; } = [];
 }

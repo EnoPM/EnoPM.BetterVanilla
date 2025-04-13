@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
-using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Compiler;
 using BetterVanilla.Core;
-using BetterVanilla.Core.Extensions;
-using BetterVanilla.Core.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +9,6 @@ namespace BetterVanilla.Components.Menu;
 
 public sealed class HomeTab : MonoBehaviour
 {
-    private const string FinishAllMyTasksFeatureHash = "1C27A7F613EA4EFB37B3A18F8B2DC40E6167EFFFD34D1FA139199199C427860F";
     private const float ZoomIncrementValue = 1f;
 
     public TMP_InputField featureCodeField;
@@ -24,8 +19,9 @@ public sealed class HomeTab : MonoBehaviour
     public Button zoomOutButton;
     public TextMeshProUGUI zoomValueText;
     public Button finishTaskButton;
-
-    private Coroutine FinishTasksRoutine { get; set; }
+    public RectTransform finishTaskProgressBarContainer;
+    public RectTransform finishTaskProgressBarRect;
+    public TextMeshProUGUI finishTaskProgressBarText;
 
     private void Awake()
     {
@@ -36,7 +32,6 @@ public sealed class HomeTab : MonoBehaviour
         zoomOutButton.onClick.AddListener(new Action(OnZoomOutButtonClick));
         versionText.SetText($"v{GeneratedProps.Version}");
         zoomValueText.SetText("3.0x");
-        BetterVanillaManager.Instance.Features.RegisterHash(FinishAllMyTasksFeatureHash);
         submitFeatureCodeButton.interactable = false;
     }
 
@@ -74,8 +69,7 @@ public sealed class HomeTab : MonoBehaviour
 
     public void RefreshUnlockedFeatures()
     {
-        var isFinishAllMyTasksFeatureUnlocked = BetterVanillaManager.Instance.Features.IsUnlocked(FinishAllMyTasksFeatureHash);
-        finishTaskButton.transform.parent.gameObject.SetActive(isFinishAllMyTasksFeatureUnlocked);
+        Ls.LogMessage("RefreshUnlockedFeatures called");
     }
 
     private void OnFeatureCodeFieldValueChange(string value)
@@ -92,38 +86,29 @@ public sealed class HomeTab : MonoBehaviour
 
     private void OnFinishTasksButtonClick()
     {
-        if (BetterVanillaManager.Instance.Features.IsLocked(FinishAllMyTasksFeatureHash) || !IsFinishTasksButtonInteractable())
+        if (!IsFinishTasksButtonInteractable())
         {
             return;
         }
-        FinishTasksRoutine = BetterVanillaManager.Instance.StartCoroutine(CoFinishAllMyTasks());
-    }
-
-    private IEnumerator CoFinishAllMyTasks()
-    {
-        yield return CoroutineUtils.RandomWait();
-        while (MeetingHud.Instance)
-        {
-            yield return CoroutineUtils.RandomWait();
-        }
-        var remainingTasks = PlayerControl.LocalPlayer.GetRemainingTasks();
-        while (remainingTasks.Count > 0 &&  PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanFinishTask())
-        {
-            var task = remainingTasks.GetOneRandom();
-            PlayerControl.LocalPlayer.BetterCompleteTask(task);
-            yield return CoroutineUtils.RandomWait();
-            while (MeetingHud.Instance)
-            {
-                yield return CoroutineUtils.RandomWait();
-            }
-            remainingTasks = PlayerControl.LocalPlayer ? PlayerControl.LocalPlayer.GetRemainingTasks() : [];
-        }
-
-        FinishTasksRoutine = null;
+        BetterVanillaManager.Instance.TaskFinisher.Run();
     }
 
     private bool IsFinishTasksButtonInteractable()
     {
-        return FinishTasksRoutine == null && PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanFinishTask();
+        return BetterVanillaManager.Instance.TaskFinisher && BetterVanillaManager.Instance.TaskFinisher.CanBeStarted();
+    }
+    
+    public void SetTaskProgression(float progression)
+    {
+        if (!finishTaskProgressBarContainer || !finishTaskProgressBarRect) return;
+        //finishTaskProgressBarText.SetText($"{Mathf.RoundToInt(progression * 100)}%");
+        var containerWidth = finishTaskProgressBarContainer.rect.width;
+        finishTaskProgressBarRect.sizeDelta = new Vector2(containerWidth * progression, finishTaskProgressBarRect.sizeDelta.y);
+    }
+
+    public void SetCurrentTaskName(string taskName)
+    {
+        if (!finishTaskProgressBarText) return;
+        finishTaskProgressBarText.SetText(taskName);
     }
 }

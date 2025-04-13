@@ -31,7 +31,8 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public ModMenuButton MenuButton { get; private set; }
     private ModUpdater Updater { get; set; }
     public ModMenu Menu { get; private set; }
-    public ZoomBehaviourManager ZoomBehaviour { get; set; }
+    public ZoomBehaviourManager ZoomBehaviour { get; internal set; }
+    public TaskFinisherBehaviour TaskFinisher { get; internal set; }
     public Sprite VentSprite { get; private set; }
     
     private void Awake()
@@ -82,8 +83,9 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         ModManager.Instance.ShowModStamp();
         Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
+        Features.Initialize("EnoPM/EnoPM.BetterVanilla", "master", "features-registry.json");
         
-        Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is started!");
+        Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} was successfully started!");
     }
 
     public BetterPlayerControl GetPlayerById(byte playerId)

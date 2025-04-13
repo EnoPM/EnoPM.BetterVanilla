@@ -17,7 +17,7 @@ public sealed class HostOptionsHolder
 
         AllowDeadVoteDisplay = _category.CreateBool("DeadVoteDisplayAllowed", "Allow realtime vote display", true);
         AllowTeamPreference = _category.CreateBool("TeamPreferenceAllowed", "Allow Team Preferences", true);
-        PolusReactorCountdown = _category.CreateFloat("PolusReactorCountdown", "Polus Reactor Countdown", 60f, 1f, new FloatRange(15f, 120f), "0.0", false, NumberSuffixes.Seconds);
+        PolusReactorCountdown = _category.CreateFloat("PolusReactorCountdown", "Polus Reactor Countdown", 60f, 0.5f, new FloatRange(15f, 120f), "0.0", false, NumberSuffixes.Seconds);
     }
 
     public void ShareAllOptions()

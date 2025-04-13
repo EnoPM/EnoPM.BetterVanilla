@@ -12,6 +12,7 @@ public class BetterPlayerControl : MonoBehaviour
 {
     public PlayerControl Player { get; private set; }
     public TextMeshPro InfosText { get; private set; }
+    public string FriendCode { get; private set; }
 
     private void Awake()
     {
@@ -91,8 +92,18 @@ public class BetterPlayerControl : MonoBehaviour
         infos.Add(ColorUtils.ColoredString(ColorUtils.CheaterColor, "Cheater"));
     }
 
+    private void SetupSponsorInfoText(ref List<string> infos)
+    {
+        if (string.IsNullOrWhiteSpace(FriendCode) || BetterVanillaManager.Instance.Features.Registry == null) return;
+        if (BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes.Contains(FriendCode))
+        {
+            infos.Add(ColorUtils.ColoredString(Color.blue, "Sponsor"));
+        }
+    }
+
     private void SetupHostOrDisconnectedInfoText(ref List<string> infos)
     {
+        if (LobbyBehaviour.Instance) return;
         if (AmongUsClient.Instance && Player.OwnerId == AmongUsClient.Instance.HostId)
         {
             infos.Add(ColorUtils.ColoredString(ColorUtils.HostColor, "Host"));
@@ -126,7 +137,14 @@ public class BetterPlayerControl : MonoBehaviour
         var infos = new List<string>();
         SetupCheaterInfoText(ref infos);
         SetupHostOrDisconnectedInfoText(ref infos);
+        SetupSponsorInfoText(ref infos);
         SetupRoleOrTaskInfoText(ref infos);
         return $"<size=70%>{string.Join(" - ", infos)}</size>";
+    }
+
+    public void SetFriendCode(string friendCode)
+    {
+        FriendCode = friendCode;
+        Ls.LogMessage($"Friend code for player {Player.Data.PlayerName}: {FriendCode}");
     }
 }

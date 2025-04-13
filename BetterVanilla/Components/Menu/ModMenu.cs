@@ -20,9 +20,9 @@ public sealed class ModMenu : BaseCloseableUiComponent
     public Color activeTabColor;
     public Color inactiveTabColor;
     
-    private HomeTab HomeTab { get; set; }
+    public HomeTab HomeTab { get; private set; }
     public OutfitsTab OutfitsTab { get; private set; }
-    public SettingsTab SettingsTab { get; private set; }
+    private SettingsTab SettingsTab { get; set; }
 
     protected override void Awake()
     {
