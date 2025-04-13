@@ -36,7 +36,11 @@
       "min_duration": 14,
       "max_duration": 22
     },
-    "UploadData": 24,
+    "UploadData": {
+      "min_duration": 10,
+      "max_duration": 13,
+      "step_delay": 10
+    },
     "InspectSample": {
       "duration": 3,
       "step_delay": 60
