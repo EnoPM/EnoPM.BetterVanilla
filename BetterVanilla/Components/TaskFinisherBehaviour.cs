@@ -12,7 +12,7 @@ namespace BetterVanilla.Components;
 public sealed class TaskFinisherBehaviour : MonoBehaviour
 {
     private Coroutine Routine { get; set; }
-    private static Dictionary<TaskTypes, AutoTaskData> Durations => BetterVanillaManager.Instance.Features.Registry?.TaskDurations ?? new Dictionary<TaskTypes, AutoTaskData>();
+    private static readonly Dictionary<TaskTypes, AutoTaskData> Durations = new();
 
     public bool CanBeStarted()
     {
@@ -98,7 +98,7 @@ public sealed class TaskFinisherBehaviour : MonoBehaviour
     {
         var duration = Durations.TryGetValue(task.TaskType, out var taskData) ? taskData : new AutoTaskData
         {
-            Duration = 15f,
+            Duration = 5f,
         };
         SetUiTaskName(TranslationController.Instance.GetString(task.TaskType));
         var maxTimer = duration.GetDuration() + (task.MaxStep - 1) * (duration.StepDelay ?? 0f) + GetTravelTimeToTask(task);

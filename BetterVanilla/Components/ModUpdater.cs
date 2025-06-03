@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using BetterVanilla.Compiler;
+using BetterVanilla.GeneratedRuntime;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using TMPro;

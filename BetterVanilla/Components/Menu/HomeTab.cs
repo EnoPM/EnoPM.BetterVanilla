@@ -1,5 +1,5 @@
 ﻿using System;
-using BetterVanilla.Compiler;
+using BetterVanilla.GeneratedRuntime;
 using BetterVanilla.Core;
 using TMPro;
 using UnityEngine;

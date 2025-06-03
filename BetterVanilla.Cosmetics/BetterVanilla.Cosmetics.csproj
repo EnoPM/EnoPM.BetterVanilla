@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="$(SolutionDir)/AmongUsSolutionConfig.props" />
-    
+
     <PropertyGroup>
-        <RootNamespace>BetterVanilla</RootNamespace>
-        <PluginName>BetterVanilla</PluginName>
-        <PluginGuid>bettervanilla.eno.pm</PluginGuid>
-        <PluginVersion>1.1.10</PluginVersion>
-        <Description>Enhanced Among Us Vanilla experience</Description>
+        <RootNamespace>BetterVanilla.Cosmetics</RootNamespace>
+        <PluginName>BetterVanilla.Cosmetics</PluginName>
+        <PluginGuid>cosmetics.bettervanilla.eno.pm</PluginGuid>
+        <PluginVersion>1.0.0</PluginVersion>
+        <Description>Custom cosmetics plugin for Among Us</Description>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -32,6 +33,16 @@
         <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.4.15" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.697" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Assets\**"/>
+        <EmbeddedResource Remove="Runs\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Runs\**"/>
+        <None Remove="Runs\**"/>
     </ItemGroup>
 
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">

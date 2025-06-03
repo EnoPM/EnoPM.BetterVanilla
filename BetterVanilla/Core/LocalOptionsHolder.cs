@@ -14,6 +14,8 @@ public sealed class LocalOptionsHolder
     public readonly BoolLocalOption AutoPlayAgain;
     public readonly StringLocalOption TeamPreference;
 
+    public readonly BoolLocalOption AutoOpenDoors;
+    public readonly StringLocalOption DoorSwitchInterval;
     public readonly BoolLocalOption AllowModdedCosmetics;
     public readonly BoolLocalOption DisableAmDeadCheck;
     public readonly BoolLocalOption DisableAmImpostorCheck;
@@ -33,6 +35,8 @@ public sealed class LocalOptionsHolder
         AutoPlayAgain = category.CreateBool("AutoPlayAgain", "Auto Play Again", true);
         TeamPreference = category.CreateEnum("TeamPreference", "Team Assignment Preference", TeamPreferences.Both);
         
+        AutoOpenDoors = category.CreateBool("AutoOpenDoors", "Auto open doors", false);
+        DoorSwitchInterval = category.CreateEnum("DoorSwitchInterval", "Door Switch Interval", DoorOpenDelay.Ms5);
         AllowModdedCosmetics = category.CreateBool("AllowModdedCosmetics", "Display Modded Cosmetics", false);
         DisableAmDeadCheck = category.CreateBool("DisableAmDeadCheck", "Disable Am Dead Check", false);
         DisableAmImpostorCheck = category.CreateBool("DisableAmImpostorCheck", "Disable Am Impostor Check", false);

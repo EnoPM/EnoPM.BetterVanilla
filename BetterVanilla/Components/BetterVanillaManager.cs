@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
-using BetterVanilla.Compiler;
+using BetterVanilla.GeneratedRuntime;
 using BetterVanilla.Components.Menu;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
