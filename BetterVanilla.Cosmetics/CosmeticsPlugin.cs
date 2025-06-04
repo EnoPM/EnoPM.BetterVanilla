@@ -10,11 +10,14 @@ namespace BetterVanilla.Cosmetics;
 public sealed class CosmeticsPlugin : BasePlugin
 {
     private static readonly Harmony Harmony = new(GeneratedProps.Guid);
-    internal static ManualLogSource Logging { get; private set; }
+    internal static ManualLogSource Logging => Instance.Log;
+    internal static CosmeticsPlugin Instance { get; private set; } = null!;
     
     public override void Load()
     {
-        Logging = Log;
+        Instance = this;
         Harmony.PatchAll();
+        
+        CosmeticsManager.Register("EnoPM/BetterOtherHats", "CustomHats.json");
     }
 }

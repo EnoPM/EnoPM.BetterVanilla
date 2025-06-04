@@ -7,6 +7,8 @@ namespace BetterVanilla.Cosmetics.Utils;
 public static class StorageUtility
 {
     public static readonly string CosmeticsDirectory;
+    public static readonly string HatsDirectory;
+    public static readonly string HatsAnimationsDirectory;
     
     static StorageUtility()
     {
@@ -25,11 +27,19 @@ public static class StorageUtility
             "Cosmetics"
         );
         
-        if (!Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-        
         CosmeticsDirectory = directory;
+        CreateDirectoryIfNotExists(CosmeticsDirectory);
+        
+        HatsDirectory = Path.Combine(CosmeticsDirectory, "Hats");
+        CreateDirectoryIfNotExists(HatsDirectory);
+        
+        HatsAnimationsDirectory = Path.Combine(HatsDirectory, "Animations");
+        CreateDirectoryIfNotExists(HatsAnimationsDirectory);
+    }
+
+    private static void CreateDirectoryIfNotExists(string directoryPath)
+    {
+        if (Directory.Exists(directoryPath)) return;
+        Directory.CreateDirectory(directoryPath);
     }
 }

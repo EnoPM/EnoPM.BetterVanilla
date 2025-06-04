@@ -64,4 +64,8 @@ internal static class GeneratedProps
         </ItemGroup>
         <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)" WriteOnlyWhenDifferent="true" Overwrite="true"/>
     </Target>
+
+    <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(AmongUsDev)/BepInEx/plugins/')">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="D:\GameDevelopment\AmongUs\DevFiles\BepInEx\plugins\" />
+    </Target>
 </Project>
