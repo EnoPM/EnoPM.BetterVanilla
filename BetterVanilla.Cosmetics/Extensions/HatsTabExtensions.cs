@@ -72,7 +72,7 @@ public static class HatsTabExtensions
         }
 
         hatsTab.ColorChips = new Il2CppSystem.Collections.Generic.List<ColorChip>();
-        var unlockedHats = DestroyableSingleton<HatManager>.Instance.GetUnlockedHats();
+        var unlockedHats = HatManager.Instance.GetUnlockedHats();
         var packages = new Dictionary<string, List<(HatData, HatExtension?)>>();
 
         foreach (var hatBehaviour in unlockedHats)
@@ -145,7 +145,7 @@ public static class HatsTabExtensions
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
             {
                 colorChip.Button.OnMouseOver.AddListener((Action)(() => hatsTab.SelectHat(hat)));
-                colorChip.Button.OnMouseOut.AddListener((Action)(() => hatsTab.SelectHat(DestroyableSingleton<HatManager>.Instance.GetHatById(DataManager.Player.Customization.Hat))));
+                colorChip.Button.OnMouseOut.AddListener((Action)(() => hatsTab.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat))));
                 colorChip.Button.OnClick.AddListener((Action)hatsTab.ClickEquip);
             }
             else

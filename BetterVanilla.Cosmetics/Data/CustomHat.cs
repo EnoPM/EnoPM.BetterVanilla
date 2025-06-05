@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BetterVanilla.Cosmetics.Data;
 
@@ -30,6 +31,13 @@ public class CustomHat
     
     [JsonPropertyName("reshasha")]
     public string? ResourceHash { get; set; }
+    
+    [JsonPropertyName("animation")]
+    public List<string>? Animation { get; set; }
+    [JsonPropertyName("animationprefix")]
+    public string? AnimationPrefix { get; set; }
+    public List<string>? BackAnimation { get; set; }
+    public string? BackAnimationPrefix { get; set; }
 
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }

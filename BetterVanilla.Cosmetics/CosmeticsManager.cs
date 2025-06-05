@@ -68,16 +68,6 @@ public static class CosmeticsManager
     {
         return HatViewDataCache.TryGetValue(hat.name, out asset);
     }
-
-    private static bool IsCached(this HatData hat)
-    {
-        return HatViewDataCache.ContainsKey(hat.name);
-    }
-    
-    internal static bool IsCached(this HatParent hatParent)
-    {
-        return hatParent.Hat.IsCached();
-    }
     
     internal static HatData CreateHatBehaviour(CustomHat ch, bool testOnly = false)
     {
@@ -104,7 +94,7 @@ public static class CosmeticsManager
 
         hat.name = ch.Name;
         hat.displayOrder = 99;
-        hat.ProductId = "hat_" + ch.Name.Replace(' ', '_');
+        hat.ProductId = "hat_bv_" + ch.Name.Replace(' ', '_');
         hat.InFront = !ch.Behind;
         hat.NoBounce = !ch.Bounce;
         hat.ChipOffset = new Vector2(0f, 0.2f);

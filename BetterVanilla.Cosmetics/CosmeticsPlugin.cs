@@ -19,5 +19,6 @@ public sealed class CosmeticsPlugin : BasePlugin
         Harmony.PatchAll();
         
         CosmeticsManager.Register("EnoPM/BetterOtherHats", "CustomHats.json");
+        //CosmeticsManager.Register("Mr-Fluuff/StellarHats", "CustomHats.json");
     }
 }

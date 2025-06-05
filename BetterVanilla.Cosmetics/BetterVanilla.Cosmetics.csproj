@@ -45,6 +45,10 @@
         <None Remove="Runs\**"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Api\" />
+    </ItemGroup>
+
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
         <PropertyGroup>
             <GeneratedText><![CDATA[

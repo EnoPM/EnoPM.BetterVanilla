@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla", "BetterVani
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Cosmetics", "BetterVanilla.Cosmetics\BetterVanilla.Cosmetics.csproj", "{9281E582-C4E2-4201-8A5D-F7D89E949B23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.CosmeticsCompiler", "BetterVanilla.CosmeticsCompiler\BetterVanilla.CosmeticsCompiler.csproj", "{A1515430-FA95-4515-B208-6BF4B79C55F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Cosmetics.Api", "BetterVanilla.Cosmetics.Api\BetterVanilla.Cosmetics.Api.csproj", "{250584C2-ABC3-4940-9CF1-0523A7FC39C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,18 @@ Global
 		{9281E582-C4E2-4201-8A5D-F7D89E949B23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9281E582-C4E2-4201-8A5D-F7D89E949B23}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
 		{9281E582-C4E2-4201-8A5D-F7D89E949B23}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1515430-FA95-4515-B208-6BF4B79C55F2}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
+		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(RiderSharedRunConfigurations) = postSolution
 	EndGlobalSection

@@ -69,3 +69,8 @@ If the method is called with `fromDisk = true`, the filename is extracted from t
 
 Use consistent, descriptive names following the `<key>_<option1>_<option2>` pattern to ensure your cosmetic resources are detected and parsed properly by the system.
 
+## ✅ To-Do
+
+- [x] Support for discovering hats by file name
+- [ ] Support for discovering hats by asset bundle
+- [ ] Support for discovering hats by local file storage (with hot reloading [file watcher])

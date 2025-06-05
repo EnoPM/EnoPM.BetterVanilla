@@ -16,10 +16,7 @@ namespace BetterVanilla.Cosmetics.Components;
 
 public class CosmeticsLoader(IntPtr ptr) : MonoBehaviour(ptr)
 {
-    static CosmeticsLoader()
-    {
-        ClassInjector.RegisterTypeInIl2Cpp<CosmeticsLoader>();
-    }
+    static CosmeticsLoader() => ClassInjector.RegisterTypeInIl2Cpp<CosmeticsLoader>();
     
     private bool IsRunning { get; set; }
 
@@ -54,7 +51,8 @@ public class CosmeticsLoader(IntPtr ptr) : MonoBehaviour(ptr)
 
         var response = JsonSerializer.Deserialize<ManifestFile>(www.downloadHandler.text, new JsonSerializerOptions
         {
-            AllowTrailingCommas = true
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
         });
         www.downloadHandler.Dispose();
         www.Dispose();
