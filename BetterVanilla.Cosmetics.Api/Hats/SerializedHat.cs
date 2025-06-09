@@ -8,6 +8,9 @@ public sealed class SerializedHat : SerializedCosmetic, IHat<SerializedSprite>
 {
     [JsonPropertyName("bounce")]
     public bool Bounce { get; set; }
+    
+    [JsonPropertyName("no_visors")]
+    public bool NoVisors { get; set; }
 
     [JsonPropertyName("main_resource")]
     public SerializedSprite MainResource { get; set; } = null!;

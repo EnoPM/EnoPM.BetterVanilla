@@ -9,6 +9,9 @@ public sealed class CreateHatSpritesheetOptions : BaseCosmeticOptions
 {
     [Option("bounce", Default = false, HelpText = "Is hat bounce")]
     public bool IsBounce { get; [UsedImplicitly] set; }
+    
+    [Option("no-visors", Default = false, HelpText = "If hat cannot have visors")]
+    public bool NoVisors { get; [UsedImplicitly] set; }
 
     [Option("main-resource", Required = true, HelpText = "Hat main resource file path")]
     public string MainResourceFilePath { get; [UsedImplicitly] set; } = null!;

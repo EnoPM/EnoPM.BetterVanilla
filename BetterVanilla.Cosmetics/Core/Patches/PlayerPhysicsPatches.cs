@@ -12,11 +12,11 @@ internal static class PlayerPhysicsPatches
         var player = __instance.myPlayer;
         if (currentAnimation == __instance.Animations.group.ClimbUpAnim || currentAnimation == __instance.Animations.group.ClimbDownAnim) return;
 
-        CosmeticsContext.RefreshAnimationFrames(__instance);
+        CosmeticsPlugin.Instance.RefreshAnimationFrames(__instance);
 
         if (player.AmOwner)
         {
-            CosmeticsContext.UpdateAnimationFrames();
+            CosmeticsPlugin.Instance.UpdateAnimationFrames();
         }
     }
 }

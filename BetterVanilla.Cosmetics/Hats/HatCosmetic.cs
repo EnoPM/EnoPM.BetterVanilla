@@ -10,11 +10,13 @@ namespace BetterVanilla.Cosmetics.Hats;
 
 public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>, IHat<Sprite>, IHatExtension
 {
-    protected override Dictionary<string, HatViewData> ViewDataCache => CosmeticsContext.Hats.ViewDataCache;
+    protected override Dictionary<string, HatViewData> ViewDataCache => CosmeticsPlugin.Instance.Hats.ViewDataCache;
 
     public override string ProductId => "hat_bv_" + Name.Replace(' ', '_');
 
     public bool Bounce { get; set; }
+    
+    public bool NoVisors { get; set; }
 
     public Sprite MainResource { get; set; }
 
@@ -94,6 +96,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
         cosmeticData.ProductId = ProductId;
         cosmeticData.InFront = !Behind;
         cosmeticData.NoBounce = !Bounce;
+        cosmeticData.BlocksVisors = NoVisors;
         cosmeticData.ChipOffset = new Vector2(0f, 0f); // TODO: check offset value
         cosmeticData.Free = true;
 

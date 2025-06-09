@@ -12,7 +12,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
         __instance.PopulateFromViewData();
         __instance.SetMaterialColor(color);
         
@@ -26,11 +26,11 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
-        CosmeticsContext.Hats.UpdateMaterialFromViewAsset(__instance, asset);
+        CosmeticsPlugin.Instance.Hats.UpdateMaterialFromViewAsset(__instance, asset);
         return false;
     }
 
@@ -38,7 +38,7 @@ internal static class HatParentPatches
     private static bool LateUpdatePrefix(HatParent __instance)
     {
         if (!__instance.Parent || !__instance.Hat) return false;
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
@@ -52,7 +52,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
         __instance.FrontLayer.sprite = asset.FloorImage;
@@ -63,7 +63,7 @@ internal static class HatParentPatches
     private static bool SetIdleAnimPrefix(HatParent __instance, int colorId)
     {
         if (__instance.Hat == null) return false;
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
         
         //__instance.PopulateFromViewData();
         //__instance.SetMaterialColor(colorId);
@@ -81,7 +81,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
         if (!__instance.options.ShowForClimb) return false;
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
@@ -96,11 +96,11 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
-        CosmeticsContext.Hats.PopulateParentFromAsset(__instance, asset);
+        CosmeticsPlugin.Instance.Hats.PopulateParentFromAsset(__instance, asset);
         return false;
     }
 }

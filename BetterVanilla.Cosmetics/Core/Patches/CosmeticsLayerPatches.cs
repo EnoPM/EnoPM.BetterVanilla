@@ -14,10 +14,7 @@ internal static class CosmeticsLayerPatches
         {
             return;
         }
-        if (CosmeticsContext.Visors.TryGetViewData(visorId, out var viewData))
-        {
-            CosmeticsContext.Visors.PopulateParentFromAsset(__instance.visor, viewData);
-        }
+        __instance.visor.PopulateAsset();
     }
     
     [HarmonyPostfix, HarmonyPatch(nameof(CosmeticsLayer.SetVisor), typeof(VisorData), typeof(int))]
@@ -27,9 +24,14 @@ internal static class CosmeticsLayerPatches
         {
             return;
         }
-        if (CosmeticsContext.Visors.TryGetViewData(visorData.ProductId, out var viewData))
+        __instance.visor.PopulateAsset();
+    }
+
+    private static void PopulateAsset(this VisorLayer visor)
+    {
+        if (CosmeticsPlugin.Instance.Visors.TryGetViewData(visor.visorData.ProductId, out var viewData))
         {
-            CosmeticsContext.Visors.PopulateParentFromAsset(__instance.visor, viewData);
+            CosmeticsPlugin.Instance.Visors.PopulateParentFromAsset(visor, viewData);
         }
     }
 }

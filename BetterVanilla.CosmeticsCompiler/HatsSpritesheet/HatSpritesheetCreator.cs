@@ -70,6 +70,7 @@ public sealed class HatSpritesheetCreator : IDisposable
             Adaptive = hat.Adaptive,
             Author = hat.Author,
             Bounce = hat.Bounce,
+            NoVisors = hat.NoVisors,
             MainResource = Serialize(hat.MainResource),
             FlipResource = hat.FlipResource == null ? null : Serialize(hat.FlipResource),
             BackResource = hat.BackResource == null ? null : Serialize(hat.BackResource),

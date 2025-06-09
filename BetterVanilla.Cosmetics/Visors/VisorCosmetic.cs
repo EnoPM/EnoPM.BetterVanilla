@@ -11,7 +11,7 @@ namespace BetterVanilla.Cosmetics.Visors;
 
 public sealed class VisorCosmetic : BaseCosmetic<VisorViewData, VisorLayer, VisorData>, IVisor<Sprite>, IVisorExtension
 {
-    protected override Dictionary<string, VisorViewData> ViewDataCache => CosmeticsContext.Visors.ViewDataCache;
+    protected override Dictionary<string, VisorViewData> ViewDataCache => CosmeticsPlugin.Instance.Visors.ViewDataCache;
     public override string ProductId => "visor_bv_" + Name.Replace(' ', '_');
     
     public Sprite MainResource { get; set; }

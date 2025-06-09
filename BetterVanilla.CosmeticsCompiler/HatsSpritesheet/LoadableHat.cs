@@ -26,6 +26,8 @@ public class LoadableHat : IHat<SpriteFile>
     public List<SpriteFile>? BackAnimationFrames { get; set; }
 
     public bool Bounce { get; set; }
+    
+    public bool NoVisors { get; set; }
 
     public List<SpriteFile> AllSprites { get; } = [];
 
@@ -34,6 +36,7 @@ public class LoadableHat : IHat<SpriteFile>
         Name = options.Name;
         Adaptive = options.IsAdaptive;
         Bounce = options.IsBounce;
+        NoVisors = options.NoVisors;
         MainResource = CreateSpriteFile(nameof(MainResource), options.MainResourceFilePath);
         if (options.AuthorName != null)
         {

@@ -14,7 +14,7 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var viewData)) return true;
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var viewData)) return true;
 
         if (data == null || data != __instance.visorData)
         {
@@ -35,11 +35,11 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
         {
             return true;
         }
-        CosmeticsContext.Visors.UpdateMaterialFromViewAsset(__instance, asset);
+        CosmeticsPlugin.Instance.Visors.UpdateMaterialFromViewAsset(__instance, asset);
         return false;
     }
     
@@ -50,7 +50,7 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset)) return true;
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset)) return true;
         __instance.Image.sprite = asset.FloorFrame;
         return false;
     }
@@ -62,7 +62,7 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset)) return true;
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset)) return true;
         if (__instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse)
         {
             return false;
@@ -79,11 +79,11 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
         {
             return true;
         }
-        CosmeticsContext.Visors.PopulateParentFromAsset(__instance, asset);
+        CosmeticsPlugin.Instance.Visors.PopulateParentFromAsset(__instance, asset);
         return false;
     }
 
@@ -92,7 +92,7 @@ internal static class VisorLayerPatches
     {
         if (__instance.visorData == null) return true;
         __instance.Image.flipX = flipX;
-        if (!CosmeticsContext.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
+        if (!CosmeticsPlugin.Instance.Visors.TryGetViewData(__instance.visorData.ProductId, out var asset))
         {
             return true;
         }
