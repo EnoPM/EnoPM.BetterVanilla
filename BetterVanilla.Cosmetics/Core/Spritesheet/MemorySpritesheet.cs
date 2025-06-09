@@ -1,5 +1,5 @@
 using System;
-using BetterVanilla.Cosmetics.Api.Serialization;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using UnityEngine;
 
 namespace BetterVanilla.Cosmetics.Core.Spritesheet;
@@ -53,6 +53,7 @@ public sealed class MemorySpritesheet : BaseSpritesheet
 
         sprite = Sprite.Create(Spritesheet, rect, pivot, 100f);
         sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+        sprite.name = "BetterVanillaSprite";
 
         return Cache[cacheKey] = sprite;
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using AmongUs.Data;
-using BetterVanilla.Cosmetics.Hats.Extensions;
+using BetterVanilla.Cosmetics.Core.Utils;
 using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,13 +16,11 @@ internal static class HatsTabPatches
     {
         __instance.OnTabEnable();
         return false;
-        __instance.SetupCustomHats();
-        return false;
     }
 
     private static void OnTabEnable(this HatsTab hatsTab)
     {
-        hatsTab.BaseEnable();
+        hatsTab.InventoryTabOnEnable();
         var unlockedHats = HatManager.Instance.GetUnlockedHats();
         hatsTab.currentHat = HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat);
 
@@ -39,10 +37,9 @@ internal static class HatsTabPatches
             chip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
             hatsTab.UpdateMaterials(chip.Inner.FrontLayer, hat);
             var playerColor = hatsTab.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-            if (CosmeticsContext.Hats.TryGetViewData(hat.name, out var asset))
+            if (CosmeticsContext.Hats.TryGetViewData(hat.ProductId, out var asset))
             {
                 chip.Inner.FrontLayer.sprite = asset.MainImage;
-                CosmeticsPlugin.Logging.LogMessage($"Set color {playerColor} to {asset.name}");
                 PlayerMaterial.SetColors(playerColor, chip.Inner.FrontLayer);
             }
             else
@@ -76,18 +73,5 @@ internal static class HatsTabPatches
             chip.Button.OnClick.AddListener(new Action(() => hatsTab.SelectHat(hatData)));
         }
         chip.Button.ClickMask = hatsTab.scroller.Hitbox;
-    }
-
-    private static void BaseEnable(this HatsTab hatsTab)
-    {
-        hatsTab.PlayerPreview.gameObject.SetActive(true);
-        if (hatsTab.HasLocalPlayer())
-        {
-            hatsTab.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
-        }
-        else
-        {
-            hatsTab.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
-        }
     }
 }

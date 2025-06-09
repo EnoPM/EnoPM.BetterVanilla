@@ -1,30 +1,24 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using BetterVanilla.Cosmetics.Api.Core;
 using UnityEngine;
 
 namespace BetterVanilla.Cosmetics.Core.Manager;
 
 public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmeticData>
-    where TCosmetic : ICosmeticItem
+    where TCosmetic : BaseCosmetic<TViewData, TParent, TCosmeticData>
     where TViewData : ScriptableObject
     where TParent : MonoBehaviour
     where TCosmeticData : CosmeticData
 {
-    public Material? CachedMaterial { get; private set; }
 
     protected List<TCosmetic> UnregisteredCosmetics { get; } = [];
     protected Dictionary<string, TCosmetic> RegisteredCosmetics { get; } = new();
-    protected Dictionary<string, TViewData> ViewDataCache { get; } = new();
+    internal Dictionary<string, TViewData> ViewDataCache { get; } = new();
     protected HashSet<TParent> ParentCache { get; } = [];
 
     protected abstract bool CanBeCached(TParent parent);
     
-    protected abstract void HydrateViewData(TViewData viewData, TCosmetic cosmetic);
-    protected abstract void HydrateCosmeticData(TCosmeticData cosmeticData, TCosmetic cosmetic);
-    protected abstract string GetCosmeticProductId(TCosmetic cosmetic);
-    protected abstract bool IsParentCosmetic(TParent parent, TCosmetic cosmetic);
     protected abstract void PopulateParent(TParent parent);
     protected abstract List<TCosmeticData> GetVanillaCosmeticData();
     protected abstract void OverrideVanillaCosmeticData(List<TCosmeticData> allCosmeticData);
@@ -44,38 +38,23 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
         var cache = UnregisteredCosmetics.ToList();
         foreach (var cosmetic in cache)
         {
-            customCosmetics.Add(CreateCosmeticData(cosmetic));
+            customCosmetics.Add(cosmetic.ToCosmeticData());
             UnregisteredCosmetics.Remove(cosmetic);
-            RegisteredCosmetics.Add(cosmetic.Name, cosmetic);
+            RegisteredCosmetics.Add(cosmetic.ProductId, cosmetic);
         }
         
         customCosmetics.AddRange(vanillaCosmetics);
         OverrideVanillaCosmeticData(customCosmetics);
     }
 
-    public abstract void AddCosmetic(TCosmetic cosmetic);
-    
-    public virtual TCosmeticData CreateCosmeticData(TCosmetic cosmetic)
+    public virtual void AddCosmetic(TCosmetic cosmetic)
     {
-        CosmeticsPlugin.Logging.LogMessage($"Creating cosmetic data for {cosmetic.Name}");
-        if (CachedMaterial == null)
-        {
-            CachedMaterial = HatManager.Instance.PlayerMaterial;
-        }
-
-        var viewData = CreateViewData(cosmetic.Name);
-        HydrateViewData(viewData, cosmetic);
-        
-        var cosmeticData = CreateCosmeticData(cosmetic.Name);
-        HydrateCosmeticData(cosmeticData, cosmetic);
-        
-        return cosmeticData;
+        UnregisteredCosmetics.Add(cosmetic);
     }
 
     public virtual void RefreshEquippedCosmetics(TCosmetic cosmetic)
     {
-        var parents = ParentCache
-            .Where(x => IsParentCosmetic(x, cosmetic));
+        var parents = ParentCache.Where(cosmetic.IsMyParent);
         foreach (var parent in parents)
         {
             PopulateParent(parent);
@@ -92,8 +71,8 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
     
     public virtual void OnCosmeticLoaded(TCosmetic cosmetic)
     {
-        if (!TryGetViewData(cosmetic.Name, out var viewData)) return;
-        HydrateViewData(viewData, cosmetic);
+        if (!TryGetViewData(cosmetic.ProductId, out var viewData)) return;
+        cosmetic.ToViewData(viewData);
         RefreshEquippedCosmetics(cosmetic);
     }
 
@@ -108,6 +87,20 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
         return ViewDataCache.TryGetValue(key, out viewData);
     }
 
+    public bool TryGetViewDataByName(string name, [MaybeNullWhen(false)] out TViewData viewData)
+    {
+        foreach (var item in ViewDataCache.Values)
+        {
+            if (item.name == name)
+            {
+                viewData = item;
+                return true;
+            }
+        }
+        viewData = null;
+        return false;
+    }
+
     public bool TryGetCosmetic(string key, [MaybeNullWhen(false)] out TCosmetic cosmetic)
     {
         return RegisteredCosmetics.TryGetValue(key, out cosmetic);
@@ -117,20 +110,18 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
     {
         return RegisteredCosmetics.Values.ToList();
     }
+
+    public virtual void UpdateAnimationFrames()
+    {
+        foreach (var cosmetic in GetAllRegisteredCosmetics())
+        {
+            cosmetic.AnimateFrames();
+        }
+    }
+
+    public abstract void RefreshAnimationFrames(PlayerPhysics playerPhysics);
+
+    public abstract void UpdateMaterialFromViewAsset(TParent parent, TViewData asset);
     
-    public abstract void UpdateAnimationFrames();
-
-    protected TViewData CreateViewData(string name)
-    {
-        var viewData = ScriptableObject.CreateInstance<TViewData>();
-        ViewDataCache.Add(name, viewData);
-        return viewData;
-    }
-
-    protected TCosmeticData CreateCosmeticData(string cosmeticName)
-    {
-        var cosmeticData = ScriptableObject.CreateInstance<TCosmeticData>();
-        cosmeticData.name = cosmeticName;
-        return cosmeticData;
-    }
+    public abstract void PopulateParentFromAsset(TParent parent, TViewData asset);
 }

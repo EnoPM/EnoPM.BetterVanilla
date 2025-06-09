@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
-using BetterVanilla.Cosmetics.Api.Serialization;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.CosmeticsCompiler.Bundle;
-using BetterVanilla.CosmeticsCompiler.CosmeticsSpritesheet;
+using BetterVanilla.CosmeticsCompiler.HatsSpritesheet;
+using BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
 using CommandLine;
 using Json.More;
 using Json.Schema;
@@ -18,9 +19,10 @@ internal static class Program
 
     private static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, BundleOptions>(args)
+        Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, CreateVisorSpritesheetOptions, BundleOptions>(args)
             .WithParsed<GenerateSchemaOptions>(GenerateSchema)
             .WithParsed<CreateHatSpritesheetOptions>(CreateHatSpritesheet)
+            .WithParsed<CreateVisorSpritesheetOptions>(CreateVisorSpritesheet)
             .WithParsed<BundleOptions>(Bundle)
             .WithNotParsed(HandleError);
     }
@@ -40,6 +42,15 @@ internal static class Program
         
         Console.WriteLine($"Hat spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
         Console.WriteLine($"Hat spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+    }
+    
+    private static void CreateVisorSpritesheet(CreateVisorSpritesheetOptions options)
+    {
+        using var creator = new VisorSpritesheetCreator(options);
+        creator.Process();
+        
+        Console.WriteLine($"Visor spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
+        Console.WriteLine($"Visor spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
     }
 
     private static void GenerateSchema(GenerateSchemaOptions options)

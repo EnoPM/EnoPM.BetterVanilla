@@ -12,6 +12,9 @@ public sealed class BundleOptions
     [Option("compression", Default = false, HelpText = "Compress bundle")]
     public bool EnableCompression { get; [UsedImplicitly] set; }
     
-    [Option("hats", HelpText = "Hat spritesheet json files")]
+    [Option("hats", HelpText = "Hats spritesheet json files")]
     public IEnumerable<string> HatSpritesheet { get; [UsedImplicitly] set; } = null!;
+    
+    [Option("visors", HelpText = "Hats spritesheet json files")]
+    public IEnumerable<string> VisorSpritesheet { get; [UsedImplicitly] set; } = null!;
 }

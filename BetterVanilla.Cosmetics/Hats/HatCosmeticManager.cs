@@ -1,79 +1,31 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using BetterVanilla.Cosmetics.Api.Serialization;
 using BetterVanilla.Cosmetics.Core.Manager;
-using BetterVanilla.Cosmetics.Core.Spritesheet;
+using PowerTools;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace BetterVanilla.Cosmetics.Hats;
 
 public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatViewData, HatParent, HatData>
 {
-    public const string CustomPackageName = "Better Vanilla";
-    public const string InnerslothPackageName = "Innersloth";
-    
     protected override bool CanBeCached(HatParent parent)
     {
         return parent != null && parent.Hat != null;
     }
 
-    protected override void HydrateViewData(HatViewData viewData, HatCosmetic cosmetic)
-    {
-        CosmeticsPlugin.Logging.LogMessage($"Hydrating {cosmetic.Name}: {nameof(cosmetic.MainResource)} {cosmetic.MainResource != null}");
-        viewData.name = $"{cosmetic.Name}HatViewData";
-        viewData.FloorImage = viewData.MainImage = cosmetic.MainResource;
-
-        if (cosmetic.BackResource != null)
-        {
-            viewData.BackImage = cosmetic.BackResource;
-            //viewData.LeftBackImage = cosmetic.BackResource;
-            cosmetic.Behind = true;
-        }
-
-        if (cosmetic.ClimbResource != null)
-        {
-            viewData.ClimbImage = viewData.LeftClimbImage = cosmetic.ClimbResource;
-        }
-
-        if (cosmetic.Adaptive)
-        {
-            viewData.MatchPlayerColor = CachedMaterial != null;
-        }
-    }
-
-    protected override void HydrateCosmeticData(HatData cosmeticData, HatCosmetic cosmetic)
-    {
-        cosmeticData.name = cosmetic.Name;
-        cosmeticData.displayOrder = 99;
-        cosmeticData.ProductId = GetCosmeticProductId(cosmetic);
-        cosmeticData.InFront = !cosmetic.Behind;
-        cosmeticData.NoBounce = !cosmetic.Bounce;
-        cosmeticData.ChipOffset = new Vector2(0f, 0f); // TODO: edit offset
-        cosmeticData.Free = true;
-
-        // TODO: Check if it's really useful
-        cosmeticData.ViewDataRef = new AssetReference(ViewDataCache[cosmeticData.name].Pointer);
-        //cosmeticData.CreateAddressableAsset();
-    }
-    protected override string GetCosmeticProductId(HatCosmetic cosmetic)
-    {
-        return $"hat_bv_{cosmetic.Name.Replace(' ', '_')}";
-    }
-    
-    protected override bool IsParentCosmetic(HatParent parent, HatCosmetic cosmetic)
-    {
-        return parent != null
-               && parent.Hat != null
-               && parent.Hat.ProductId == GetCosmeticProductId(cosmetic);
-    }
-    
     protected override void PopulateParent(HatParent parent)
     {
         parent.PopulateFromViewData();
+    }
+
+    protected override List<HatData> GetVanillaCosmeticData()
+    {
+        return HatManager.Instance.allHats.ToList();
+    }
+
+    protected override void OverrideVanillaCosmeticData(List<HatData> allCosmeticData)
+    {
+        HatManager.Instance.allHats = allCosmeticData.ToArray();
     }
 
     protected override HatParent? GetPlayerParent(PlayerControl player)
@@ -85,70 +37,128 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
         return player.cosmetics.hat;
     }
 
-    public BaseSpritesheet OpenFileSpritesheet(string filePath)
+    public override void RefreshAnimationFrames(PlayerPhysics playerPhysics)
     {
-        if (!File.Exists(filePath))
+        var parent = GetPlayerParent(playerPhysics.myPlayer);
+        if (parent == null || parent.Hat == null) return;
+        if (!TryGetCosmetic(parent.Hat.ProductId, out var cosmetic))
         {
-            throw new FileNotFoundException($"Spritesheet path '{filePath}' not found");
+            return;
         }
-        var spritesheet = new FileSpritesheet(filePath);
-
-        return spritesheet;
+        cosmetic.RefreshAnimatedFrames(parent, playerPhysics.FlipX);
     }
 
-    public SerializedHat OpenCosmeticFile(string filePath)
+    public override void UpdateMaterialFromViewAsset(HatParent parent, HatViewData asset)
     {
-        if (!File.Exists(filePath))
+        if (asset.MatchPlayerColor)
         {
-            throw new FileNotFoundException($"Cosmetic path '{filePath}' not found");
-        }
-        var fileContent = File.ReadAllText(filePath);
-        var serializedCosmetic = JsonSerializer.Deserialize<SerializedHat>(fileContent);
-        if (serializedCosmetic == null)
-        {
-            throw new Exception("Cosmetic could not be deserialized");
-        }
-        
-        return serializedCosmetic;
-    }
-
-    public HatCosmetic CreateCosmetic(BaseSpritesheet spritesheet, SerializedHat serializedHat)
-    {
-        var cosmetic = new HatCosmetic(serializedHat, spritesheet);
-
-        return cosmetic;
-    }
-    
-    public override void AddCosmetic(HatCosmetic cosmetic)
-    {
-        UnregisteredCosmetics.Add(cosmetic);
-    }
-    
-    public override void UpdateAnimationFrames()
-    {
-        foreach (var cosmetic in GetAllRegisteredCosmetics())
-        {
-            cosmetic.FrontTime += Time.deltaTime * 150;
-            if (cosmetic.FrontTime >= cosmetic.FrontDelay)
+            parent.FrontLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
+            if (parent.BackLayer)
             {
-                cosmetic.UpdateFrontFrames();
-                cosmetic.FrontTime = 0f;
-            }
-            cosmetic.BackTime += Time.deltaTime * 150;
-            if (cosmetic.BackTime >= cosmetic.BackDelay)
-            {
-                cosmetic.UpdateBackFrames();
-                cosmetic.BackTime = 0f;
+                parent.BackLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
             }
         }
-    }
+        else
+        {
+            parent.FrontLayer.sharedMaterial = HatManager.Instance.DefaultShader;
+            if (parent.BackLayer)
+            {
+                parent.BackLayer.sharedMaterial = HatManager.Instance.DefaultShader;
+            }
+        }
+        var colorId = parent.matProperties.ColorId;
+        PlayerMaterial.SetColors(colorId, parent.FrontLayer);
+        if (parent.BackLayer)
+        {
+            PlayerMaterial.SetColors(colorId, parent.BackLayer);
+        }
+        parent.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
+        if (parent.BackLayer)
+        {
+            parent.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
+        }
+        var maskType = parent.matProperties.MaskType;
+        switch (maskType)
+        {
+            case PlayerMaterial.MaskType.ScrollingUI:
+            {
+                if (parent.FrontLayer)
+                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                if (parent.BackLayer)
+                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                break;
+            }
+            case PlayerMaterial.MaskType.Exile:
+            {
+                if (parent.FrontLayer)
+                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                if (parent.BackLayer)
+                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                break;
+            }
+            case PlayerMaterial.MaskType.None:
+            case PlayerMaterial.MaskType.SimpleUI:
+            case PlayerMaterial.MaskType.ComplexUI:
+            default:
+            {
+                if (parent.FrontLayer)
+                {
+                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
+                }
 
-    protected override List<HatData> GetVanillaCosmeticData()
-    {
-        return HatManager.Instance.allHats.ToList();
+                if (parent.BackLayer)
+                {
+                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.None;
+                }
+                break;
+            }
+        }
+        if (parent.matProperties.MaskLayer > 0) return;
+        PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.FrontLayer, parent.matProperties.IsLocalPlayer);
+        if (parent.BackLayer)
+        {
+            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.BackLayer, parent.matProperties.IsLocalPlayer);
+        }
     }
-    protected override void OverrideVanillaCosmeticData(List<HatData> allCosmeticData)
+    
+    public override void PopulateParentFromAsset(HatParent parent, HatViewData asset)
     {
-        HatManager.Instance.allHats = allCosmeticData.ToArray();
+        parent.UpdateMaterial();
+
+        if (asset == null)
+        {
+            return;
+        }
+
+        var spriteAnimNodeSync = parent.SpriteSyncNode ?? parent.GetComponent<SpriteAnimNodeSync>();
+        if (spriteAnimNodeSync)
+        {
+            spriteAnimNodeSync.NodeId = parent.Hat.NoBounce ? 1 : 0;
+        }
+
+        if (parent.Hat.InFront)
+        {
+            parent.BackLayer.enabled = false;
+            parent.FrontLayer.enabled = true;
+            parent.FrontLayer.sprite = asset.MainImage;
+        }
+        else if (asset.BackImage)
+        {
+            parent.BackLayer.enabled = true;
+            parent.FrontLayer.enabled = true;
+            parent.BackLayer.sprite = asset.BackImage;
+            parent.FrontLayer.sprite = asset.MainImage;
+        }
+        else
+        {
+            parent.BackLayer.enabled = true;
+            parent.FrontLayer.enabled = false;
+            parent.FrontLayer.sprite = null;
+            parent.BackLayer.sprite = asset.MainImage;
+        }
+
+        if (!parent.options.Initialized || !parent.HideHat()) return;
+        parent.FrontLayer.enabled = false;
+        parent.BackLayer.enabled = false;
     }
 }

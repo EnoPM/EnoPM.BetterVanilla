@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
-using BetterVanilla.Cosmetics.Api.Bundle;
+using BetterVanilla.Cosmetics.Api.Core.Bundle;
 using BetterVanilla.Cosmetics.GeneratedRuntime;
 using HarmonyLib;
 

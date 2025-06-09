@@ -1,4 +1,5 @@
 ﻿bundle
+--compression
 --output
 "D:\GameDevelopment\AmongUs\Spritesheets\BetterVanillaCosmetics.bundle"
 --hats
@@ -6,6 +7,29 @@
 "D:\GameDevelopment\AmongUs\Spritesheets\ballerina.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Spritesheets\sleepy cloud.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Spritesheets\Cat Hat.spritesheet.json"
+--visors
+"D:\GameDevelopment\AmongUs\Spritesheets\TV Static.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Spritesheets\Ghost Mask.spritesheet.json"
+
+create-visor-spritesheet
+--name
+"Ghost Mask"
+--author
+"EnoPM"
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\visors\Ghost_Mask.png"
+
+create-visor-spritesheet
+--name
+"TV Static"
+--author
+"EnoPM"
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\visors\TVStatic.png"
 
 create-hat-spritesheet
 --name

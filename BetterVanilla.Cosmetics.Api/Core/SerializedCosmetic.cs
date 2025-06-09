@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using BetterVanilla.Cosmetics.Api.Serialization;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 
 namespace BetterVanilla.Cosmetics.Api.Core;
 

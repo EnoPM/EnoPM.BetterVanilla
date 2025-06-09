@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using BetterVanilla.Cosmetics.Api.Serialization;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using UnityEngine;
 
 namespace BetterVanilla.Cosmetics.Core.Spritesheet;

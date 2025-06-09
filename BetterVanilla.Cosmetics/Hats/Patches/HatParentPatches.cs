@@ -1,4 +1,3 @@
-using BetterVanilla.Cosmetics.Hats.Extensions;
 using HarmonyLib;
 
 namespace BetterVanilla.Cosmetics.Hats.Patches;
@@ -13,7 +12,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out _)) return true;
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
         __instance.PopulateFromViewData();
         __instance.SetMaterialColor(color);
         
@@ -27,11 +26,11 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out var asset))
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
-        __instance.UpdateAssetMaterial(asset);
+        CosmeticsContext.Hats.UpdateMaterialFromViewAsset(__instance, asset);
         return false;
     }
 
@@ -39,11 +38,10 @@ internal static class HatParentPatches
     private static bool LateUpdatePrefix(HatParent __instance)
     {
         if (!__instance.Parent || !__instance.Hat) return false;
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out var asset))
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
-        __instance.LateUpdateAsset(asset);
         return false;
     }
 
@@ -54,7 +52,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out var asset)) return true;
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
         __instance.FrontLayer.sprite = asset.FloorImage;
@@ -65,7 +63,7 @@ internal static class HatParentPatches
     private static bool SetIdleAnimPrefix(HatParent __instance, int colorId)
     {
         if (__instance.Hat == null) return false;
-        if (!__instance.Hat.IsCached()) return true;
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out _)) return true;
         
         //__instance.PopulateFromViewData();
         //__instance.SetMaterialColor(colorId);
@@ -83,7 +81,7 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out var asset)) return true;
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset)) return true;
         if (!__instance.options.ShowForClimb) return false;
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
@@ -98,11 +96,11 @@ internal static class HatParentPatches
         {
             return true;
         }
-        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.name, out var asset))
+        if (!CosmeticsContext.Hats.TryGetViewData(__instance.Hat.ProductId, out var asset))
         {
             return true;
         }
-        __instance.PopulateFromAsset(asset);
+        CosmeticsContext.Hats.PopulateParentFromAsset(__instance, asset);
         return false;
     }
 }
