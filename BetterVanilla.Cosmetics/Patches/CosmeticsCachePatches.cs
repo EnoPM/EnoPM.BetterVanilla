@@ -8,6 +8,6 @@ internal static class CosmeticsCachePatches
     [HarmonyPrefix, HarmonyPatch(nameof(CosmeticsCache.GetHat))]
     private static bool GetHatPrefix(string id, ref HatViewData __result)
     {
-        return !CosmeticsManager.HatViewDataCache.TryGetValue(id, out __result);
+        return CosmeticsContext.Hats.TryGetViewData(id, out __result);
     }
 }

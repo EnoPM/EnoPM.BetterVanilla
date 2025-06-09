@@ -5,10 +5,13 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <BepInExPluginsDirectory>D:\GameDevelopment\AmongUs\DevFiles\BepInEx\plugins\</BepInExPluginsDirectory>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
     </ItemGroup>
-
+    <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(BepInExPluginsDirectory)')">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExPluginsDirectory)" />
+    </Target>
 </Project>

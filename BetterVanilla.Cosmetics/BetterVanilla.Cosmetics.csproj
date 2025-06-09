@@ -46,7 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Api\" />
+      <ProjectReference Include="..\BetterVanilla.Cosmetics.Api\BetterVanilla.Cosmetics.Api.csproj" />
     </ItemGroup>
 
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">

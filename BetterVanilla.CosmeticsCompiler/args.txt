@@ -1,0 +1,182 @@
+﻿bundle
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets\BetterVanillaCosmetics.bundle"
+--hats
+"D:\GameDevelopment\AmongUs\Spritesheets\hermes.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Spritesheets\ballerina.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Spritesheets\sleepy cloud.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Spritesheets\Cat Hat.spritesheet.json"
+
+create-hat-spritesheet
+--name
+"ballerina"
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--author
+"ShieldLion"
+--adaptive
+--bounce
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\ballerina_adaptive_bounce.png"
+--climb-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\ballerina_adaptive_climb.png"
+
+create-hat-spritesheet
+--name
+"sleepy cloud"
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--author
+"Stell"
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
+--front-animation-frames
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_001.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_002.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_003.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_004.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_005.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_006.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_007.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_008.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_009.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_010.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_011.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_012.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_013.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_014.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_015.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_016.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_017.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_018.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_019.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_020.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_021.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_022.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_023.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_024.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_025.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_026.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_027.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_028.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_029.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_030.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_031.png"
+
+create-hat-spritesheet
+--name
+"Cat Hat"
+--adaptive
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--author
+"EnoPM"
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_000.png"
+--front-animation-frames
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_001.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_002.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_003.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_004.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_005.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_006.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_007.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_008.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_009.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_010.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_011.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_012.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_013.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_014.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_015.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_016.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_017.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_018.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_019.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_020.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_021.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_022.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_023.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_024.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_025.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_026.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_027.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_028.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_029.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_030.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_031.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_032.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_033.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_034.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_035.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_036.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_037.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_038.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_039.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_040.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_041.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_042.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_043.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_044.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_045.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_046.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_047.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_048.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_049.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_050.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_051.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_052.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_053.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_054.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_055.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_056.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_057.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_058.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_059.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_060.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_061.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_062.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_063.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_064.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_065.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_066.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_067.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Cat_Hat\Cat_Hat_068.png"
+
+create-hat-spritesheet
+--name
+"hermes"
+--output
+"D:\GameDevelopment\AmongUs\Spritesheets"
+--author
+"EnoPM"
+--main-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_000.png"
+--back-resource
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_000.png"
+--front-animation-frames
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_001.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_002.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_003.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_004.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_005.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_006.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_007.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_008.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_009.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_010.png"
+--back-animation-frames
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_001.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_002.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_003.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_004.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_005.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_006.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_007.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_008.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_009.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_010.png"
