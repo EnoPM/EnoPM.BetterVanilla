@@ -17,4 +17,7 @@ public sealed class BundleOptions
     
     [Option("visors", HelpText = "Hats spritesheet json files")]
     public IEnumerable<string> VisorSpritesheet { get; [UsedImplicitly] set; } = null!;
+    
+    [Option("nameplates", HelpText = "Nameplates spritesheet json files")]
+    public IEnumerable<string> NameplateSpritesheet { get; [UsedImplicitly] set; } = null!;
 }

@@ -5,6 +5,7 @@ using BetterVanilla.Cosmetics.Api.Core.Bundle;
 using BetterVanilla.Cosmetics.Core.Spritesheet;
 using BetterVanilla.Cosmetics.GeneratedRuntime;
 using BetterVanilla.Cosmetics.Hats;
+using BetterVanilla.Cosmetics.NamePlates;
 using BetterVanilla.Cosmetics.Visors;
 using HarmonyLib;
 
@@ -19,6 +20,7 @@ public sealed class CosmeticsPlugin : BasePlugin
     
     public HatCosmeticManager Hats { get; }
     public VisorCosmeticManager Visors { get; }
+    public NamePlateCosmeticManager NamePlates { get; }
 
     public CosmeticsPlugin()
     {
@@ -28,6 +30,7 @@ public sealed class CosmeticsPlugin : BasePlugin
         
         Hats = new HatCosmeticManager();
         Visors = new VisorCosmeticManager();
+        NamePlates = new NamePlateCosmeticManager();
     }
 
     public override void Load()
@@ -66,6 +69,13 @@ public sealed class CosmeticsPlugin : BasePlugin
             var cosmetic = new VisorCosmetic(serialized, cache);
             Visors.AddCosmetic(cosmetic);
         }
+        
+        Logging.LogInfo($"[NamePlates] Registering {bundle.NamePlates.Count} cosmetics");
+        foreach (var serialized in bundle.NamePlates)
+        {
+            var cosmetic = new NamePlateCosmetic(serialized, cache);
+            NamePlates.AddCosmetic(cosmetic);
+        }
     }
 
     #region Helpers
@@ -74,12 +84,21 @@ public sealed class CosmeticsPlugin : BasePlugin
     {
         Hats.UpdateAnimationFrames();
         Visors.UpdateAnimationFrames();
+        NamePlates.UpdateAnimationFrames();
     }
 
     public void RefreshAnimationFrames(PlayerPhysics playerPhysics)
     {
         Hats.RefreshAnimationFrames(playerPhysics);
         Visors.RefreshAnimationFrames(playerPhysics);
+        NamePlates.RefreshAnimationFrames(playerPhysics);
+    }
+
+    public void ProcessUnregisteredCosmetics()
+    {
+        Hats.RegisterCosmetics();
+        Visors.RegisterCosmetics();
+        NamePlates.RegisterCosmetics();
     }
 
     #endregion

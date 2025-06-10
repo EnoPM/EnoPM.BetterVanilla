@@ -31,7 +31,6 @@ internal static class VisorsTabPatches
             var chip = Object.Instantiate(visorsTab.ColorTabPrefab, visorsTab.scroller.Inner);
             chip.transform.localPosition = new Vector3(x, y, -1f);
             visorsTab.ConfigureChipButtons(chip, visor);
-            chip.Button.ClickMask = visorsTab.scroller.Hitbox;
             chip.ProductId = visor.ProductId;
             visorsTab.UpdateMaterials(chip.Inner.FrontLayer, visor);
             var playerColor = visorsTab.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;

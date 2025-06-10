@@ -1,10 +1,10 @@
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
-using BetterVanilla.Cosmetics.Api.Visors;
+using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.CosmeticsCompiler.Core;
 
-namespace BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
+namespace BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
 
-public sealed class LoadableVisor : IVisor<SpriteFile>
+public sealed class LoadableNamePlate : INamePlate<SpriteFile>
 {
     public string Name { get; set; }
 
@@ -13,22 +13,13 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
     public SerializedCosmeticAuthor? Author { get; set; }
     
     public SpriteFile MainResource { get; set; }
-    
-    public SpriteFile? LeftResource { get; set; }
-    
-    public SpriteFile? ClimbResource { get; set; }
-    
-    public SpriteFile? FloorResource { get; set; }
-    
-    public bool BehindHats { get; set; }
 
     public List<SpriteFile> AllSprites { get; } = [];
 
-    public LoadableVisor(CreateVisorSpritesheetOptions options)
+    public LoadableNamePlate(CreateNameplateSpritesheetOptions options)
     {
         Name = options.Name;
         Adaptive = options.IsAdaptive;
-        BehindHats = options.IsBehindHats;
         MainResource = CreateSpriteFile(nameof(MainResource), options.MainResourceFilePath);
         if (options.AuthorName != null)
         {
@@ -36,18 +27,6 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
             {
                 Name = options.AuthorName
             };
-        }
-        if (options.LeftResourceFilePath != null)
-        {
-            LeftResource = CreateSpriteFile(nameof(LeftResource), options.LeftResourceFilePath);
-        }
-        if (options.ClimbResourceFilePath != null)
-        {
-            ClimbResource = CreateSpriteFile(nameof(ClimbResource), options.ClimbResourceFilePath);
-        }
-        if (options.FloorResourceFilePath != null)
-        {
-            FloorResource = CreateSpriteFile(nameof(FloorResource), options.FloorResourceFilePath);
         }
     }
 

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using BetterVanilla.Cosmetics.Api.Core.Bundle;
-using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Hats;
+using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.Cosmetics.Api.Visors;
 
 namespace BetterVanilla.CosmeticsCompiler.Bundle;
@@ -37,6 +37,16 @@ public sealed class BundleCreator
                 throw new Exception("Unable to deserialize: " + cosmeticPath);
             }
             bundle.AddVisor(visor);
+        }
+        
+        foreach (var cosmeticPath in Options.NameplateSpritesheet)
+        {
+            var namePlate = JsonSerializer.Deserialize<SerializedNamePlate>(File.ReadAllText(cosmeticPath));
+            if (namePlate == null)
+            {
+                throw new Exception("Unable to deserialize: " + cosmeticPath);
+            }
+            bundle.AddNamePlate(namePlate);
         }
 
         using var file = File.Create(Options.OutputFilePath);

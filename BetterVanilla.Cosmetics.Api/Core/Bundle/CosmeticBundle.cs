@@ -1,5 +1,6 @@
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Hats;
+using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.Cosmetics.Api.Visors;
 
 namespace BetterVanilla.Cosmetics.Api.Core.Bundle;
@@ -10,6 +11,8 @@ public sealed class CosmeticBundle
 
     public List<SerializedHat> Hats { get; internal set; } = [];
     public List<SerializedVisor> Visors { get; internal set; } = [];
+    
+    public List<SerializedNamePlate> NamePlates { get; internal set; } = [];
 
     private readonly Dictionary<string, string> _spritesheetNamesMap = new();
 
@@ -34,6 +37,13 @@ public sealed class CosmeticBundle
         CacheSprite(cosmetic.FloorResource);
         
         Visors.Add(cosmetic);
+    }
+
+    public void AddNamePlate(SerializedNamePlate cosmetic)
+    {
+        CacheSprite(cosmetic.MainResource);
+        
+        NamePlates.Add(cosmetic);
     }
 
     private void CacheSprite(List<SerializedSprite>? sprites)

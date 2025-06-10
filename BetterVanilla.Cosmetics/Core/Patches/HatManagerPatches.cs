@@ -8,7 +8,6 @@ internal static class HatManagerPatches
     [HarmonyPostfix, HarmonyPatch(nameof(HatManager.Initialize))]
     private static void InitializePostfix(HatManager __instance)
     {
-        CosmeticsPlugin.Instance.Hats.RegisterCosmetics();
-        CosmeticsPlugin.Instance.Visors.RegisterCosmetics();
+        CosmeticsPlugin.Instance.ProcessUnregisteredCosmetics();
     }
 }

@@ -2,8 +2,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using BetterVanilla.Cosmetics.Api.Core.Bundle.Versions;
-using BetterVanilla.Cosmetics.Api.Hats;
-using BetterVanilla.Cosmetics.Api.Visors;
 
 namespace BetterVanilla.Cosmetics.Api.Core.Bundle;
 
@@ -19,8 +17,10 @@ public static class BundleSerializer
         writer.Write(CurrentVersion);
         writer.Write(options.Compressed);
         
-        writer.WriteHats(bundle.Hats, options.Compressed);
-        writer.WriteVisors(bundle.Visors, options.Compressed);
+        writer.WriteSerializedList(bundle.Hats, options.Compressed);
+        writer.WriteSerializedList(bundle.Visors, options.Compressed);
+        writer.WriteSerializedList(bundle.NamePlates, options.Compressed);
+        
         writer.WriteAllSpritesheet(bundle.AllSpritesheet, options.Compressed);
     }
 
@@ -60,38 +60,21 @@ public static class BundleSerializer
         return allSpritesheet;
     }
 
-    private static void WriteHats(this BinaryWriter writer, List<SerializedHat> hats, bool isCompressed)
+    private static void WriteSerializedList<T>(this BinaryWriter writer, List<T> list, bool isCompressed)
     {
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(hats);
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(list);
         var toWrite = isCompressed ? Compress(bytes) : bytes;
         
         writer.Write(toWrite.Length);
         writer.Write(toWrite);
     }
-    
-    internal static List<SerializedHat> ReadHats(this BinaryReader reader, bool isCompressed)
+
+    internal static List<T> ReadSerializedList<T>(this BinaryReader reader, bool isCompressed)
     {
         var size = reader.ReadInt32();
         var bytes = reader.ReadBytes(size);
         var toRead = isCompressed ? Decompress(bytes) : bytes;
-        return JsonSerializer.Deserialize<List<SerializedHat>>(toRead) ?? [];
-    }
-    
-    private static void WriteVisors(this BinaryWriter writer, List<SerializedVisor> visors, bool isCompressed)
-    {
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(visors);
-        var toWrite = isCompressed ? Compress(bytes) : bytes;
-        
-        writer.Write(toWrite.Length);
-        writer.Write(toWrite);
-    }
-    
-    internal static List<SerializedVisor> ReadVisors(this BinaryReader reader, bool isCompressed)
-    {
-        var size = reader.ReadInt32();
-        var bytes = reader.ReadBytes(size);
-        var toRead = isCompressed ? Decompress(bytes) : bytes;
-        return JsonSerializer.Deserialize<List<SerializedVisor>>(toRead) ?? [];
+        return JsonSerializer.Deserialize<List<T>>(toRead) ?? [];
     }
 
     private static IBundleSerializer GetDeserializer(int version)
@@ -122,7 +105,7 @@ public static class BundleSerializer
         return deserializer.Deserialize(reader);
     }
     
-    internal static byte[] Compress(byte[] data)
+    private static byte[] Compress(byte[] data)
     {
         using var ms = new MemoryStream();
         using (var brotli = new BrotliStream(ms, CompressionLevel.SmallestSize, leaveOpen: true))
@@ -130,7 +113,7 @@ public static class BundleSerializer
         return ms.ToArray();
     }
 
-    internal static byte[] Decompress(byte[] data)
+    private static byte[] Decompress(byte[] data)
     {
         using var input = new MemoryStream(data);
         using var brotli = new BrotliStream(input, CompressionMode.Decompress);

@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
+using BetterVanilla.Cosmetics.Api.Core.Bundle;
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.CosmeticsCompiler.Bundle;
 using BetterVanilla.CosmeticsCompiler.HatsSpritesheet;
+using BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
 using BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
 using CommandLine;
 using Json.More;
@@ -19,10 +21,11 @@ internal static class Program
 
     private static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, CreateVisorSpritesheetOptions, BundleOptions>(args)
+        Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, CreateVisorSpritesheetOptions, CreateNameplateSpritesheetOptions, BundleOptions>(args)
             .WithParsed<GenerateSchemaOptions>(GenerateSchema)
             .WithParsed<CreateHatSpritesheetOptions>(CreateHatSpritesheet)
             .WithParsed<CreateVisorSpritesheetOptions>(CreateVisorSpritesheet)
+            .WithParsed<CreateNameplateSpritesheetOptions>(CreateNamePlateSpritesheet)
             .WithParsed<BundleOptions>(Bundle)
             .WithNotParsed(HandleError);
     }
@@ -33,6 +36,14 @@ internal static class Program
         creator.Process();
         
         Console.WriteLine($"Bundle file generated at {options.OutputFilePath}");
+    }
+
+    private static void CreateNamePlateSpritesheet(CreateNameplateSpritesheetOptions options)
+    {
+        using var creator = new NamePlateSpritesheetCreator(options);
+        creator.Process();
+        Console.WriteLine($"NamePlate spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
+        Console.WriteLine($"NamePlate spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
     }
 
     private static void CreateHatSpritesheet(CreateHatSpritesheetOptions options)
@@ -56,7 +67,7 @@ internal static class Program
     private static void GenerateSchema(GenerateSchemaOptions options)
     {
         var builder = new JsonSchemaBuilder();
-        var schema = builder.FromType<SerializedCosmeticsManifest>().Build();
+        var schema = builder.FromType<CosmeticBundle>().Build();
         var jsonDoc = schema.ToJsonDocument();
         SerializerOptions.WriteIndented = options.PrettyPrint;
         var jsonString = JsonSerializer.Serialize(jsonDoc, SerializerOptions);
