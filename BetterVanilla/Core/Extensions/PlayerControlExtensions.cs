@@ -134,4 +134,15 @@ public static class PlayerControlExtensions
         }
         pc.CustomSpawnHandshake();
     }
+
+    public static void HidePetIfDead(this PlayerControl pc)
+    {
+        if (pc == null || pc.Data == null || !pc.AmOwner || !pc.Data.IsDead) return;
+        if (!BetterVanillaManager.Instance.HostOptions.HideDeadPlayerPets.GetBool() &&
+            !BetterVanillaManager.Instance.LocalOptions.HideMyPetAfterDeath.Value)
+        {
+            return;
+        }
+        pc.RpcSetPet(PetData.EmptyId);
+    }
 }

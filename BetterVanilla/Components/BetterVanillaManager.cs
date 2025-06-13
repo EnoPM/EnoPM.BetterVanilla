@@ -76,6 +76,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
 
     private IEnumerator CoStart()
     {
+        yield return new WaitForSeconds(5f);
         while (!ModManager.InstanceExists)
         {
             yield return new WaitForSeconds(1f);

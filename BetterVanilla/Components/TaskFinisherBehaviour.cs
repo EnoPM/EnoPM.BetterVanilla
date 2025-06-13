@@ -12,7 +12,6 @@ namespace BetterVanilla.Components;
 public sealed class TaskFinisherBehaviour : MonoBehaviour
 {
     private Coroutine Routine { get; set; }
-    private static readonly Dictionary<TaskTypes, AutoTaskData> Durations = new();
 
     public bool CanBeStarted()
     {
@@ -84,7 +83,7 @@ public sealed class TaskFinisherBehaviour : MonoBehaviour
         var consolePositions = task.FindConsolesPos();
         var playerPosition = PlayerControl.LocalPlayer.transform.position;
         var currentConsolePosition = consolePositions._items[task.taskStep];
-        var speed = PlayerControl.LocalPlayer.rigidbody2D.velocity.magnitude;
+        var speed = PlayerControl.LocalPlayer.MyPhysics.TrueSpeed;
 
         if (speed <= 0f)
         {
@@ -96,7 +95,7 @@ public sealed class TaskFinisherBehaviour : MonoBehaviour
 
     private IEnumerator CoDoTask(NormalPlayerTask task)
     {
-        var duration = Durations.TryGetValue(task.TaskType, out var taskData) ? taskData : new AutoTaskData
+        var duration = new AutoTaskData
         {
             Duration = 5f,
         };

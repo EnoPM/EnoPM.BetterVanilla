@@ -34,6 +34,11 @@
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.697" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\game" />
+      <EmbeddedResource Include="Assets\ui" />
+    </ItemGroup>
+
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
         <PropertyGroup>
             <GeneratedText><![CDATA[
