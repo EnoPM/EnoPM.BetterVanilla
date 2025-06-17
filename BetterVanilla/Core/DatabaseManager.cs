@@ -41,7 +41,7 @@ public sealed class DatabaseManager
         }
         else
         {
-            Data = JsonSerializer.Deserialize<LocalData>(File.ReadAllText(_filePath));
+            Data = JsonSerializer.Deserialize<LocalData>(File.ReadAllText(_filePath)) ?? new LocalData();
         }
         
         CheckAndMigrateLegacyDatabase(baseDirectory);

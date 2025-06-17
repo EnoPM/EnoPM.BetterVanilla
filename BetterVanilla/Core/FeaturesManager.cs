@@ -59,6 +59,15 @@ public sealed class FeaturesManager
             Ls.LogError("No features registry found");
             yield break;
         }
+        RefreshPlayerSponsorStates();
+    }
+
+    private static void RefreshPlayerSponsorStates()
+    {
+        foreach (var player in BetterVanillaManager.Instance.AllPlayers)
+        {
+            player.UpdateSponsorState();
+        }
     }
 
     public void RegisterCode(string featureCode)

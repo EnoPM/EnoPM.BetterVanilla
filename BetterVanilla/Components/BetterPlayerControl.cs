@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
@@ -13,6 +14,9 @@ public class BetterPlayerControl : MonoBehaviour
     public PlayerControl Player { get; private set; }
     public TextMeshPro InfosText { get; private set; }
     public string FriendCode { get; private set; }
+    public bool AmSponsor { get; private set; }
+    
+    public Color? VisorColor { get; private set; }
 
     private void Awake()
     {
@@ -47,6 +51,13 @@ public class BetterPlayerControl : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName}");
+        Player.cosmetics.add_OnColorChange(new Action<int>(OnBodyColorUpdated));
+    }
+
+    private void OnBodyColorUpdated(int bodyColor)
+    {
+        Ls.LogMessage($"{Player.Data.PlayerName} - Body color: {bodyColor}");
+        RefreshVisorColor();
     }
 
     private void Update()
@@ -94,11 +105,30 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void SetupSponsorInfoText(ref List<string> infos)
     {
-        if (string.IsNullOrWhiteSpace(FriendCode) || BetterVanillaManager.Instance.Features.Registry == null) return;
-        if (BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes.Contains(FriendCode))
+        if (!AmSponsor) return;
+        infos.Add(ColorUtils.ColoredString(Color.blue, "Sponsor"));
+    }
+
+    public void UpdateSponsorState()
+    {
+        if (string.IsNullOrWhiteSpace(FriendCode) || BetterVanillaManager.Instance.Features.Registry == null)
         {
-            infos.Add(ColorUtils.ColoredString(Color.blue, "Sponsor"));
+            return;
         }
+        AmSponsor = BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes.Contains(FriendCode);
+    }
+
+    public void SetVisorColor(Color? color)
+    {
+        VisorColor = color;
+        RefreshVisorColor();
+    }
+
+    private void RefreshVisorColor()
+    {
+        if (Player == null || Player.cosmetics == null) return;
+        var color = VisorColor ?? Palette.VisorColor;
+        Player.cosmetics.currentBodySprite.BodySprite.material.SetColor(PlayerMaterial.VisorColor, color);
     }
 
     private void SetupHostOrDisconnectedInfoText(ref List<string> infos)

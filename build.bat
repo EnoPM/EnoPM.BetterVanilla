@@ -5,8 +5,8 @@ set "configuration=Release"
 
 set "projects=BetterVanilla"
 set "SolutionDir=%CD%"
-set "PostCompilerExecutable=D:\Projects\Il2CppAutoInterop\Il2CppAutoInterop.PostCompiler\bin\Release\net6.0\publish\Il2CppAutoInterop.PostCompiler.exe"
-set "UnityProject=C:\Users\EnoPM\UnityProjects\BetterVanilla"
+set "PostCompilerExecutable=D:\GameDevelopment\Il2CppAutoInterop-publish\Il2CppAutoInterop.exe"
+set "UnityProject=D:\Projects\BetterVanilla UnityEditor\My project"
 set "BepInExDirectory=D:\GameDevelopment\AmongUs\DevFiles\BepInEx"
 set "OutputDir=%BepInExDirectory%\plugins"
 

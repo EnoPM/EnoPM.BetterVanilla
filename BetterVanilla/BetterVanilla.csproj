@@ -26,6 +26,7 @@
         </RestoreAdditionalProjectSources>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,6 +38,7 @@
     <ItemGroup>
       <EmbeddedResource Include="Assets\game" />
       <EmbeddedResource Include="Assets\ui" />
+      <EmbeddedResource Include="Assets\cosmetics.ui" />
     </ItemGroup>
 
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">

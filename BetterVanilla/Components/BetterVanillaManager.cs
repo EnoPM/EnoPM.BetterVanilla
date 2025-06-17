@@ -8,6 +8,7 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Cosmetics;
 using HarmonyLib;
 using UnityEngine;
 
@@ -31,6 +32,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public ModMenuButton MenuButton { get; private set; }
     private ModUpdater Updater { get; set; }
     public ModMenu Menu { get; private set; }
+    public CosmeticManager Cosmetics { get; private set; }
     public ZoomBehaviourManager ZoomBehaviour { get; internal set; }
     public TaskFinisherBehaviour TaskFinisher { get; internal set; }
     public Sprite VentSprite { get; private set; }
@@ -47,6 +49,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
         LocalOptions = new LocalOptionsHolder();
         Cheaters = new CheatersManager();
         Xp = new XpManager();
+        Cosmetics = new CosmeticManager();
 
         var uiBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.ui");
 
