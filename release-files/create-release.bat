@@ -1,7 +1,11 @@
 @echo off
 setLocal enableDelayedExpansion
 
-set "ReleaseVersion=v2.0.0"
+set "ReleaseVersion=%1"
+if "%ReleaseVersion%"=="" (
+    echo [!] Error: No version provided. Usage: create-release.bat v1.2.3
+    exit /b 1
+)
 set "ReleaseName=BetterVanilla"
 set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/735/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.735+5fef357.zip"
 
