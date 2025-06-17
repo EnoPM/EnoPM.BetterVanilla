@@ -2,6 +2,7 @@
 setLocal enableDelayedExpansion
 
 set "ReleaseVersion=%1"
+set "UnityProjectDirectory=%2"
 if "%ReleaseVersion%"=="" (
     echo [!] Error: No version provided. Usage: create-release.bat v1.2.3
     exit /b 1
@@ -9,7 +10,6 @@ if "%ReleaseVersion%"=="" (
 set "ReleaseName=BetterVanilla"
 set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/735/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.735+5fef357.zip"
 
-set "UnityProjectDirectory=D:\Projects\BetterVanilla UnityEditor\My project"
 set "ProjectNames=BetterVanilla"
 set "Il2CppAutoInteropVersion=v1.0.0"
 set "Il2CppAutoInteropRuntime=win-x64"
