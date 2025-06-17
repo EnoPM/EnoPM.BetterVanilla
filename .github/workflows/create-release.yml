@@ -1,4 +1,4 @@
-﻿name: Create prerelease
+﻿name: Create release
 
 on:
   workflow_dispatch:
@@ -47,7 +47,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
-          name: BetterVanilla ${{ github.event.inputs.version }}-beta
-          body: Beta release of BetterVanilla ${{ github.event.inputs.version }}
-          prerelease: true
+          name: BetterVanilla ${{ github.event.inputs.version }}
+          body: Release of BetterVanilla ${{ github.event.inputs.version }}
           files: release-artifacts/**
