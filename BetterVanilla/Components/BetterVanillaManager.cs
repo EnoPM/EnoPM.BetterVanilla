@@ -33,6 +33,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
     private ModUpdater Updater { get; set; }
     public ModMenu Menu { get; private set; }
     public CosmeticManager Cosmetics { get; private set; }
+    public BetterModMenu.BetterModMenu BetterMenu { get; private set; }
     public ZoomBehaviourManager ZoomBehaviour { get; internal set; }
     public TaskFinisherBehaviour TaskFinisher { get; internal set; }
     public Sprite VentSprite { get; private set; }
@@ -50,6 +51,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
         Cheaters = new CheatersManager();
         Xp = new XpManager();
         Cosmetics = new CosmeticManager();
+        BetterMenu = new BetterModMenu.BetterModMenu();
 
         var uiBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.ui");
 

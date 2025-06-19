@@ -1,0 +1,11 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="create-release" type="BatchConfigurationType" factoryName="Batch">
+    <module name="rider.module" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="WORKING_DIRECTORY" value="./release-files" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="create-release.bat" />
+    <option name="PARAMETERS" value="v3.0.0 &quot;D:\Projects\BetterVanilla UnityEditor\My project&quot; &quot;D:\Projects\BetterVanilla\release-files\.build-cache&quot;" />
+    <method v="2" />
+  </configuration>
+</component>

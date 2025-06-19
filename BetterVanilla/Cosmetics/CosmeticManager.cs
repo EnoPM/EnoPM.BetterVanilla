@@ -7,11 +7,15 @@ namespace BetterVanilla.Cosmetics;
 
 public sealed class CosmeticManager
 {
-    public readonly CosmeticsUi Ui;
-    public readonly CosmeticsUiButton Button;
+    private CosmeticsUi Ui { get; }
+    private CosmeticsUiButton Button { get; }
 
     public CosmeticManager()
     {
+        Ui = null!;
+        Button = null!;
+        // TODO: Create cosmetics ui
+        return;
         var bundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.cosmetics.ui");
 
         Ui = Object.Instantiate(

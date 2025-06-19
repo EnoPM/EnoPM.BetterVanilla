@@ -1,50 +1,62 @@
 @echo off
 setLocal enableDelayedExpansion
 
+set "ReleaseName=BetterVanilla"
+set "ProjectNames=BetterVanilla"
+
+set "Il2CppAutoInteropRepository=EnoPM/Il2CppAutoInterop"
+set "Il2CppAutoInteropVersion=v1.1.0"
+set "Il2CppAutoInteropRuntime=win-x64"
+
+set "BepInExVersion=6.0.0"
+set "BepInExBuildNumber=735"
+set "BepInExBuildHash=5fef357"
+
 set "ReleaseVersion=%1"
-set "UnityProjectDirectory=%2"
+set "UnityProjectDirectory=%~2"
+set "BuildCacheDirectory=%~3"
 if "%ReleaseVersion%"=="" (
     echo [!] Error: No version provided. Usage: create-release.bat v1.2.3
     exit /b 1
 )
-set "ReleaseName=BetterVanilla"
-set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/735/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.735+5fef357.zip"
 
-set "ProjectNames=BetterVanilla"
-set "Il2CppAutoInteropVersion=v1.0.0"
-set "Il2CppAutoInteropRuntime=win-x64"
+set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x86-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
+
+
 set "AmongUsBepInExDownloadUrl=https://raw.githubusercontent.com/EnoPM/EnoPM.BetterVanilla/refs/heads/master/release-files/AmongUs.BepInEx.zip"
 
+set "TempDirectory=%~dp0.create-release-temp"
+
+if "%BuildCacheDirectory%"=="" (
+    set "BuildCacheDirectory=%TempDirectory%\.cache"
+)
+
 set "SolutionDir=%~dp0.."
-set "TempDirectory=%~dp0.BetterVanillaBuild"
 set "BuildDirectory=%TempDirectory%\builds"
 set "OutputDirectory=%~dp0output"
-set "BepInExDirectory=%TempDirectory%\BepInExFiles"
+set "BepInExDirectory=%BuildCacheDirectory%\BepInEx-%BepInExVersion%-%BepInExBuildNumber%-%BepInExBuildHash%"
 set "BepInExAmongUsZipPath=%~dp0AmongUs.BepInEx.zip"
 
 set "Il2CppAutoInteropZipFile=Il2CppAutoInterop.%Il2CppAutoInteropRuntime%.zip"
 set "Il2CppAutoInteropZipPath=%TempDirectory%\%Il2CppAutoInteropZipFile%"
-set "Il2CppAutoInteropExecutableName=Il2CppAutoInterop.exe"
-set "Il2CppAutoInteropExecutablePath=%TempDirectory%\%Il2CppAutoInteropExecutableName%"
-set "Il2CppAutoInteropDownloadUrl=https://github.com/EnoPM/Il2CppAutoInterop/releases/download/%Il2CppAutoInteropVersion%/%Il2CppAutoInteropZipFile%"
+set "Il2CppAutoInteropExecutableName=Il2CppAutoInterop-%Il2CppAutoInteropVersion%.exe"
+set "Il2CppAutoInteropExecutablePath=%BuildCacheDirectory%\%Il2CppAutoInteropExecutableName%"
+set "Il2CppAutoInteropDownloadUrl=https://github.com/%Il2CppAutoInteropRepository%/releases/download/%Il2CppAutoInteropVersion%/%Il2CppAutoInteropZipFile%"
 
-set "Il2CppAutoInteropArgs=-b "%BepInExDirectory%\BepInEx" -o "%BepInExDirectory%\BepInEx\plugins""
 set "Il2CppAutoInteropInputFiles=-i"
-if not "%UnityProjectDirectory%"=="" (
-    if exist "%UnityProjectDirectory%" (
-        set "Il2CppAutoInteropArgs=%Il2CppAutoInteropArgs% -u "%UnityProjectDirectory%""
-    ) else (
-        echo [!] Error: Unity project directory '%UnityProjectDirectory%' not found.
-        exit /b 1
-    )
-)
 
 call :CreateDirectoryIfNotExist "%TempDirectory%"
 call :CreateDirectoryIfNotExist "%BuildDirectory%"
 call :CreateDirectoryIfNotExist "%OutputDirectory%"
+call :CreateDirectoryIfNotExist "%BuildCacheDirectory%"
 
 if not exist "%Il2CppAutoInteropExecutablePath%" (
     call :DownloadAndExtractZip "%Il2CppAutoInteropDownloadUrl%" "%TempDirectory%"
+    if not exist "%TempDirectory%\Il2CppAutoInterop.exe" (
+        echo [!] Error: File 'Il2CppAutoInterop.exe' not found in '%TempDirectory%'.
+        exit /b 1
+    )
+    call :MoveFile "%TempDirectory%\Il2CppAutoInterop.exe" "%Il2CppAutoInteropExecutablePath%"
 )
 
 if not exist %Il2CppAutoInteropExecutablePath% (
@@ -66,7 +78,7 @@ for %%p in (%ProjectNames%) do (
     set "Il2CppAutoInteropInputFiles=%Il2CppAutoInteropInputFiles% "%BuildDirectory%\%%p\%%p.dll""
 )
 call :PrepareBepInExDirectory
-call :MakeIl2CppAutoInterop
+call :MakeIl2CppAutoInterop "%BepInExDirectory%\BepInEx\plugins"
 call :CreateRelease
 call :DeleteDirectory "%TempDirectory%"
 
@@ -78,6 +90,8 @@ exit /b 0
 
 echo [+] Creating BepInEx release zip archive
 call :DeleteDirectoryIfExist "%BepInExDirectory%\BepInEx\interop"
+call :DeleteFileIfExist "%BepInExDirectory%\.doorstop_version"
+call :DeleteFileIfExist "%BepInExDirectory%\changelog.txt"
 call :DeleteFileIfExist "%OutputDirectory%\%ReleaseName%.%ReleaseVersion%.zip"
 call :Zip "%BepInExDirectory%\*" "%OutputDirectory%\%ReleaseName%.%ReleaseVersion%.zip"
 call :MoveFile "%BepInExDirectory%\BepInEx\plugins\*" "%OutputDirectory%\"
@@ -103,15 +117,37 @@ if not exist "%BepInExDirectory%\BepInEx\interop" (
 goto :eof
 
 :MakeIl2CppAutoInterop
+setLocal
+set "Il2CppAutoInteropOutputDirectory=%~1"
 
-echo [+] Running Il2CppAutoInterop: '"%Il2CppAutoInteropExecutablePath%" %Il2CppAutoInteropArgs% %Il2CppAutoInteropInputFiles%'
-"%Il2CppAutoInteropExecutablePath%" %Il2CppAutoInteropArgs% %Il2CppAutoInteropInputFiles%
+set "ProjectAutoInteropLog=%TempDirectory%\Il2CppAutoInterop.log"
+if "%UnityProjectDirectory%" == "" (
+    echo [+] Running Il2CppAutoInterop: '"%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" %Il2CppAutoInteropInputFiles%'
+    "%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" %Il2CppAutoInteropInputFiles% > "%ProjectAutoInteropLog%" 2>&1
+) else (
+    if not exist "%UnityProjectDirectory%" (
+        echo [!] Error: Unity project directory '%UnityProjectDirectory%' not found.
+        exit /b 1
+    )
+    echo [+] Running Il2CppAutoInterop: '"%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" -u "%UnityProjectDirectory%"  %Il2CppAutoInteropInputFiles%'
+    "%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" -u "%UnityProjectDirectory%"  %Il2CppAutoInteropInputFiles% > "%ProjectAutoInteropLog%" 2>&1
+)
 
+if errorLevel 1 (
+    echo [!] Error: Il2CppAutoInterop failed. See output below:
+    type "%ProjectAutoInteropLog%"
+    exit /b 1
+) else (
+    call :DeleteFileIfExist "%ProjectAutoInteropLog%"
+)
+
+endLocal
 goto :eof
 
 :BuildDotnetProject
 setLocal
 set "DotnetProjectName=%~1"
+set "ProjectBuildLog=%TempDirectory%\%DotnetProjectName%.dotnet.log"
 
 call :DeleteDirectoryIfExist "%BuildDirectory%\%DotnetProjectName%"
 
@@ -119,10 +155,13 @@ echo [+] Building project : '%DotnetProjectName%'
 dotnet build "%SolutionDir%/%DotnetProjectName%/%DotnetProjectName%.csproj" ^
   --configuration Release ^
   --runtime win-x86 ^
-  --output "%BuildDirectory%\%DotnetProjectName%"
+  --output "%BuildDirectory%\%DotnetProjectName%" > "%ProjectBuildLog%" 2>&1
 if errorLevel 1 (
-    echo [!] Error: Build '%DotnetProjectName%' failed.
+    echo [!] Error: Build '%DotnetProjectName%' failed. See output below:
+    type "%ProjectBuildLog%"
     exit /b 1
+) else (
+    call :DeleteFile "%ProjectBuildLog%"
 )
 echo [+] Success: Build succeeded : '%DotnetProjectName%'
 
@@ -177,7 +216,7 @@ set "ZipFilePath=%~1"
 set "ExtractDestinationDirectory=%~2"
 
 echo [+] Extracting '%ZipFilePath%'
-powershell -Command "Expand-Archive -Path '%ZipFilePath%' -DestinationPath '%ExtractDestinationDirectory%'"
+powershell -Command "Expand-Archive -Force -Path '%ZipFilePath%' -DestinationPath '%ExtractDestinationDirectory%'"
 
 endLocal
 goto :eof

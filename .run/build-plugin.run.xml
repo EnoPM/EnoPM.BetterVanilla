@@ -1,0 +1,11 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="build-plugin" type="BatchConfigurationType" factoryName="Batch">
+    <module name="rider.module" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="WORKING_DIRECTORY" value="./release-files" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="build-plugin.bat" />
+    <option name="PARAMETERS" value="&quot;D:\GameDevelopment\AmongUs\DevFiles\BepInEx\plugins&quot; &quot;D:\Projects\BetterVanilla UnityEditor\My project&quot;" />
+    <method v="2" />
+  </configuration>
+</component>

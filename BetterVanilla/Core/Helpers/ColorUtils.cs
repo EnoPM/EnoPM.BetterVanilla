@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;
@@ -17,26 +18,25 @@ public static class ColorUtils
         var percent = (float)done / total;
         return Color.Lerp(NoTasksDoneColor, AllTasksDoneColor, percent);
     }
-    
-    private static byte ToByte(float f)
-    {
-        f = Mathf.Clamp01(f);
-        return (byte)(f * 255);
-    }
 
     public static string ColoredString(Color c, string s)
     {
-        return $"<color=#{ToByte(c.r):X2}{ToByte(c.g):X2}{ToByte(c.b):X2}{ToByte(c.a):X2}>{s}</color>";
+        return $"<color={ToHex(c)}>{s}</color>";
+    }
+
+    public static bool IsValidHexColor(string input)
+    {
+        return Regex.IsMatch(input, "^#([0-9A-Fa-f]{6})$");
     }
     
-    public static string ToHex(Color color)
+    public static string ToHex(Color color, bool withAlpha = true)
     {
         var r = Mathf.RoundToInt(color.r * 255);
         var g = Mathf.RoundToInt(color.g * 255);
         var b = Mathf.RoundToInt(color.b * 255);
         var a = Mathf.RoundToInt(color.a * 255);
-        var hexColor = $"#{r:X2}{g:X2}{b:X2}{a:X2}";
-        return hexColor;
+        var hexColor = $"#{r:X2}{g:X2}{b:X2}";
+        return withAlpha ? $"{hexColor}{a:X2}" : hexColor;
     }
     
     public static Color FromHex(string hexColor)

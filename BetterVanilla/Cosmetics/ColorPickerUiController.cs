@@ -11,7 +11,7 @@ public sealed class ColorPickerUiController : MonoBehaviour
     public Slider slider;
     public TMP_InputField field;
 
-    public event Action<int> ValueChanged; 
+    public event Action<int>? ValueChanged; 
     
     public int Value => Mathf.RoundToInt(slider.value);
 
