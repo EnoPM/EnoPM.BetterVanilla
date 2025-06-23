@@ -1,5 +1,4 @@
-﻿using System;
-using BetterVanilla.BetterModMenu.Tabs;
+﻿using BetterVanilla.BetterModMenu.Tabs;
 using BetterVanilla.Components.BaseComponents;
 using BetterVanilla.GeneratedRuntime;
 using TMPro;
@@ -18,7 +17,11 @@ public sealed class BetterModMenuUi : BaseWindowUi
         versionText.SetText($"v{GeneratedProps.Version}");
     }
 
-    private void Start() => OpenSponsorTab();
+    private void Start()
+    {
+        OpenSponsorTab();
+        Hide();
+    }
 
     public void OpenSponsorTab()
     {

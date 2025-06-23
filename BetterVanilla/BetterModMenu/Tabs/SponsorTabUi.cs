@@ -39,6 +39,13 @@ public sealed class SponsorTabUi : BaseOptionsTabUi
 
     private void Update()
     {
+        /*
+        if (Input.anyKeyDown)
+        {
+            var key = Input.inputString;
+            Ls.LogMessage($"Key pressed: {key}");
+        }
+        */
         if (Input.GetKeyDown(KeyCode.F2))
         {
             Ls.LogMessage($"F2 pressed");
