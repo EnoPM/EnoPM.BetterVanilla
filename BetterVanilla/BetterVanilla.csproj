@@ -40,6 +40,7 @@
       <EmbeddedResource Include="Assets\ui" />
       <EmbeddedResource Include="Assets\cosmetics.ui" />
       <EmbeddedResource Include="Assets\menu.ui" />
+      <EmbeddedResource Include="Assets\better.game" />
     </ItemGroup>
 
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">

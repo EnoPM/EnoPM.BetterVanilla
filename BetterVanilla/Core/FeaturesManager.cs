@@ -14,7 +14,7 @@ public sealed class FeaturesManager
     private readonly HashSet<string> _availableHashes = [];
     private readonly HashSet<string> _hashedCodes = [];
 
-    public FeaturesRegistry Registry { get; private set; } = null;
+    public FeaturesRegistry? Registry { get; private set; }
 
     public FeaturesManager()
     {
@@ -36,6 +36,7 @@ public sealed class FeaturesManager
 
     private IEnumerator CoStart(string githubRepository, string branchName, string filePath)
     {
+        Ls.LogMessage($"Loading features: {githubRepository}");
         var www = new UnityWebRequest();
         www.SetMethod(UnityWebRequest.UnityWebRequestMethod.Get);
         www.SetUrl($"https://raw.githubusercontent.com/{githubRepository}/refs/heads/{branchName}/{filePath}");
@@ -64,6 +65,7 @@ public sealed class FeaturesManager
 
     private static void RefreshPlayerSponsorStates()
     {
+        Ls.LogMessage($"Refreshing player sponsor states {BetterVanillaManager.Instance.AllPlayers.Count}");
         foreach (var player in BetterVanillaManager.Instance.AllPlayers)
         {
             player.UpdateSponsorState();

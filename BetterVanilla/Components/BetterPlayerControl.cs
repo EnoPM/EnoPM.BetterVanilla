@@ -12,7 +12,7 @@ namespace BetterVanilla.Components;
 public class BetterPlayerControl : MonoBehaviour
 {
     public PlayerControl Player { get; private set; }
-    public TextMeshPro InfosText { get; private set; }
+    public BetterPlayerTexts PlayerTexts { get; private set; }
     public string FriendCode { get; private set; }
     public bool AmSponsor { get; private set; }
     
@@ -40,18 +40,30 @@ public class BetterPlayerControl : MonoBehaviour
         {
             yield return null;
         }
-        
-        InfosText = Instantiate(Player.cosmetics.nameText, Player.cosmetics.nameText.transform.parent);
-        var pos = InfosText.transform.localPosition;
-        pos.y = 0.2f;
-        InfosText.transform.localPosition = pos;
-        InfosText.SetText(string.Empty);
+
+        PlayerTexts = CreateBetterInfosTexts();
+        PlayerTexts.gameObject.SetActive(true);
         while (string.IsNullOrWhiteSpace(Player.Data.PlayerName))
         {
             yield return new WaitForEndOfFrame();
         }
         Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName}");
         Player.cosmetics.add_OnColorChange(new Action<int>(OnBodyColorUpdated));
+    }
+
+    private BetterPlayerTexts CreateBetterInfosTexts()
+    {
+        return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player.cosmetics.nameText.transform);
+    }
+
+    private TextMeshPro CreateVanillaInfosText()
+    {
+        var infosText = Instantiate(Player.cosmetics.nameText, Player.cosmetics.nameText.transform.parent);
+        var pos = infosText.transform.localPosition;
+        pos.y = 0.2f;
+        infosText.transform.localPosition = pos;
+        infosText.SetText(string.Empty);
+        return infosText;
     }
 
     private void OnBodyColorUpdated(int bodyColor)
@@ -62,14 +74,13 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void Update()
     {
-        if (Player.Data && Player.cosmetics && InfosText)
+        if (Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.MainText)
         {
-            var isActive = LocalConditions.AmDead() || Player.AmOwner || !LocalConditions.IsGameStarted();
-            InfosText.gameObject.SetActive(isActive);
-            if (isActive)
-            {
-                InfosText.SetText(GetBetterInfosText());
-            }
+            var isActive = !LocalConditions.IsGameStarted() || LocalConditions.AmDead() || Player.AmOwner;
+            PlayerTexts.gameObject.SetActive(isActive);
+            if (!isActive) return;
+            PlayerTexts.MainText.SetText(GetBetterInfosText());
+            PlayerTexts.SponsorText.SetText(GetSponsorText());
         }
     }
 
@@ -103,14 +114,15 @@ public class BetterPlayerControl : MonoBehaviour
         infos.Add(ColorUtils.ColoredString(ColorUtils.CheaterColor, "Cheater"));
     }
 
-    private void SetupSponsorInfoText(ref List<string> infos)
+    private string GetSponsorText()
     {
-        if (!AmSponsor) return;
-        infos.Add(ColorUtils.ColoredString(Color.blue, "Sponsor"));
+        if (!AmSponsor) return string.Empty;
+        return ColorUtils.ColoredString(Color.blue, "Sponsor");
     }
 
     public void UpdateSponsorState()
     {
+        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Updating sponsor state");
         if (string.IsNullOrWhiteSpace(FriendCode) || BetterVanillaManager.Instance.Features.Registry == null)
         {
             return;
@@ -167,14 +179,14 @@ public class BetterPlayerControl : MonoBehaviour
         var infos = new List<string>();
         SetupCheaterInfoText(ref infos);
         SetupHostOrDisconnectedInfoText(ref infos);
-        SetupSponsorInfoText(ref infos);
         SetupRoleOrTaskInfoText(ref infos);
-        return $"<size=70%>{string.Join(" - ", infos)}</size>";
+        return string.Join(" - ", infos);
     }
 
     public void SetFriendCode(string friendCode)
     {
         FriendCode = friendCode;
         Ls.LogMessage($"Friend code for player {Player.Data.PlayerName}: {FriendCode}");
+        UpdateSponsorState();
     }
 }

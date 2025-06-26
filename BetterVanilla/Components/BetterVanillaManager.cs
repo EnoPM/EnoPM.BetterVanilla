@@ -37,6 +37,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public ZoomBehaviourManager ZoomBehaviour { get; internal set; }
     public TaskFinisherBehaviour TaskFinisher { get; internal set; }
     public Sprite VentSprite { get; private set; }
+    public BetterPlayerTexts PlayerTextsPrefab { get; private set; } = null!;
     
     private void Awake()
     {
@@ -67,6 +68,13 @@ public sealed class BetterVanillaManager : MonoBehaviour
         VentSprite.hideFlags = HideFlags.HideAndDontSave;
         
         gameBundle.Unload(false);
+        
+        var betterGame = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.better.game");
+        
+        PlayerTextsPrefab = Instantiate(betterGame.LoadComponent<BetterPlayerTexts>("Assets/Ui/BetterPlayerTexts.prefab"), transform);
+        PlayerTextsPrefab.gameObject.SetActive(false);
+        
+        betterGame.Unload(false);
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
         
