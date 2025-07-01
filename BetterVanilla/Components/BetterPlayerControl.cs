@@ -74,13 +74,13 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void Update()
     {
-        if (Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.MainText)
+        if (Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.IsReady)
         {
             var isActive = !LocalConditions.IsGameStarted() || LocalConditions.AmDead() || Player.AmOwner;
             PlayerTexts.gameObject.SetActive(isActive);
             if (!isActive) return;
-            PlayerTexts.MainText.SetText(GetBetterInfosText());
-            PlayerTexts.SponsorText.SetText(GetSponsorText());
+            PlayerTexts.SetMainText(GetBetterInfosText());
+            PlayerTexts.SetSponsorText(GetSponsorText());
         }
     }
 
