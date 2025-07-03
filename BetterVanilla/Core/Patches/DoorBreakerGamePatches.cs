@@ -43,7 +43,7 @@ internal static class DoorBreakerGamePatches
     {
         foreach (var button in buttons)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.4f);
             doorGame.FlipSwitch(button);
         }
     }
