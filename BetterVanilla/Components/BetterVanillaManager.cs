@@ -38,6 +38,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public TaskFinisherBehaviour TaskFinisher { get; internal set; }
     public Sprite VentSprite { get; private set; }
     public BetterPlayerTexts PlayerTextsPrefab { get; private set; } = null!;
+    public BetterPlayerTexts BetterVoteAreaTextsPrefab { get; private set; } = null!;
     
     private void Awake()
     {
@@ -73,6 +74,9 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         PlayerTextsPrefab = Instantiate(betterGame.LoadComponent<BetterPlayerTexts>("Assets/Ui/BetterPlayerTexts.prefab"), transform);
         PlayerTextsPrefab.gameObject.SetActive(false);
+        
+        BetterVoteAreaTextsPrefab = Instantiate(betterGame.LoadComponent<BetterPlayerTexts>("Assets/Ui/BetterVoteAreaTexts.prefab"), transform);
+        BetterVoteAreaTextsPrefab.gameObject.SetActive(false);
         
         betterGame.Unload(false);
 

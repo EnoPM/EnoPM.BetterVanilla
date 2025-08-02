@@ -15,6 +15,10 @@ public static class ColorUtils
 
     public static Color TaskCountColor(int done, int total)
     {
+        if (total == 0)
+        {
+            return NoTasksDoneColor;
+        }
         var percent = (float)done / total;
         return Color.Lerp(NoTasksDoneColor, AllTasksDoneColor, percent);
     }

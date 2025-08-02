@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
-using TMPro;
+using BetterVanilla.Core;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -9,9 +10,8 @@ namespace BetterVanilla.Components;
 public sealed class BetterPlayerVoteArea : MonoBehaviour
 {
     public static readonly List<BetterPlayerVoteArea> AllVoteAreas = [];
-    
-    public PlayerVoteArea VoteArea { get; private set; }
-    private TextMeshPro InfosText { get; set; }
+    public PlayerVoteArea VoteArea { get; private set; } = null!;
+    private BetterPlayerTexts? InfosText { get; set; }
 
     private void Awake()
     {
@@ -31,21 +31,26 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!VoteArea || !VoteArea.NameText)
+        InfosText = Instantiate(BetterVanillaManager.Instance.BetterVoteAreaTextsPrefab, VoteArea.NameText.transform.parent);
+        InfosText.gameObject.hideFlags |= HideFlags.HideAndDontSave;
+        InfosText.gameObject.SetActive(true);
+
+        while (!InfosText.IsReady)
         {
             yield return new WaitForEndOfFrame();
         }
-
-        InfosText = Instantiate(VoteArea.NameText, VoteArea.NameText.transform.parent);
-        var pos = InfosText.transform.localPosition;
-        pos.y = 0.2f;
+        
+        
+        var pos = VoteArea.NameText.transform.localPosition;
+        //pos.y = 0.2f;
         InfosText.transform.localPosition = pos;
-        InfosText.SetText(string.Empty);
+        InfosText.SetSponsorText("Sponsor");
+        InfosText.SetMainText("Main Text");
     }
 
     private void Update()
     {
-        if (!InfosText || !MeetingHud.Instance) return;
+        if (InfosText == null || !MeetingHud.Instance || !InfosText.IsReady) return;
         if (MeetingHud.Instance.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
         {
             InfosText.gameObject.SetActive(false);
@@ -53,12 +58,13 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
             
         }
         var player = BetterVanillaManager.Instance.AllPlayers.Find(x => x.Player.PlayerId == VoteArea.TargetPlayerId);
-        if (!player)
+        if (player == null)
         {
             InfosText.gameObject.SetActive(false);
             return;
         }
-        InfosText.SetText(player.GetBetterInfosText());
+        InfosText.SetSponsorText(player.GetSponsorText());
+        InfosText.SetMainText(player.GetBetterInfosText());
         InfosText.gameObject.SetActive(true);
     }
 }

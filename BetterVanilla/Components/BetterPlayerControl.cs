@@ -114,7 +114,7 @@ public class BetterPlayerControl : MonoBehaviour
         infos.Add(ColorUtils.ColoredString(ColorUtils.CheaterColor, "Cheater"));
     }
 
-    private string GetSponsorText()
+    public string GetSponsorText()
     {
         if (!AmSponsor) return string.Empty;
         return ColorUtils.ColoredString(Color.blue, "Sponsor");
