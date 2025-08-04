@@ -57,14 +57,8 @@ public class StringLocalOption : BaseLocalOption
         return Value;
     }
 
-    public TEnum ParseValue<TEnum>(TEnum defaultValue) where TEnum : struct
+    public TEnum ParseValue<TEnum>(TEnum defaultValue) where TEnum : struct, Enum
     {
-        var enumType = typeof(TEnum);
-        if (!enumType.IsEnum)
-        {
-            throw new ArgumentException($"Type myst be enum", enumType.Name);
-        }
-
         return Enum.TryParse<TEnum>(RealValue, out var value) ? value : defaultValue;
     }
 

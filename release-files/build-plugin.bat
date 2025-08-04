@@ -120,7 +120,7 @@ if "%UnityProjectDirectory%" == "" (
     "%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" -u "%UnityProjectDirectory%"  %Il2CppAutoInteropInputFiles% > "%ProjectAutoInteropLog%" 2>&1
 )
 
-if errorLevel 1 (
+if not errorLevel 0 (
     echo [!] Error: Il2CppAutoInterop failed. See output below:
     type "%ProjectAutoInteropLog%"
     exit /b 1

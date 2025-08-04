@@ -6,6 +6,7 @@ using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Options;
 using InnerNet;
 using UnityEngine;
 
@@ -86,7 +87,7 @@ public static class PlayerControlExtensions
             PlayerControl.LocalPlayer = pc;
             pc.cosmetics.SetAsLocalPlayer();
             var mainCamera = Camera.main;
-            while (!mainCamera)
+            while (mainCamera == null)
             {
                 yield return null;
                 mainCamera = Camera.main;
@@ -109,6 +110,7 @@ public static class PlayerControlExtensions
             }
             pc.RpcSetVisor(DataManager.Player.Customization.Visor);
             pc.RpcSetNamePlate(DataManager.Player.Customization.NamePlate);
+            SponsorOptions.Default.UpdateLevelOverrideOption();
             pc.RpcSetLevel(DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel);
             pc.CustomOwnerSpawnHandshake();
             if (!pc.Data.Role)

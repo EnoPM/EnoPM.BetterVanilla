@@ -7,13 +7,13 @@ public abstract class BaseWindowUi : MonoBehaviour
 {
     private readonly PassiveButtonsBlocker _blocker = new();
 
-    public void Show()
+    public virtual void Show()
     {
         gameObject.SetActive(true);
         _blocker.Block();
     }
 
-    public void Hide()
+    public virtual void Hide()
     {
         _blocker.Unblock();
         gameObject.SetActive(false);

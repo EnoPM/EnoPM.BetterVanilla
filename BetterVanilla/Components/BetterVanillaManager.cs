@@ -83,6 +83,7 @@ public sealed class BetterVanillaManager : MonoBehaviour
         GameEventManager.PlayerJoined += OnPlayerJoined;
         
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is loaded!");
+        Ls.LogMessage($"Visor color: {ColorUtils.ToHex(Palette.VisorColor)}");
     }
     
     private void Start()

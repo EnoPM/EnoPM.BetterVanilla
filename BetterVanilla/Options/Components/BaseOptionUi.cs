@@ -1,4 +1,6 @@
-﻿using BetterVanilla.Options.Components.Controllers;
+﻿using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Options.Components.Controllers;
 using UnityEngine;
 
 namespace BetterVanilla.Options.Components;
@@ -12,6 +14,22 @@ public abstract class BaseOptionUi : MonoBehaviour
 
     public void SetLabel(string labelText)
     {
+        if (!label)
+        {
+            this.StartCoroutine(CoSetLabel(labelText));
+        }
+        else
+        {
+            label.SetLabel(labelText);
+        }
+    }
+
+    private IEnumerator CoSetLabel(string labelText)
+    {
+        while (!label)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         label.SetLabel(labelText);
     }
 

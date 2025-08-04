@@ -7,8 +7,8 @@ namespace BetterVanilla.BetterModMenu;
 
 public sealed class BetterModMenu
 {
-    private BetterModMenuButtonUi ButtonUi { get; }
-    private BetterModMenuUi Ui { get; }
+    public BetterModMenuButtonUi ButtonUi { get; }
+    public BetterModMenuUi Ui { get; }
 
     public BetterModMenu()
     {
@@ -31,11 +31,13 @@ public sealed class BetterModMenu
     {
         if (Ui == null) return;
         Ui.Show();
+        ButtonUi.Hide();
     }
 
     public void Hide()
     {
         if (Ui == null) return;
         Ui.Hide();
+        ButtonUi.Show();
     }
 }

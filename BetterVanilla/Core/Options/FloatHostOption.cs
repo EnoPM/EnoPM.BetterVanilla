@@ -22,7 +22,15 @@ public class FloatHostOption : BaseHostOption
 
     private readonly FloatGameSetting _settings;
 
-    public FloatHostOption(string name, string title, float defaultValue, float increment, FloatRange validRange, string formatString, bool zeroIsInfinity, NumberSuffixes suffixType) : base(name, title)
+    public FloatHostOption(
+        string name,
+        string title,
+        float defaultValue,
+        float increment,
+        FloatRange validRange,
+        string formatString,
+        bool zeroIsInfinity,
+        NumberSuffixes suffixType) : base(name, title)
     {
         _settings = InitGameSetting<FloatGameSetting>(OptionTypes.Float);
         _settings.Value = _value = LoadValueFromDatabase(defaultValue);
@@ -61,7 +69,7 @@ public class FloatHostOption : BaseHostOption
         if (Behaviour)
         {
             var numberOption = Behaviour.TryCast<NumberOption>();
-            if (!numberOption)
+            if (numberOption == null)
             {
                 throw new ArgumentException($"behaviour must be {nameof(NumberOption)}");
             }

@@ -18,5 +18,6 @@ public abstract class BaseMenuTabUi : MonoBehaviour
     {
         tabBody.SetActive(value);
         tabHeader.SetEnabled(!value);
+        enabled = value;
     }
 }

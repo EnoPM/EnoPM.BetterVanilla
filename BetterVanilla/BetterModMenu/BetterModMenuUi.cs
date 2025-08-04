@@ -1,6 +1,8 @@
 ﻿using BetterVanilla.BetterModMenu.Tabs;
+using BetterVanilla.Components;
 using BetterVanilla.Components.BaseComponents;
 using BetterVanilla.GeneratedRuntime;
+using BetterVanilla.Options.Components;
 using TMPro;
 
 namespace BetterVanilla.BetterModMenu;
@@ -15,6 +17,7 @@ public sealed class BetterModMenuUi : BaseWindowUi
     private void Awake()
     {
         versionText.SetText($"v{GeneratedProps.Version}");
+        localOptionsTab.enabled = false;
     }
 
     private void Start()
@@ -33,5 +36,11 @@ public sealed class BetterModMenuUi : BaseWindowUi
     {
         sponsorTab.Hide();
         localOptionsTab.Show();
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+        BetterVanillaManager.Instance.BetterMenu.ButtonUi.Show();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using BetterVanilla.Options;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;
@@ -10,22 +11,20 @@ public static class ColorUtils
     public static readonly Color CheaterColor = Palette.ImpostorRed;
     public static readonly Color HostColor = Color.magenta;
     public static readonly Color ImpostorColor = Palette.ImpostorRed;
-    private static readonly Color NoTasksDoneColor = new(0.76f, 0.16f, 0.52f, 1f);
-    private static readonly Color AllTasksDoneColor = new(0.34f, 1f, 0.69f, 1f);
 
     public static Color TaskCountColor(int done, int total)
     {
         if (total == 0)
         {
-            return NoTasksDoneColor;
+            return LocalOptions.Default.TaskStartColor.Value;
         }
         var percent = (float)done / total;
-        return Color.Lerp(NoTasksDoneColor, AllTasksDoneColor, percent);
+        return Color.Lerp(LocalOptions.Default.TaskStartColor.Value, LocalOptions.Default.TaskEndColor.Value, percent);
     }
 
-    public static string ColoredString(Color c, string s)
+    public static string ColoredString(Color c, string s, bool withAlpha = true)
     {
-        return $"<color={ToHex(c)}>{s}</color>";
+        return $"<color={ToHex(c, withAlpha)}>{s}</color>";
     }
 
     public static bool IsValidHexColor(string input)

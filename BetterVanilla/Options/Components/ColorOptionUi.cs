@@ -3,6 +3,7 @@ using BetterVanilla.Core.Helpers;
 using UnityEngine.UI;
 using TMPro;
 using BetterVanilla.Options.Components.Controllers;
+using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
 namespace BetterVanilla.Options.Components;
@@ -19,45 +20,53 @@ public sealed class ColorOptionUi : BaseOptionUi
     public Transform chipContainer = null!;
     public ColorChipUi chipPrefab = null!;
 
-    private static Color[] PredefinedColors { get; } = [
-        //ColorUtils.FromHex("#C61111"),
-        ColorUtils.FromHex("#132ED2"),
-        ColorUtils.FromHex("#11802D"),
-        ColorUtils.FromHex("#EE54BB"),
-        ColorUtils.FromHex("#F07D0D"),
-        ColorUtils.FromHex("#F6F657"),
-        ColorUtils.FromHex("#3F474E"),
-        //ColorUtils.FromHex("#D7E1F1"),
-        ColorUtils.FromHex("#6B2FBC"),
-        ColorUtils.FromHex("#71491E"),
-        ColorUtils.FromHex("#38FFDD"),
-        ColorUtils.FromHex("#50F039"),
-        ColorUtils.FromHex("#5F1D2E"),
-        ColorUtils.FromHex("#ECC0D3"),
-        ColorUtils.FromHex("#F0E7A8"),
-        ColorUtils.FromHex("#758593"),
-        ColorUtils.FromHex("#918877"),
-        ColorUtils.FromHex("#D76464")
+    private static Color[] PredefinedColors { get; } =
+    [
+        ColorUtils.FromHex("#FF4C4C"),
+        ColorUtils.FromHex("#FFA500"),
+        ColorUtils.FromHex("#FFD700"),
+        ColorUtils.FromHex("#32CD32"),
+        ColorUtils.FromHex("#42A5F5"),
+        ColorUtils.FromHex("#B57EDC"),
+        ColorUtils.FromHex("#A0522D"),
+        ColorUtils.FromHex("#F5F5F5"),
+        ColorUtils.FromHex("#FF69B4"),
+        ColorUtils.FromHex("#00FFFF"),
+        ColorUtils.FromHex("#7CFC00"),
+        ColorUtils.FromHex("#FF7F50"),
+        ColorUtils.FromHex("#FF77FF"),
+        ColorUtils.FromHex("#6A5ACD"),
+        ColorUtils.FromHex("#E6E6FA"),
+        ColorUtils.FromHex("#20B2AA")
     ];
+
+    private ColorSerializableOption? SerializableOption { get; set; }
+
+    public void SetOption(ColorSerializableOption option)
+    {
+        SerializableOption = option;
+        SetLabel(option.Title);
+        SetColor(SerializableOption.Value);
+    }
 
     public void SetColor(Color color)
     {
         hexField.SetTextWithoutNotify(ColorUtils.ToHex(color, false));
-        
+
         SetPreviewColor(color);
         SetRgbColor(color);
     }
-    
+
     private void Awake()
     {
         red.ShadeUpdated += RefreshHexFieldAndPreview;
         green.ShadeUpdated += RefreshHexFieldAndPreview;
         blue.ShadeUpdated += RefreshHexFieldAndPreview;
-        
+
         hexField.onEndEdit
             .AddListener(new Action<string>(OnHexValueChanged));
     }
-    
+
     private void Start()
     {
         foreach (var color in PredefinedColors)
@@ -79,10 +88,14 @@ public sealed class ColorOptionUi : BaseOptionUi
         SetPreviewColor(color);
         SetRgbColor(color);
     }
-    
+
     private void SetPreviewColor(Color color)
     {
         preview.color = color;
+        if (SerializableOption != null)
+        {
+            SerializableOption.Value = color;
+        }
     }
 
     private void SetRgbColor(Color color)
@@ -92,12 +105,12 @@ public sealed class ColorOptionUi : BaseOptionUi
         blue.SetValueWithoutNotify(color.b * 255f);
     }
 
-    private Color GetRgbColor() => new (red.Value / 255f, green.Value / 255f, blue.Value / 255f, 255f);
+    private Color GetRgbColor() => new(red.Value / 255f, green.Value / 255f, blue.Value / 255f, 255f);
 
     private void RefreshHexFieldAndPreview()
     {
         var color = GetRgbColor();
-        preview.color = color;
+        SetPreviewColor(color);
         hexField.SetTextWithoutNotify(ColorUtils.ToHex(color, false));
     }
 }

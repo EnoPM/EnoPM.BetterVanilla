@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Options;
 using TMPro;
 using UnityEngine;
 
@@ -14,9 +15,11 @@ public class BetterPlayerControl : MonoBehaviour
     public PlayerControl Player { get; private set; }
     public BetterPlayerTexts PlayerTexts { get; private set; }
     public string FriendCode { get; private set; }
-    public bool AmSponsor { get; private set; }
-    
+    public bool AmSponsor { get; private set; } = true;
+
     public Color? VisorColor { get; private set; }
+    public string? SponsorText { get; private set; }
+    public Color? SponsorColor { get; private set; }
 
     private void Awake()
     {
@@ -78,9 +81,31 @@ public class BetterPlayerControl : MonoBehaviour
         {
             var isActive = !LocalConditions.IsGameStarted() || LocalConditions.AmDead() || Player.AmOwner;
             PlayerTexts.gameObject.SetActive(isActive);
-            if (!isActive) return;
-            PlayerTexts.SetMainText(GetBetterInfosText());
-            PlayerTexts.SetSponsorText(GetSponsorText());
+            if (isActive)
+            {
+                PlayerTexts.SetMainText(GetBetterInfosText());
+                PlayerTexts.SetSponsorText(GetSponsorText());
+            }
+        }
+        if (AmSponsor && Player && Player.AmOwner)
+        {
+            if (SponsorOptions.Default.VisorColor.Value != VisorColor)
+            {
+                VisorColor = SponsorOptions.Default.VisorColor.Value;
+            }
+            if (SponsorOptions.Default.SponsorText.Value != SponsorText)
+            {
+                SponsorText = SponsorOptions.Default.SponsorText.Value;
+            }
+            if (SponsorOptions.Default.SponsorTextColor.Value != SponsorColor)
+            {
+                SponsorColor = SponsorOptions.Default.SponsorTextColor.Value;
+            }
+        }
+
+        if (AmSponsor)
+        {
+            RefreshVisorColor();
         }
     }
 
@@ -116,8 +141,8 @@ public class BetterPlayerControl : MonoBehaviour
 
     public string GetSponsorText()
     {
-        if (!AmSponsor) return string.Empty;
-        return ColorUtils.ColoredString(Color.blue, "Sponsor");
+        if (!AmSponsor || SponsorColor == null || SponsorText == null) return string.Empty;
+        return ColorUtils.ColoredString(SponsorColor.Value, SponsorText, false);
     }
 
     public void UpdateSponsorState()

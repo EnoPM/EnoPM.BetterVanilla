@@ -13,4 +13,7 @@ public sealed class BetterModMenuButtonUi : MonoBehaviour
         if (BetterVanillaManager.Instance == null) return;
         BetterVanillaManager.Instance.BetterMenu.Show();
     }
+
+    public void Hide() => gameObject.SetActive(false);
+    public void Show() => gameObject.SetActive(true);
 }
