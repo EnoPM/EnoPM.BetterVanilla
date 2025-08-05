@@ -1,6 +1,4 @@
-﻿using AmongUs.Data;
-using BetterVanilla.Components;
-using BetterVanilla.Options.Components;
+﻿using BetterVanilla.Components;
 using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 
@@ -19,26 +17,20 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
     public ColorLocalOption SponsorTextColor { get; set; } = null!;
 
     [NumberOption(1f, 1f, 100f, IncrementValue = 1f)]
-    [OptionName("Your level")]
+    [OptionName("Change your level")]
     public NumberLocalOption LevelOverride { get; set; } = null!;
 
     [ColorOption("#95CADC")]
-    [OptionName("Visor color")]
+    [OptionName("Change the visor color")]
     public ColorLocalOption VisorColor { get; set; } = null!;
 
     private SponsorOptions() : base("sponsor")
     {
-        LevelOverride.MaxValueChanged += OnLevelOverrideMaxValueChanged;
         foreach (var option in GetOptions())
         {
             option.SetIsLockedFunc(IsOptionLocked);
             option.SetLockedText("Available for sponsors");
         }
-    }
-
-    private void OnLevelOverrideMaxValueChanged()
-    {
-        
     }
 
     private static bool IsOptionLocked()

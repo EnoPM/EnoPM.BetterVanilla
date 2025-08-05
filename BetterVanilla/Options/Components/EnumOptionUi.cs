@@ -50,6 +50,11 @@ public sealed class EnumOptionUi : BaseOptionUi
 
     private void Update()
     {
-        SerializableOption?.RefreshLockAndVisibility();
+        SerializableOption?.RefreshUiLock();
+    }
+    
+    public override void RefreshVisibility()
+    {
+        SerializableOption?.RefreshUiVisibility();
     }
 }

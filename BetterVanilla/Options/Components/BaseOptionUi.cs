@@ -41,4 +41,6 @@ public abstract class BaseOptionUi : MonoBehaviour
     }
 
     public virtual void SetActive(bool active) => gameObject.SetActive(active);
+
+    public abstract void RefreshVisibility();
 }

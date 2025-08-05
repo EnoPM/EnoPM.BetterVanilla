@@ -42,14 +42,19 @@ public sealed class NumberLocalOption : NumberSerializableOption
         UiOption.SetValueText(GetValueAsString());
     }
     
-    public void RefreshLockAndVisibility()
+    public void RefreshUiLock()
+    {
+        if (UiOption == null || UiOption.lockOverlay == null) return;
+        var isLocked = IsLocked();
+        UiOption.lockOverlay.SetActive(isLocked);
+        if (!isLocked) return;
+        UiOption.lockOverlay.SetLockedText(LockedText ?? "Locked");
+    }
+    
+    public void RefreshUiVisibility()
     {
         if (UiOption == null) return;
-        UiOption.lockOverlay.SetActive(IsLocked());
-        if (LockedText != null)
-        {
-            UiOption.lockOverlay.SetLockedText(LockedText);
-        }
-        UiOption.gameObject.SetActive(!IsHidden());
+        var isHidden = IsHidden();
+        UiOption.SetActive(!isHidden);
     }
 }

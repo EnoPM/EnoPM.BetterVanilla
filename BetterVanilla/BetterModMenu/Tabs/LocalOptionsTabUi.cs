@@ -12,4 +12,12 @@ public sealed class LocalOptionsTabUi : BaseOptionsTabUi
         InitSerializableOptions(LocalOptions.Default);
         ApplyOptionFilters();
     }
+
+    private void Update()
+    {
+        foreach (var option in AllOptions)
+        {
+            option.RefreshVisibility();
+        }
+    }
 }

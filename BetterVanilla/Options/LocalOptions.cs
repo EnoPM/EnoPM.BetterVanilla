@@ -103,9 +103,12 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
 
         PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
     }
-    
-    private static bool IsAllowModdedCosmeticsHidden() => BetterVanillaManager.Instance.Features.IsLocked(
-        "A617504DA5A04943DE0CF0C85FF2DA7B7C387C6B6D2950E1DF8CB8D0E4D69FCE");
+
+    private static bool IsAllowModdedCosmeticsHidden()
+    {
+        return BetterVanillaManager.Instance.Features.IsLocked(
+            "A617504DA5A04943DE0CF0C85FF2DA7B7C387C6B6D2950E1DF8CB8D0E4D69FCE");
+    }
     
     private static bool IsDisableAmDeadCheckHidden() => BetterVanillaManager.Instance.Features.IsLocked(
         "A21B151BDA9AD098622868D3B7EBB5B0BB819EBD7C25B6504BDAAE9FF1FF8C0F");
