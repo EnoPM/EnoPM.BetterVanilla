@@ -6,7 +6,7 @@ using BetterVanilla.Options.Core.Serialization;
 
 namespace BetterVanilla.Options;
 
-public sealed class SponsorOptions() : AbstractSerializableOptionHolder("sponsor")
+public sealed class SponsorOptions : AbstractSerializableOptionHolder
 {
     public static readonly SponsorOptions Default = new();
 
@@ -21,21 +21,31 @@ public sealed class SponsorOptions() : AbstractSerializableOptionHolder("sponsor
     [NumberOption(1f, 1f, 100f, IncrementValue = 1f)]
     [OptionName("Your level")]
     public NumberLocalOption LevelOverride { get; set; } = null!;
-    
+
     [ColorOption("#95CADC")]
     [OptionName("Visor color")]
     public ColorLocalOption VisorColor { get; set; } = null!;
 
-    public void UpdateLevelOverrideOption()
+    private SponsorOptions() : base("sponsor")
     {
-        var level = DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel;
-        LevelOverride.MaxValue = level;
-        
-        foreach (var option in BetterVanillaManager.Instance.BetterMenu.Ui.sponsorTab.AllOptions)
+        LevelOverride.MaxValueChanged += OnLevelOverrideMaxValueChanged;
+        foreach (var option in GetOptions())
         {
-            if (option is not NumberOptionUi numberOption) continue;
-            if (numberOption.SerializableOption != LevelOverride) continue;
-            numberOption.RefreshOptionStates();
+            option.SetIsLockedFunc(IsOptionLocked);
+            option.SetLockedText("Available for sponsors");
         }
+    }
+
+    private void OnLevelOverrideMaxValueChanged()
+    {
+        
+    }
+
+    private static bool IsOptionLocked()
+    {
+        if (BetterVanillaManager.Instance.Features.Registry == null) return true;
+        if (!EOSManager.Instance || string.IsNullOrEmpty(EOSManager.Instance.FriendCode)) return true;
+        return !BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes
+            .Contains(EOSManager.Instance.FriendCode);
     }
 }

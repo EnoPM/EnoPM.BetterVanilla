@@ -4,12 +4,12 @@ namespace BetterVanilla.Core;
 
 public static class GameEventManager
 {
-    public static event Action MeetingStarted;
-    public static event Action<PlayerControl> MeetingEnded;
-    public static event Action GameStarted;
-    public static event Action GameEnded;
-    public static event Action<PlayerControl> PlayerJoined; 
-    public static event Action<PlayerControl> PlayerReady; 
+    public static event Action? MeetingStarted;
+    public static event Action<PlayerControl>? MeetingEnded;
+    public static event Action? GameStarted;
+    public static event Action? GameEnded;
+    public static event Action<PlayerControl>? PlayerJoined; 
+    public static event Action<PlayerControl>? PlayerReady; 
 
     public static void TriggerMeetingStarted() => MeetingStarted?.Invoke();
     public static void TriggerMeetingEnded(PlayerControl exiledPlayer) => MeetingEnded?.Invoke(exiledPlayer);

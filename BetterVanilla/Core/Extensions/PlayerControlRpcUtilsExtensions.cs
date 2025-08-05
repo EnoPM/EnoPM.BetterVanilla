@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
+using BetterVanilla.Options;
 using Hazel;
 
 namespace BetterVanilla.Core.Extensions;
@@ -28,11 +29,10 @@ public static partial class PlayerControlRpcExtensions
 
     public static void CustomOwnerSpawnHandshake(this PlayerControl pc)
     {
-        var localOptions = BetterVanillaManager.Instance.LocalOptions;
-        pc.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
+        pc.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
         if (LocalConditions.IsForcedTeamAssignmentAllowed())
         {
-            pc.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            pc.RpcSetForcedTeamAssignment(LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
         if (AmongUsClient.Instance.AmHost)
         {
@@ -43,11 +43,10 @@ public static partial class PlayerControlRpcExtensions
     public static void CustomSpawnHandshake(this PlayerControl pc)
     {
         if (!PlayerControl.LocalPlayer) return;
-        var localOptions = BetterVanillaManager.Instance.LocalOptions;
-        PlayerControl.LocalPlayer.RpcSetTeamPreference(localOptions.TeamPreference.ParseValue(TeamPreferences.Both));
+        PlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
         if (!pc.AmOwner && LocalConditions.IsForcedTeamAssignmentAllowed())
         {
-            PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(localOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
     }
 

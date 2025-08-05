@@ -1,5 +1,5 @@
 ﻿using System;
-using BetterVanilla.Options.Core.Serialization;
+using BetterVanilla.Options.Core.Local;
 using UnityEngine.UI;
 
 namespace BetterVanilla.Options.Components;
@@ -8,7 +8,7 @@ public sealed class ToggleOptionUi : BaseOptionUi
 {
     public Toggle toggle = null!;
     
-    private BoolSerializableOption? SerializableOption { get; set; }
+    private BoolLocalOption? SerializableOption { get; set; }
 
     private void Awake()
     {
@@ -21,10 +21,20 @@ public sealed class ToggleOptionUi : BaseOptionUi
         SerializableOption.Value = value;
     }
     
-    public void SetOption(BoolSerializableOption option)
+    public void SetOption(BoolLocalOption option)
     {
         SerializableOption = option;
-        SetLabel(option.Title);
-        toggle.SetIsOnWithoutNotify(option.Value);
+        SerializableOption.SetUiOption(this);
+        SerializableOption.RefreshUiOption();
+    }
+
+    public void SetValueWithoutNotify(bool value)
+    {
+        toggle.SetIsOnWithoutNotify(value);
+    }
+    
+    private void Update()
+    {
+        SerializableOption?.RefreshLockAndVisibility();
     }
 }

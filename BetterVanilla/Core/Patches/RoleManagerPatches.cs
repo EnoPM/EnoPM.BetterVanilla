@@ -1,6 +1,7 @@
 ﻿using AmongUs.GameOptions;
 using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
+using BetterVanilla.Options;
 using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
@@ -19,11 +20,11 @@ internal static class RoleManagerPatches
         var manager = BetterVanillaManager.Instance;
         if (manager.HostOptions.AllowTeamPreference.GetBool())
         {
-            manager.AllTeamPreferences[PlayerControl.LocalPlayer.OwnerId] = manager.LocalOptions.TeamPreference.ParseValue(TeamPreferences.Both);
+            manager.AllTeamPreferences[PlayerControl.LocalPlayer.OwnerId] = LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both);
         }
         if (LocalConditions.IsForcedTeamAssignmentAllowed())
         {
-            manager.AllForcedTeamAssignments[PlayerControl.LocalPlayer.OwnerId] = manager.LocalOptions.ForcedTeamAssignment.ParseValue(TeamPreferences.Both);
+            manager.AllForcedTeamAssignments[PlayerControl.LocalPlayer.OwnerId] = LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both);
         }
         
         var customAssignment = new BetterRoleAssignments();

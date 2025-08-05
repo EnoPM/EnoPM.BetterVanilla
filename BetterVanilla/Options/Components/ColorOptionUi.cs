@@ -3,6 +3,7 @@ using BetterVanilla.Core.Helpers;
 using UnityEngine.UI;
 using TMPro;
 using BetterVanilla.Options.Components.Controllers;
+using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
@@ -26,27 +27,30 @@ public sealed class ColorOptionUi : BaseOptionUi
         ColorUtils.FromHex("#FFA500"),
         ColorUtils.FromHex("#FFD700"),
         ColorUtils.FromHex("#32CD32"),
+
         ColorUtils.FromHex("#42A5F5"),
         ColorUtils.FromHex("#B57EDC"),
         ColorUtils.FromHex("#A0522D"),
         ColorUtils.FromHex("#F5F5F5"),
+
         ColorUtils.FromHex("#FF69B4"),
         ColorUtils.FromHex("#00FFFF"),
         ColorUtils.FromHex("#7CFC00"),
         ColorUtils.FromHex("#FF7F50"),
+
         ColorUtils.FromHex("#FF77FF"),
         ColorUtils.FromHex("#6A5ACD"),
         ColorUtils.FromHex("#E6E6FA"),
         ColorUtils.FromHex("#20B2AA")
     ];
 
-    private ColorSerializableOption? SerializableOption { get; set; }
+    private ColorLocalOption? SerializableOption { get; set; }
 
-    public void SetOption(ColorSerializableOption option)
+    public void SetOption(ColorLocalOption option)
     {
         SerializableOption = option;
-        SetLabel(option.Title);
-        SetColor(SerializableOption.Value);
+        SerializableOption.SetUiOption(this);
+        SerializableOption.RefreshUiOption();
     }
 
     public void SetColor(Color color)
@@ -84,6 +88,7 @@ public sealed class ColorOptionUi : BaseOptionUi
             hexField.SetTextWithoutNotify(ColorUtils.ToHex(GetRgbColor(), false));
             return;
         }
+
         var color = ColorUtils.FromHex(value);
         SetPreviewColor(color);
         SetRgbColor(color);
@@ -92,10 +97,8 @@ public sealed class ColorOptionUi : BaseOptionUi
     private void SetPreviewColor(Color color)
     {
         preview.color = color;
-        if (SerializableOption != null)
-        {
-            SerializableOption.Value = color;
-        }
+        if (SerializableOption == null) return;
+        SerializableOption.Value = color;
     }
 
     private void SetRgbColor(Color color)
@@ -112,5 +115,10 @@ public sealed class ColorOptionUi : BaseOptionUi
         var color = GetRgbColor();
         SetPreviewColor(color);
         hexField.SetTextWithoutNotify(ColorUtils.ToHex(color, false));
+    }
+
+    private void Update()
+    {
+        SerializableOption?.RefreshLockAndVisibility();
     }
 }

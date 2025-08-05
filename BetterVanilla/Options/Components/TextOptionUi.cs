@@ -1,4 +1,5 @@
 ﻿using System;
+using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 using TMPro;
 
@@ -9,7 +10,7 @@ public sealed class TextOptionUi : BaseOptionUi
     public TMP_InputField textField = null!;
     public TextMeshProUGUI placeholder = null!;
     
-    private TextSerializableOption? SerializableOption { get; set; }
+    private TextLocalOption? SerializableOption { get; set; }
 
     private void Awake()
     {
@@ -22,13 +23,23 @@ public sealed class TextOptionUi : BaseOptionUi
         SerializableOption.Value = text;
     }
 
-    public void SetOption(TextSerializableOption option)
+    public void SetOption(TextLocalOption option)
     {
         SerializableOption = option;
-        SetLabel(option.Title);
-        textField.SetTextWithoutNotify(SerializableOption.Value);
+        SerializableOption.SetUiOption(this);
+        SerializableOption.RefreshUiOption();
+    }
+
+    public void SetValueWithoutNotify(string value)
+    {
+        textField.SetTextWithoutNotify(value);
     }
 
     public void SetValueText(string text) => textField.SetText(text);
     public void SetPlaceholderText(string text) => placeholder.SetText(text);
+    
+    private void Update()
+    {
+        SerializableOption?.RefreshLockAndVisibility();
+    }
 }

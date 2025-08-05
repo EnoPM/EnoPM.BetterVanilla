@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Hazel;
 using UnityEngine;
 
@@ -7,6 +8,13 @@ namespace BetterVanilla.Options.Core.Serialization;
 public class NumberSerializableOption : AbstractSerializableOption
 {
     private float _value;
+    private float _minValue;
+    private float _maxValue;
+    private float _incrementValue;
+    
+    public event Action? MinValueChanged;
+    public event Action? MaxValueChanged;
+    public event Action? IncrementValueChanged;
 
     public float Value
     {
@@ -18,9 +26,39 @@ public class NumberSerializableOption : AbstractSerializableOption
             TriggerValueChanged();
         }
     }
-    public float MinValue { get; set; }
-    public float MaxValue { get; set; }
-    public float IncrementValue { get; }
+
+    public float MinValue
+    {
+        get => _minValue;
+        set
+        {
+            if (Mathf.Approximately(_minValue, value)) return;
+            _minValue = value;
+            MinValueChanged?.Invoke();
+        }
+    }
+
+    public float MaxValue
+    {
+        get => _maxValue;
+        set
+        {
+            if (Mathf.Approximately(_maxValue, value)) return;
+            _maxValue = value;
+            MaxValueChanged?.Invoke();
+        }
+    }
+
+    public float IncrementValue
+    {
+        get => _incrementValue;
+        set
+        {
+            if (Mathf.Approximately(_incrementValue, value)) return;
+            _incrementValue = value;
+            IncrementValueChanged?.Invoke();
+        }
+    }
     public string ValuePrefix { get; set; }
     public string ValueSuffix { get; set; }
 
@@ -36,9 +74,9 @@ public class NumberSerializableOption : AbstractSerializableOption
     ) : base(key, title)
     {
         _value = defaultValue;
-        IncrementValue = incrementValue;
-        MinValue = minValue;
-        MaxValue = maxValue;
+        _incrementValue = incrementValue;
+        _minValue = minValue;
+        _maxValue = maxValue;
         ValuePrefix = valuePrefix;
         ValueSuffix = valueSuffix;
     }

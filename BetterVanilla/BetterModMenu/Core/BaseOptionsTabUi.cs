@@ -1,11 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
-using BetterVanilla.Components;
-using BetterVanilla.Core;
-using BetterVanilla.Options;
 using BetterVanilla.Options.Components;
 using BetterVanilla.Options.Components.Controllers;
+using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
@@ -46,37 +45,37 @@ public abstract class BaseOptionsTabUi : BaseMenuTabUi
             option.SetActive(option.MatchSearch(filterText));
         }
     }
-    
+
     protected void InitSerializableOptions(AbstractSerializableOptionHolder holder)
     {
         var options = holder.GetOptions();
         foreach (var option in options)
         {
-            if (option is BoolSerializableOption boolOption)
+            if (option is BoolLocalOption boolOption)
             {
                 var ui = Instantiate(toggleOptionPrefab, tabContent);
                 ui.SetOption(boolOption);
                 AllOptions.Add(ui);
             }
-            else if (option is ColorSerializableOption colorOption)
+            else if (option is ColorLocalOption colorOption)
             {
                 var ui = Instantiate(colorOptionPrefab, tabContent);
                 ui.SetOption(colorOption);
                 AllOptions.Add(ui);
             }
-            else if (option is NumberSerializableOption numberOption)
+            else if (option is NumberLocalOption numberOption)
             {
                 var ui = Instantiate(numberOptionPrefab, tabContent);
                 ui.SetOption(numberOption);
                 AllOptions.Add(ui);
             }
-            else if (option is TextSerializableOption textOption)
+            else if (option is TextLocalOption textOption)
             {
                 var ui = Instantiate(textOptionPrefab, tabContent);
                 ui.SetOption(textOption);
                 AllOptions.Add(ui);
             }
-            else if (option is EnumSerializableOption enumOption)
+            else if (option is EnumLocalOption enumOption)
             {
                 var ui = Instantiate(enumOptionPrefab, tabContent);
                 ui.SetOption(enumOption);

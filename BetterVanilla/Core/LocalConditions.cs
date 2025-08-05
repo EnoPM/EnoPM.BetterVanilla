@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using BetterVanilla.Components;
+using BetterVanilla.Options;
 using UnityEngine;
 
 namespace BetterVanilla.Core;
 
 public static class LocalConditions
 {
-    public static LocalOptionsHolder Options => BetterVanillaManager.Instance.LocalOptions;
 
     public static bool ShouldAutoPlayAgain()
     {
-        return Options.AutoPlayAgain.Value;
+        return LocalOptions.Default.AutoPlayAgain.Value;
     }
 
     public static bool ShouldShowRolesAndTasks()
     {
-        return Options.DisplayRolesAndTasksAfterDeath.Value;
+        return LocalOptions.Default.DisplayRolesAndTasksAfterDeath.Value;
     }
 
     public static bool ShouldShowRolesAndTasks(PlayerControl playerControl)
@@ -25,7 +25,7 @@ public static class LocalConditions
 
     public static bool AmDead()
     {
-        if (Options.DisableAmDeadCheck.IsLocked() || !BetterVanillaManager.Instance.LocalOptions.DisableAmDeadCheck.Value)
+        if (LocalOptions.Default.DisableAmDeadCheck.IsNotAllowed() || !LocalOptions.Default.DisableAmDeadCheck.Value)
         {
             return PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data && PlayerControl.LocalPlayer.Data.IsDead;
         }
@@ -34,7 +34,7 @@ public static class LocalConditions
 
     public static bool AmImpostor()
     {
-        if (Options.DisableAmImpostorCheck.IsLocked() || !Options.DisableAmImpostorCheck.Value)
+        if (LocalOptions.Default.DisableAmImpostorCheck.IsNotAllowed() || !LocalOptions.Default.DisableAmImpostorCheck.Value)
         {
             return PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data && PlayerControl.LocalPlayer.Data.Role && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
         }
@@ -57,22 +57,22 @@ public static class LocalConditions
 
     public static bool ShouldRevealPlayerPositionsInMap(MapOptions.Modes currentMapMode)
     {
-        return AllowedRevealMapModes.Contains(currentMapMode) && Options.DisplayPlayersInMapAfterDeath.Value && !MeetingHud.Instance && AmDead() && !AmImpostor();
+        return AllowedRevealMapModes.Contains(currentMapMode) && LocalOptions.Default.DisplayPlayersInMapAfterDeath.Value && !MeetingHud.Instance && AmDead() && !AmImpostor();
     }
 
     public static bool ShouldRevealVotes()
     {
-        return Options.DisplayVotesAfterDeath.Value && AmDead();
+        return LocalOptions.Default.DisplayVotesAfterDeath.Value && AmDead();
     }
 
     public static bool ShouldRevealVoteColors()
     {
-        return Options.DisplayVoteColorsAfterDeath.Value && AmDead();
+        return LocalOptions.Default.DisplayVoteColorsAfterDeath.Value && AmDead();
     }
 
     public static bool IsForcedTeamAssignmentAllowed()
     {
-        return !Options.ForcedTeamAssignment.IsLocked();
+        return LocalOptions.Default.ForcedTeamAssignment.IsAllowed();
     }
 
     public static bool CanZoom()
@@ -82,21 +82,21 @@ public static class LocalConditions
 
     public static bool ShouldDisableGameStartRequirement()
     {
-        return !Options.DisableGameStartRequirement.IsLocked() && Options.DisableGameStartRequirement.Value;
+        return !LocalOptions.Default.DisableGameStartRequirement.IsNotAllowed() && LocalOptions.Default.DisableGameStartRequirement.Value;
     }
 
     public static bool ShouldDisableGameEndRequirement()
     {
-        return !Options.DisableEndGameChecks.IsLocked() && Options.DisableEndGameChecks.Value;
+        return !LocalOptions.Default.DisableEndGameChecks.IsNotAllowed() && LocalOptions.Default.DisableEndGameChecks.Value;
     }
 
     public static bool ShouldUnlockModdedCosmetics()
     {
-        return !Options.AllowModdedCosmetics.IsLocked() && Options.AllowModdedCosmetics.Value;
+        return !LocalOptions.Default.AllowModdedCosmetics.IsNotAllowed() && LocalOptions.Default.AllowModdedCosmetics.Value;
     }
 
     public static bool ShouldRevealVentPositionsInMap()
     {
-        return Options.DisplayVentsInMap.Value;
+        return LocalOptions.Default.DisplayVentsInMap.Value;
     }
 }

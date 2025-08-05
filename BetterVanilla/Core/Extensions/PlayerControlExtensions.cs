@@ -110,8 +110,9 @@ public static class PlayerControlExtensions
             }
             pc.RpcSetVisor(DataManager.Player.Customization.Visor);
             pc.RpcSetNamePlate(DataManager.Player.Customization.NamePlate);
-            SponsorOptions.Default.UpdateLevelOverrideOption();
-            pc.RpcSetLevel(DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel);
+            var playerLevel = DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel;
+            SponsorOptions.Default.LevelOverride.MaxValue = playerLevel + 1;
+            pc.RpcSetLevel(SponsorOptions.Default.LevelOverride.IsAllowed() ? (uint)Mathf.RoundToInt(SponsorOptions.Default.LevelOverride.Value - 1f) : playerLevel);
             pc.CustomOwnerSpawnHandshake();
             if (!pc.Data.Role)
             {
@@ -141,7 +142,7 @@ public static class PlayerControlExtensions
     {
         if (pc == null || pc.Data == null || !pc.AmOwner || !pc.Data.IsDead) return;
         if (!BetterVanillaManager.Instance.HostOptions.HideDeadPlayerPets.GetBool() &&
-            !BetterVanillaManager.Instance.LocalOptions.HideMyPetAfterDeath.Value)
+            !LocalOptions.Default.HideMyPetAfterDeath.Value)
         {
             return;
         }

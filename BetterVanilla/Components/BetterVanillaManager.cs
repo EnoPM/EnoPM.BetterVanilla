@@ -26,7 +26,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public FeaturesManager Features { get; private set; }
     public ChatCommandsManager ChatCommands { get; private set; }
     public HostOptionsHolder HostOptions { get; private set; }
-    public LocalOptionsHolder LocalOptions { get; private set; }
     public CheatersManager Cheaters { get; private set; }
     public XpManager Xp { get; private set; }
     public ModMenuButton MenuButton { get; private set; }
@@ -49,7 +48,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         Features = new FeaturesManager();
         ChatCommands = new ChatCommandsManager();
         HostOptions = new HostOptionsHolder();
-        LocalOptions = new LocalOptionsHolder();
         Cheaters = new CheatersManager();
         Xp = new XpManager();
         Cosmetics = new CosmeticManager();
@@ -83,7 +81,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         GameEventManager.PlayerJoined += OnPlayerJoined;
         
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is loaded!");
-        Ls.LogMessage($"Visor color: {ColorUtils.ToHex(Palette.VisorColor)}");
     }
     
     private void Start()

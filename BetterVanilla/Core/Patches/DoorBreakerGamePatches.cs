@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
-using BetterVanilla.Components;
 using BetterVanilla.Core.Extensions;
+using BetterVanilla.Options;
 using HarmonyLib;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ internal static class DoorBreakerGamePatches
     [HarmonyPrefix, HarmonyPatch(nameof(DoorBreakerGame.Start))]
     private static bool StartPrefix(DoorBreakerGame __instance)
     {
-        if (!BetterVanillaManager.Instance.LocalOptions.AutoOpenDoors.Value)
+        if (!LocalOptions.Default.AutoOpenDoors.Value)
         {
             return true;
         }

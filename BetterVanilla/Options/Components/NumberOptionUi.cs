@@ -1,4 +1,5 @@
 ﻿using System;
+using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 using UnityEngine.UI;
 using TMPro;
@@ -13,24 +14,41 @@ public sealed class NumberOptionUi : BaseOptionUi
     public Button plusButton = null!;
     public TextMeshProUGUI valueText = null!;
     
-    public NumberSerializableOption? SerializableOption { get; set; }
+    public NumberLocalOption? SerializableOption { get; set; }
 
-    public void SetOption(NumberSerializableOption option)
+    public void SetOption(NumberLocalOption option)
     {
         SerializableOption = option;
-        SetLabel(option.Title);
-        RefreshOptionStates();
-        slider.value = SerializableOption.Value;
-        valueText.SetText(SerializableOption.GetValueAsString());
+        SerializableOption.SetUiOption(this);
+        SerializableOption.RefreshUiOption();
         
         slider.onValueChanged.AddListener(new Action<float>(OnSliderValueChanged));
     }
 
-    public void RefreshOptionStates()
+    public void SetValueText(string text)
     {
-        if (SerializableOption == null) return;
-        slider.minValue = SerializableOption.MinValue;
-        slider.maxValue = SerializableOption.MaxValue;
+        valueText.SetText(text);
+    }
+
+    public void SetValueWithoutNotify(float value)
+    {
+        slider.SetValueWithoutNotify(value);
+        slider.UpdateVisuals();
+    }
+
+    public void SetValue(float value)
+    {
+        slider.value = value;
+    }
+
+    public void SetMinValue(float minValue)
+    {
+        slider.minValue = minValue;
+    }
+
+    public void SetMaxValue(float maxValue)
+    {
+        slider.maxValue = maxValue;
     }
 
     private void OnSliderValueChanged(float value)
@@ -81,5 +99,10 @@ public sealed class NumberOptionUi : BaseOptionUi
             value = slider.maxValue;
         }
         slider.value = value;
+    }
+    
+    private void Update()
+    {
+        SerializableOption?.RefreshLockAndVisibility();
     }
 }
