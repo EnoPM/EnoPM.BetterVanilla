@@ -10,7 +10,7 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
 
     [TextOption("Sponsor")]
     [OptionName("Sponsor text")]
-    public TextSerializableOption SponsorText { get; set; } = null!;
+    public TextLocalOption SponsorText { get; set; } = null!;
 
     [ColorOption("#0000FF")]
     [OptionName("Sponsor text color")]

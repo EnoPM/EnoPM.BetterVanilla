@@ -18,7 +18,7 @@ public abstract class BaseCloseableUiComponent : MonoBehaviour
     public TextMeshProUGUI titleText;
     public Button closeButton;
 
-    private readonly PassiveButtonsBlocker _blocker = new();
+    private readonly UiInteractionBlocker _blocker = new();
 
     public bool IsOpened => uiCanvas.gameObject.activeSelf;
 

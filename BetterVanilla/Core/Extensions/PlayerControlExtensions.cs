@@ -148,4 +148,14 @@ public static class PlayerControlExtensions
         }
         pc.RpcSetPet(PetData.EmptyId);
     }
+
+    public static void SetMovement(this PlayerControl source, bool canMove)
+    {
+        if (!source) return;
+        source.moveable = canMove;
+        source.MyPhysics.ResetMoveState(false);
+        source.NetTransform.enabled = canMove;
+        source.MyPhysics.enabled = canMove;
+        source.NetTransform.Halt();
+    }
 }

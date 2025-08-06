@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace BetterVanilla.Core;
 
-public sealed class PassiveButtonsBlocker
+public sealed class UiInteractionBlocker
 {
-    private static readonly List<PassiveButtonsBlocker> AllBlockers = [];
+    private static readonly List<UiInteractionBlocker> AllBlockers = [];
 
     public static bool ShouldBlock()
     {
@@ -14,7 +14,7 @@ public sealed class PassiveButtonsBlocker
 
     private bool _blocked;
 
-    public PassiveButtonsBlocker()
+    public UiInteractionBlocker()
     {
         _blocked = false;
         AllBlockers.Add(this);

@@ -5,7 +5,7 @@ namespace BetterVanilla.Components.BaseComponents;
 
 public abstract class BaseWindowUi : MonoBehaviour
 {
-    private readonly PassiveButtonsBlocker _blocker = new();
+    private readonly UiInteractionBlocker _blocker = new();
 
     public virtual void Show()
     {

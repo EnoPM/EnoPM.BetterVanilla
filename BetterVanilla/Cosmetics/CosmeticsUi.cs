@@ -20,7 +20,7 @@ public sealed class CosmeticsUi : MonoBehaviour
     
     private Coroutine LoadPreviewCoroutine { get; set; }
     
-    private readonly PassiveButtonsBlocker _blocker = new();
+    private readonly UiInteractionBlocker _blocker = new();
 
     private void Awake()
     {

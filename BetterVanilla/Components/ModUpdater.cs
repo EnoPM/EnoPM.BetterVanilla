@@ -64,15 +64,17 @@ public sealed class ModUpdater : BaseCloseableUiComponent
             Ls.LogError(www.error);
             yield break;
         }
-        LatestRelease = JsonSerializer.Deserialize<GithubRelease>(www.downloadHandler.text);
+        var release = JsonSerializer.Deserialize<GithubRelease>(www.downloadHandler.text);
         www.downloadHandler.Dispose();
         www.Dispose();
 
-        if (LatestRelease == null)
+        if (release == null)
         {
             Ls.LogError("No release found");
             yield break;
         }
+
+        LatestRelease = release;
 
         if (GeneratedProps.Version == LatestRelease.Version.ToString())
         {
