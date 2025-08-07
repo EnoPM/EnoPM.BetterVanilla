@@ -12,10 +12,12 @@ namespace BetterVanilla.Components;
 
 public class BetterPlayerControl : MonoBehaviour
 {
-    public PlayerControl Player { get; private set; }
-    public BetterPlayerTexts PlayerTexts { get; private set; }
-    public string FriendCode { get; private set; }
-    public bool AmSponsor { get; private set; } = true;
+    public static BetterPlayerControl? LocalPlayer { get; private set; }
+    
+    public PlayerControl? Player { get; private set; }
+    public BetterPlayerTexts? PlayerTexts { get; private set; }
+    public string? FriendCode { get; private set; }
+    public bool AmSponsor { get; private set; }
 
     public Color? VisorColor { get; private set; }
     public string? SponsorText { get; private set; }
@@ -30,11 +32,23 @@ public class BetterPlayerControl : MonoBehaviour
     private void Start()
     {
         this.StartCoroutine(CoStart());
+        if (Player != null && Player.AmOwner)
+        {
+            Ls.LogMessage($"[BetterPlayerControl] LocalPlayer: {Player.Data.PlayerName}");
+            LocalPlayer = this;
+            FriendCode = EOSManager.Instance.FriendCode;
+            UpdateSponsorState();
+            Ls.LogMessage($"[BetterPlayerControl] LocalPlayer sponsor state: {AmSponsor}");
+        }
     }
 
     private void OnDestroy()
     {
         BetterVanillaManager.Instance.AllPlayers.Remove(this);
+        if (LocalPlayer == this)
+        {
+            LocalPlayer = null;
+        }
     }
 
     private IEnumerator CoStart()
@@ -148,11 +162,11 @@ public class BetterPlayerControl : MonoBehaviour
     public void UpdateSponsorState()
     {
         Ls.LogMessage($"{nameof(BetterPlayerControl)} - Updating sponsor state");
-        if (string.IsNullOrWhiteSpace(FriendCode) || BetterVanillaManager.Instance.Features.Registry == null)
+        if (string.IsNullOrWhiteSpace(FriendCode) || FeatureCodeBehaviour.Instance == null)
         {
             return;
         }
-        AmSponsor = BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes.Contains(FriendCode);
+        AmSponsor = FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(FriendCode);
     }
 
     public void SetVisorColor(Color? color)

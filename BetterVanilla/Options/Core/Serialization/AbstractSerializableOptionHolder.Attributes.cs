@@ -7,6 +7,18 @@ namespace BetterVanilla.Options.Core.Serialization;
 public partial class AbstractSerializableOptionHolder
 {
     [AttributeUsage(AttributeTargets.Property)]
+    protected class LockedUnderHashAttribute(string hash) : Attribute
+    {
+        public string Hash { get; } = hash;
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
+    protected class HiddenUnderHashAttribute(string hash) : Attribute
+    {
+        public string Hash { get; } = hash;
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
     protected sealed class OptionNameAttribute : Attribute
     {
         public string? Key { get; }

@@ -11,7 +11,7 @@ public abstract class BaseLocalOption : BaseOption
     
     private string _lockHash;
 
-    public event Action ValueChanged;
+    public event Action? ValueChanged;
     
     public BaseSettingBehaviour Behaviour { get; private set; }
 
@@ -27,13 +27,13 @@ public abstract class BaseLocalOption : BaseOption
 
     public void LockWithPassword(string hash)
     {
-        BetterVanillaManager.Instance.Features.RegisterHash(hash);
+        FeatureCodeBehaviour.Instance?.RegisterHash(hash);
         _lockHash = hash;
     }
 
     public bool IsLocked()
     {
-        return !string.IsNullOrEmpty(_lockHash) && BetterVanillaManager.Instance.Features.IsLocked(_lockHash);
+        return !string.IsNullOrEmpty(_lockHash) && FeatureCodeBehaviour.Instance?.IsUnlocked(_lockHash) == false;
     }
 
     protected virtual void OnValueChanged()

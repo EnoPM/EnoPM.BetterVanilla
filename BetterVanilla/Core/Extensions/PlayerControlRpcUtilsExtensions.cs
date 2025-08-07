@@ -30,9 +30,9 @@ public static partial class PlayerControlRpcExtensions
     public static void CustomOwnerSpawnHandshake(this PlayerControl pc)
     {
         pc.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
-        if (LocalConditions.IsForcedTeamAssignmentAllowed())
+        if (FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
         {
-            pc.RpcSetForcedTeamAssignment(LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            pc.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
         if (AmongUsClient.Instance.AmHost)
         {
@@ -44,15 +44,15 @@ public static partial class PlayerControlRpcExtensions
     {
         if (!PlayerControl.LocalPlayer) return;
         PlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
-        if (!pc.AmOwner && LocalConditions.IsForcedTeamAssignmentAllowed())
+        if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
         {
-            PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
         }
     }
 
-    private static MessageWriter StartRpcImmediately(this PlayerControl sender, RpcIds rpcId, PlayerControl receiver = null, bool reliable = true)
+    private static MessageWriter StartRpcImmediately(this PlayerControl sender, RpcIds rpcId, PlayerControl? receiver = null, bool reliable = true)
     {
-        var targetId = receiver ? receiver.OwnerId : -1;
+        var targetId = receiver != null ? receiver.OwnerId : -1;
         var writer = AmongUsClient.Instance.StartRpcImmediately(sender.NetId, ReservedRpcCallId, reliable ? SendOption.Reliable : SendOption.None, targetId);
         writer.Write((uint)rpcId);
         return writer;

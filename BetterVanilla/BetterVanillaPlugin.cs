@@ -15,6 +15,8 @@ internal sealed class BetterVanillaPlugin : BasePlugin
     {
         Instance = this;
         Ls.SetLogSource(Log);
+        AddComponent<UnityThreadDispatcher>();
+        AddComponent<FeatureCodeBehaviour>();
         AddComponent<BetterVanillaManager>();
         AddComponent<ModUpdaterBehaviour>();
     }

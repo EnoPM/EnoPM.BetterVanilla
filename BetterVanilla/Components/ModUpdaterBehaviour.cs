@@ -74,14 +74,10 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
             
             var progress = new Progress<float>(x =>
             {
-                try
+                UnityThreadDispatcher.RunOnMainThread(() =>
                 {
                     ui.ProgressBar.SetProgress(x);
-                }
-                catch (Exception ex)
-                {
-                    Ls.LogWarning($"Unable to progress file {asset.Name}: {ex.Message}");
-                }
+                });
             });
             var requestTask = RequestUtils.DownloadFileAsync(asset.DownloadUrl, destinationPath, progress);
         

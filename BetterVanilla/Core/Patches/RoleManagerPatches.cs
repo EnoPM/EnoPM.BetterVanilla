@@ -22,9 +22,9 @@ internal static class RoleManagerPatches
         {
             manager.AllTeamPreferences[PlayerControl.LocalPlayer.OwnerId] = LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both);
         }
-        if (LocalConditions.IsForcedTeamAssignmentAllowed())
+        if (FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
         {
-            manager.AllForcedTeamAssignments[PlayerControl.LocalPlayer.OwnerId] = LocalOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both);
+            manager.AllForcedTeamAssignments[PlayerControl.LocalPlayer.OwnerId] = FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both);
         }
         
         var customAssignment = new BetterRoleAssignments();

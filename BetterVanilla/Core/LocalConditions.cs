@@ -25,7 +25,7 @@ public static class LocalConditions
 
     public static bool AmDead()
     {
-        if (LocalOptions.Default.DisableAmDeadCheck.IsNotAllowed() || !LocalOptions.Default.DisableAmDeadCheck.Value)
+        if (FeatureOptions.Default.DisableAmDeadCheck.IsNotAllowed() || !FeatureOptions.Default.DisableAmDeadCheck.Value)
         {
             return PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data && PlayerControl.LocalPlayer.Data.IsDead;
         }
@@ -34,7 +34,7 @@ public static class LocalConditions
 
     public static bool AmImpostor()
     {
-        if (LocalOptions.Default.DisableAmImpostorCheck.IsNotAllowed() || !LocalOptions.Default.DisableAmImpostorCheck.Value)
+        if (FeatureOptions.Default.DisableAmImpostorCheck.IsNotAllowed() || !FeatureOptions.Default.DisableAmImpostorCheck.Value)
         {
             return PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Data && PlayerControl.LocalPlayer.Data.Role && PlayerControl.LocalPlayer.Data.Role.IsImpostor;
         }
@@ -70,11 +70,6 @@ public static class LocalConditions
         return LocalOptions.Default.DisplayVoteColorsAfterDeath.Value && AmDead();
     }
 
-    public static bool IsForcedTeamAssignmentAllowed()
-    {
-        return LocalOptions.Default.ForcedTeamAssignment.IsAllowed();
-    }
-
     public static bool CanZoom()
     {
         return BetterVanillaManager.Instance.ZoomBehaviour != null && AmDead() && !AmImpostor();
@@ -82,17 +77,17 @@ public static class LocalConditions
 
     public static bool ShouldDisableGameStartRequirement()
     {
-        return !LocalOptions.Default.DisableGameStartRequirement.IsNotAllowed() && LocalOptions.Default.DisableGameStartRequirement.Value;
+        return FeatureOptions.Default.DisableGameStartRequirement.IsAllowed() && FeatureOptions.Default.DisableGameStartRequirement.Value;
     }
 
     public static bool ShouldDisableGameEndRequirement()
     {
-        return !LocalOptions.Default.DisableEndGameChecks.IsNotAllowed() && LocalOptions.Default.DisableEndGameChecks.Value;
+        return FeatureOptions.Default.DisableEndGameChecks.IsAllowed() && FeatureOptions.Default.DisableEndGameChecks.Value;
     }
 
     public static bool ShouldUnlockModdedCosmetics()
     {
-        return !LocalOptions.Default.AllowModdedCosmetics.IsNotAllowed() && LocalOptions.Default.AllowModdedCosmetics.Value;
+        return FeatureOptions.Default.AllowModdedCosmetics.IsAllowed() && FeatureOptions.Default.AllowModdedCosmetics.Value;
     }
 
     public static bool ShouldRevealVentPositionsInMap()

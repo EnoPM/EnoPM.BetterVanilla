@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using BetterVanilla.Components;
 using BetterVanilla.Core;
 using BetterVanilla.Options.Core.Local;
 using Rewired;
@@ -17,17 +18,8 @@ public abstract partial class AbstractSerializableOptionHolder
 
     static AbstractSerializableOptionHolder()
     {
-        var appDataDirectory = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
-        if (appDataDirectory == null)
-        {
-            throw new Exception("Unable to locate appData directory");
-        }
-
         OptionsDirectory = Path.Combine(
-            appDataDirectory,
-            "LocalLow",
-            "EnoPM",
-            "BetterVanilla.AmongUs",
+            ModPaths.ModDataDirectory,
             "Options"
         );
 
@@ -221,7 +213,7 @@ public abstract partial class AbstractSerializableOptionHolder
             throw new Exception($"[Options] Unsupported text option property type: {property.PropertyType.FullName}");
         }
 
-        RegisterOption(option);
+        RegisterPropertyOption(property, option);
     }
 
     private void RegisterBoolOption(
@@ -248,7 +240,7 @@ public abstract partial class AbstractSerializableOptionHolder
             throw new Exception($"[Options] Unsupported bool option property type: {property.PropertyType.FullName}");
         }
 
-        RegisterOption(option);
+        RegisterPropertyOption(property, option);
     }
 
     private void RegisterColorOption(
@@ -275,7 +267,7 @@ public abstract partial class AbstractSerializableOptionHolder
             throw new Exception($"[Options] Unsupported color option property type: {property.PropertyType.FullName}");
         }
 
-        RegisterOption(option);
+        RegisterPropertyOption(property, option);
     }
 
     private void RegisterNumberOption(
@@ -320,7 +312,7 @@ public abstract partial class AbstractSerializableOptionHolder
             throw new Exception($"[Options] Unsupported number option property type: {property.PropertyType.FullName}");
         }
 
-        RegisterOption(option);
+        RegisterPropertyOption(property, option);
     }
 
     private void RegisterEnumOption(
@@ -347,7 +339,25 @@ public abstract partial class AbstractSerializableOptionHolder
             throw new Exception($"[Options] Unsupported enum option property type: {property.PropertyType.FullName}");
         }
         
+        RegisterPropertyOption(property, option);
+    }
+
+    protected virtual void RegisterPropertyOption(PropertyInfo property, AbstractSerializableOption option)
+    {
         RegisterOption(option);
+        var lockedUnderHashAttribute = property.GetCustomAttribute<LockedUnderHashAttribute>();
+        if (lockedUnderHashAttribute != null)
+        {
+            FeatureCodeBehaviour.Instance?.RegisterHash(lockedUnderHashAttribute.Hash);
+            option.SetIsLockedFunc(() => !FeatureCodeBehaviour.Instance?.IsUnlocked(lockedUnderHashAttribute.Hash) ?? false);
+        }
+
+        var hiddenUnderHashAttribute = property.GetCustomAttribute<HiddenUnderHashAttribute>();
+        if (hiddenUnderHashAttribute != null)
+        {
+            FeatureCodeBehaviour.Instance?.RegisterHash(hiddenUnderHashAttribute.Hash);
+            option.SetIsHiddenFunc(() => !FeatureCodeBehaviour.Instance?.IsUnlocked(hiddenUnderHashAttribute.Hash) ?? false);
+        }
     }
 
     private void RegisterOption(AbstractSerializableOption option)

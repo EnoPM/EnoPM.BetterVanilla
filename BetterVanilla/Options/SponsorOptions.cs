@@ -35,9 +35,7 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
 
     private static bool IsOptionLocked()
     {
-        if (BetterVanillaManager.Instance.Features.Registry == null) return true;
-        if (!EOSManager.Instance || string.IsNullOrEmpty(EOSManager.Instance.FriendCode)) return true;
-        return !BetterVanillaManager.Instance.Features.Registry.ContributorFriendCodes
-            .Contains(EOSManager.Instance.FriendCode);
+        if (BetterPlayerControl.LocalPlayer == null || BetterPlayerControl.LocalPlayer.FriendCode == null) return true;
+        return !BetterPlayerControl.LocalPlayer.AmSponsor;
     }
 }

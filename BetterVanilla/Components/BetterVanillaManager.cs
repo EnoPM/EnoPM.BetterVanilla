@@ -23,7 +23,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public readonly Dictionary<int, TeamPreferences> AllTeamPreferences = [];
     public readonly Dictionary<int, TeamPreferences> AllForcedTeamAssignments = [];
     public DatabaseManager Database { get; private set; }
-    public FeaturesManager Features { get; private set; }
     public ChatCommandsManager ChatCommands { get; private set; }
     public HostOptionsHolder HostOptions { get; private set; }
     public CheatersManager Cheaters { get; private set; }
@@ -45,7 +44,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         Instance = this;
         
         Database = new DatabaseManager();
-        Features = new FeaturesManager();
         ChatCommands = new ChatCommandsManager();
         HostOptions = new HostOptionsHolder();
         Cheaters = new CheatersManager();
@@ -99,7 +97,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         ModManager.Instance.ShowModStamp();
         Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
-        Features.Initialize("EnoPM/EnoPM.BetterVanilla", "master", "features-registry.json");
         
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} was successfully started!");
     }

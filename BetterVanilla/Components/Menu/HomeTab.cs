@@ -86,7 +86,7 @@ public sealed class HomeTab : MonoBehaviour
 
     private void OnSubmitCodeButtonClick()
     {
-        BetterVanillaManager.Instance.Features.RegisterCode(featureCodeField.text);
+        FeatureCodeBehaviour.Instance?.ApplyCode(featureCodeField.text);
         featureCodeField.text = string.Empty;
         RefreshUnlockedFeatures();
     }

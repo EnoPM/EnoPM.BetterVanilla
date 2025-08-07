@@ -10,15 +10,7 @@ public sealed class LocalOptionsTabUi : BaseOptionsTabUi
     {
         Ls.LogMessage($"Started");
         InitSerializableOptions(LocalOptions.Default);
+        InitSerializableOptions(FeatureOptions.Default);
         ApplyOptionFilters();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-        foreach (var option in AllOptions)
-        {
-            option.RefreshVisibility();
-        }
     }
 }
