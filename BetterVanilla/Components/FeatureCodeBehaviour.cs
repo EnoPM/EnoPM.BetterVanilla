@@ -39,22 +39,29 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
         AvailableHashes.Add(hash);
     }
 
-    public void ApplyCode(string code)
+    public FeatureCodeResult ApplyCode(string code)
     {
         var hash = StringUtils.CalculateSHA256(code);
-        if (!AvailableHashes.Contains(hash) || !CanBeUnlocked(hash)) return;
+        if (!AvailableHashes.Contains(hash))
+        {
+            return FeatureCodeResult.Invalid;
+        }
+        if (!CanBeUnlocked(hash))
+        {
+            return FeatureCodeResult.Unauthorized;
+        }
         if (!TryAddLocalCode(code))
         {
             LocalCodes.Remove(code);
             LocalHashes.Remove(hash);
             Ls.LogInfo($"Code '{code}' successfully disabled!");
+            Save();
+            return FeatureCodeResult.Disabled;
         }
-        else
-        {
-            LocalHashes.Add(hash);
-            Ls.LogInfo($"Code '{code}' successfully enabled!");
-        }
+        LocalHashes.Add(hash);
+        Ls.LogInfo($"Code '{code}' successfully enabled!");
         Save();
+        return FeatureCodeResult.Enabled;
     }
 
     public bool IsUnlocked(string hash)

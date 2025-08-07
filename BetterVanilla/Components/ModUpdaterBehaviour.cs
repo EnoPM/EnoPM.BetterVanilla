@@ -2,14 +2,12 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.BetterModMenu.Core;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace BetterVanilla.Components;
 
@@ -19,8 +17,8 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
     
     public static ModUpdaterBehaviour? Instance { get; private set; }
 
-    private string GithubRepository { get; set; }
-    private string ModFilePath { get; set; }
+    private string GithubRepository { get; set; } = null!;
+    private string ModFilePath { get; set; } = null!;
     private Coroutine? CheckForUpdatesCoroutine { get; set; }
     private Coroutine? InstallReleaseCoroutine { get; set; }
 
@@ -95,7 +93,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
 
             if (!hasError)
             {
-                ui.SetUpdateText("The update was successfully completed. Please restart the game to launch the new version.");
+                ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
                 InstallReleaseCoroutine = null;
                 yield break;
             }
