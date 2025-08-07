@@ -33,13 +33,13 @@ public sealed class CosmeticManager
 
     public void OpenUi()
     {
-        if (!Ui) return;
+        if (Ui == null) return;
         Ui.Open();
     }
 
     public void CloseUi()
     {
-        if (!Ui) return;
+        if (Ui == null) return;
         Ui.Close();
     }
 }

@@ -28,8 +28,7 @@ public sealed class LegacyBetterRoleAssignments
     {
         foreach (var playerControl in PlayerControl.AllPlayerControls)
         {
-            if (!playerControl) continue;
-            if (!playerControl.Data) continue;
+            if (playerControl == null || playerControl.Data == null) continue;
             if (playerControl.Data.Disconnected || playerControl.Data.IsDead) continue;
             _allPlayers.Add(playerControl);
         }

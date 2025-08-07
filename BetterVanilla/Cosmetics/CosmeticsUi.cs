@@ -49,7 +49,7 @@ public sealed class CosmeticsUi : MonoBehaviour
 
     private IEnumerator CoLoadPreview()
     {
-        while (!HatManager.InstanceExists || !DataManager.IsPlayerLoaded || !PlayerControl.LocalPlayer || !PlayerControl.LocalPlayer.cosmetics)
+        while (!HatManager.InstanceExists || !DataManager.IsPlayerLoaded || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.cosmetics == null)
         {
             yield return new WaitForSeconds(1f);
         }

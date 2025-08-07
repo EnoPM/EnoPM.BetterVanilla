@@ -52,7 +52,7 @@ public class BoolHostOption : BaseHostOption
         if (Behaviour)
         {
             var toggleOption = Behaviour.TryCast<ToggleOption>();
-            if (!toggleOption)
+            if (toggleOption == null)
             {
                 throw new ArgumentException($"behaviour must be {nameof(ToggleOption)}");
             }

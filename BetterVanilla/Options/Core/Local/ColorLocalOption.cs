@@ -24,8 +24,7 @@ public sealed class ColorLocalOption(string key, string title, Color defaultValu
     public void RefreshUiVisibility()
     {
         if (UiOption == null) return;
-        var isHidden = IsHidden();
-        UiOption.SetActive(!isHidden);
+        UiOption.IsHidden = IsHidden();
     }
 
     public void RefreshUiLock()

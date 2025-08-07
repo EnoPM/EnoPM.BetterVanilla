@@ -40,7 +40,7 @@ public sealed class SavedOutfitItem : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!HatManager.Instance)
+        while (HatManager.Instance == null)
         {
             yield return new WaitForEndOfFrame();
         }
@@ -103,7 +103,7 @@ public sealed class SavedOutfitItem : MonoBehaviour
     {
         if (LocalConditions.IsGameStarted()) return;
         var player = PlayerControl.LocalPlayer;
-        if (!player || !player.Data) return;
+        if (player == null || player.Data == null) return;
         DataManager.Player.Customization.Hat = OutfitData.Hat;
         player.RpcSetHat(OutfitData.Hat);
         DataManager.Player.Customization.Skin = OutfitData.Skin;

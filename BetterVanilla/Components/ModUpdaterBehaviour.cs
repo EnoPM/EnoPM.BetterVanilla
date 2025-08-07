@@ -72,7 +72,17 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
             
             var destinationPath = Path.Combine(directoryPath, asset.Name);
             
-            var progress = new Progress<float>(ui.ProgressBar.SetProgress);
+            var progress = new Progress<float>(x =>
+            {
+                try
+                {
+                    ui.ProgressBar.SetProgress(x);
+                }
+                catch (Exception ex)
+                {
+                    Ls.LogWarning($"Unable to progress file {asset.Name}: {ex.Message}");
+                }
+            });
             var requestTask = RequestUtils.DownloadFileAsync(asset.DownloadUrl, destinationPath, progress);
         
             var hasError = false;

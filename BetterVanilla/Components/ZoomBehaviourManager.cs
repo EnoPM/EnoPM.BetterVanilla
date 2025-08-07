@@ -61,11 +61,11 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
 
     private void UpdateOrthographicSize()
     {
-        if (!MainCamera) return;
+        if (MainCamera == null) return;
         MainCamera.orthographicSize = CameraOrthographicSize;
         foreach (var camera in Camera.allCameras)
         {
-            if (!camera || !camera.gameObject || (camera.name != "UI Camera" && camera.name != "KeyMapper Camera")) continue;
+            if (camera == null || camera.gameObject == null || (camera.name != "UI Camera" && camera.name != "KeyMapper Camera")) continue;
             camera.orthographicSize = CameraOrthographicSize;
         }
         HudManager.Instance.Chat.chatButtonAspectPosition.AdjustPosition();

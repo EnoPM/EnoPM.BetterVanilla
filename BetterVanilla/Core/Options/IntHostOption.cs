@@ -58,7 +58,7 @@ public class IntHostOption : BaseHostOption
         if (Behaviour)
         {
             var numberOption = Behaviour.TryCast<NumberOption>();
-            if (!numberOption)
+            if (numberOption == null)
             {
                 throw new ArgumentException($"behaviour must be {nameof(NumberOption)}");
             }

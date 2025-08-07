@@ -21,9 +21,9 @@ public sealed class ProgressBarUi : MonoBehaviour
 
     public void SetProgress(float progress)
     {
-        if (!containerRect || !progressBarRect) return;
+        if (containerRect == null || progressBarRect == null) return;
         progressBarRect.sizeDelta = new Vector2((containerRect.rect.width - 8f) * progress, progressBarRect.sizeDelta.y);
-        if (!progressText) return;
+        if (progressText == null) return;
         progressText.SetText($"{Mathf.RoundToInt(progress * 100f)}%");
     }
 }

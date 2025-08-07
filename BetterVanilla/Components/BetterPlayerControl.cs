@@ -39,7 +39,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (!Player || !Player.Data || !Player.cosmetics || !Player.cosmetics.nameText)
+        while (Player == null || Player.Data == null || !Player.cosmetics || !Player.cosmetics.nameText)
         {
             yield return null;
         }

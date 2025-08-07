@@ -15,8 +15,9 @@ public sealed class SponsorTabUi : BaseOptionsTabUi
         ApplyOptionFilters();
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         /*
         if (Input.anyKeyDown)
         {

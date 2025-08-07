@@ -30,13 +30,13 @@ public sealed class TaskFinisherBehaviour : MonoBehaviour
 
     private static void SetUiTaskName(string taskName)
     {
-        if (!BetterVanillaManager.Instance || !BetterVanillaManager.Instance.Menu || !BetterVanillaManager.Instance.Menu.HomeTab) return;
+        if (BetterVanillaManager.Instance == null || BetterVanillaManager.Instance.Menu == null || BetterVanillaManager.Instance.Menu.HomeTab == null) return;
         BetterVanillaManager.Instance.Menu.HomeTab.SetCurrentTaskName(taskName);
     }
 
     private static void SetUiProgression(float progression)
     {
-        if (!BetterVanillaManager.Instance || !BetterVanillaManager.Instance.Menu || !BetterVanillaManager.Instance.Menu.HomeTab) return;
+        if (BetterVanillaManager.Instance == null || BetterVanillaManager.Instance.Menu == null || BetterVanillaManager.Instance.Menu.HomeTab == null) return;
         BetterVanillaManager.Instance.Menu.HomeTab.SetTaskProgression(progression);
     }
 

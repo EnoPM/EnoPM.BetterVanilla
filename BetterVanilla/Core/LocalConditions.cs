@@ -77,7 +77,7 @@ public static class LocalConditions
 
     public static bool CanZoom()
     {
-        return BetterVanillaManager.Instance.ZoomBehaviour && AmDead() && !AmImpostor();
+        return BetterVanillaManager.Instance.ZoomBehaviour != null && AmDead() && !AmImpostor();
     }
 
     public static bool ShouldDisableGameStartRequirement()

@@ -32,7 +32,6 @@ public sealed class TextLocalOption(string key, string title, string defaultValu
     public void RefreshUiVisibility()
     {
         if (UiOption == null) return;
-        var isHidden = IsHidden();
-        UiOption.SetActive(!isHidden);
+        UiOption.IsHidden = IsHidden();
     }
 }

@@ -33,7 +33,7 @@ public sealed class OutfitsTab : MonoBehaviour
     {
         foreach (var outfit in AllSavedOutfits)
         {
-            if (!outfit.itemButton || outfit.OutfitData == null)
+            if (outfit.OutfitData == null)
             {
                 continue;
             }
@@ -54,7 +54,7 @@ public sealed class OutfitsTab : MonoBehaviour
     private void OnSaveCurrentOutfitButtonClick()
     {
         var player = PlayerControl.LocalPlayer;
-        if (!player || !player.Data) return;
+        if (player == null || player.Data == null) return;
         var outfit = player.Data.DefaultOutfit;
         if (outfit == null) return;
         var outfitData = new LocalOutfitData

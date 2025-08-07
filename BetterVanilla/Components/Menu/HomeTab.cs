@@ -63,14 +63,14 @@ public sealed class HomeTab : MonoBehaviour
     private static void OnZoomInButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (!zoomBehaviour || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
+        if (zoomBehaviour == null || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
         zoomBehaviour.Increment(ZoomIncrementValue);
     }
 
     private static void OnZoomOutButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (!zoomBehaviour || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
+        if (zoomBehaviour == null || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
         zoomBehaviour.Decrement(ZoomIncrementValue);
     }
 
@@ -107,7 +107,7 @@ public sealed class HomeTab : MonoBehaviour
     
     public void SetTaskProgression(float progression)
     {
-        if (!finishTaskProgressBarContainer || !finishTaskProgressBarRect) return;
+        if (finishTaskProgressBarContainer == null || finishTaskProgressBarRect == null) return;
         //finishTaskProgressBarText.SetText($"{Mathf.RoundToInt(progression * 100)}%");
         var containerWidth = finishTaskProgressBarContainer.rect.width;
         finishTaskProgressBarRect.sizeDelta = new Vector2(containerWidth * progression, finishTaskProgressBarRect.sizeDelta.y);
@@ -115,7 +115,7 @@ public sealed class HomeTab : MonoBehaviour
 
     public void SetCurrentTaskName(string taskName)
     {
-        if (!finishTaskProgressBarText) return;
+        if (finishTaskProgressBarText == null) return;
         finishTaskProgressBarText.SetText(taskName);
     }
 }

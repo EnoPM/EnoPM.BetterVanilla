@@ -12,6 +12,9 @@ public abstract class BaseOptionUi : MonoBehaviour
 
     public OptionLabelUi Label => label;
 
+    public bool IsMatchingFilter { get; set; } = true;
+    public bool IsHidden { get; set; }
+
     public void SetLabel(string labelText)
     {
         if (!label)

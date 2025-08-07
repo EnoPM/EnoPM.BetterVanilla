@@ -24,13 +24,13 @@ public static class MapBehaviourExtensions
     {
         foreach (var (_, sr) in AllPlayers)
         {
-            if (!sr) continue;
+            if (sr == null) continue;
             Object.Destroy(sr);
         }
         AllPlayers.Clear();
         foreach (var (_, sr) in AllVents)
         {
-            if (!sr) continue;
+            if (sr == null) continue;
             Object.Destroy(sr);
         }
         AllVents.Clear();

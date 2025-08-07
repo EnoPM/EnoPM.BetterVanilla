@@ -47,7 +47,7 @@ public sealed class ModMenu : BaseCloseableUiComponent
         tabHeader.targetGraphic.color = activeTabColor;
         if (homeTabHeader == tabHeader)
         {
-            if (!HomeTab)
+            if (HomeTab == null)
             {
                 HomeTab = Instantiate(homeTabPrefab, tabsContainer.transform).GetComponent<HomeTab>();
             }
@@ -58,7 +58,7 @@ public sealed class ModMenu : BaseCloseableUiComponent
         }
         else if (settingsTabHeader == tabHeader)
         {
-            if (!SettingsTab)
+            if (SettingsTab == null)
             {
                 SettingsTab = Instantiate(settingsTabPrefab, tabsContainer.transform).GetComponent<SettingsTab>();
             }
@@ -69,7 +69,7 @@ public sealed class ModMenu : BaseCloseableUiComponent
         }
         else if (outfitsTabHeader == tabHeader)
         {
-            if (!OutfitsTab)
+            if (OutfitsTab == null)
             {
                 OutfitsTab = Instantiate(outfitsTabPrefab, tabsContainer.transform).GetComponent<OutfitsTab>();
             }

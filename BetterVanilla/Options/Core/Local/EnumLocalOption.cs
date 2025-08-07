@@ -32,7 +32,6 @@ public sealed class EnumLocalOption(string key, string title, object defaultValu
     public void RefreshUiVisibility()
     {
         if (UiOption == null) return;
-        var isHidden = IsHidden();
-        UiOption.SetActive(!isHidden);
+        UiOption.IsHidden = IsHidden();
     }
 }

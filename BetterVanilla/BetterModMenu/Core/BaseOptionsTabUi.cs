@@ -32,6 +32,15 @@ public abstract class BaseOptionsTabUi : BaseMenuTabUi
         this.StartCoroutine(CoApplyOptionFilters());
     }
 
+    protected virtual void Update()
+    {
+        foreach (var option in AllOptions)
+        {
+            option.RefreshVisibility();
+            option.SetActive(!option.IsHidden && option.IsMatchingFilter);
+        }
+    }
+
     private IEnumerator CoApplyOptionFilters()
     {
         while (!filters || !filters.searchField)
@@ -42,7 +51,7 @@ public abstract class BaseOptionsTabUi : BaseMenuTabUi
 
         foreach (var option in AllOptions)
         {
-            option.SetActive(option.MatchSearch(filterText));
+            option.IsMatchingFilter = option.MatchSearch(filterText);
         }
     }
 
