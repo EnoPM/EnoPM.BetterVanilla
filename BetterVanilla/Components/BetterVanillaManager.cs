@@ -16,25 +16,24 @@ namespace BetterVanilla.Components;
 
 public sealed class BetterVanillaManager : MonoBehaviour
 {
-    public static BetterVanillaManager Instance { get; private set; }
+    public static BetterVanillaManager Instance { get; private set; } = null!;
 
     private readonly Harmony _harmony = new (GeneratedProps.Guid);
     public readonly List<BetterPlayerControl> AllPlayers = [];
     public readonly Dictionary<int, TeamPreferences> AllTeamPreferences = [];
     public readonly Dictionary<int, TeamPreferences> AllForcedTeamAssignments = [];
-    public DatabaseManager Database { get; private set; }
-    public ChatCommandsManager ChatCommands { get; private set; }
-    public HostOptionsHolder HostOptions { get; private set; }
-    public CheatersManager Cheaters { get; private set; }
-    public XpManager Xp { get; private set; }
-    public ModMenuButton MenuButton { get; private set; }
-    private ModUpdater Updater { get; set; }
-    public ModMenu Menu { get; private set; }
-    public CosmeticManager Cosmetics { get; private set; }
-    public BetterModMenu.BetterModMenu BetterMenu { get; private set; }
-    public ZoomBehaviourManager ZoomBehaviour { get; internal set; }
-    public TaskFinisherBehaviour TaskFinisher { get; internal set; }
-    public Sprite VentSprite { get; private set; }
+    public DatabaseManager Database { get; private set; } = null!;
+    public ChatCommandsManager ChatCommands { get; private set; } = null!;
+    public HostOptionsHolder HostOptions { get; private set; } = null!;
+    public CheatersManager Cheaters { get; private set; } = null!;
+    public XpManager Xp { get; private set; } = null!;
+    public ModMenuButton MenuButton { get; private set; } = null!;
+    public ModMenu Menu { get; private set; } = null!;
+    public CosmeticManager Cosmetics { get; private set; } = null!;
+    public BetterModMenu.BetterModMenu BetterMenu { get; private set; } = null!;
+    public ZoomBehaviourManager ZoomBehaviour { get; internal set; } = null!;
+    public TaskFinisherBehaviour TaskFinisher { get; internal set; } = null!;
+    public Sprite VentSprite { get; private set; } = null!;
     public BetterPlayerTexts PlayerTextsPrefab { get; private set; } = null!;
     public BetterPlayerTexts BetterVoteAreaTextsPrefab { get; private set; } = null!;
     
@@ -54,7 +53,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         var uiBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.ui");
 
         MenuButton = Instantiate(uiBundle.LoadComponent<ModMenuButton>("Assets/Ui/Components/ModMenuButton.prefab"), transform);
-        Updater = Instantiate(uiBundle.LoadComponent<ModUpdater>("Assets/Ui/Windows/ModUpdaterUi.prefab"), transform);
         Menu = Instantiate(uiBundle.LoadComponent<ModMenu>("Assets/Ui/Windows/ModMenuUi.prefab"), transform);
         
         uiBundle.Unload(false);
@@ -96,19 +94,18 @@ public sealed class BetterVanillaManager : MonoBehaviour
         }
         
         ModManager.Instance.ShowModStamp();
-        Updater.Initialize("EnoPM/EnoPM.BetterVanilla", "EnoPM.BetterVanilla.dll", "BetterVanilla.dll");
         
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} was successfully started!");
     }
 
-    public BetterPlayerControl GetPlayerById(byte playerId)
+    public BetterPlayerControl? GetPlayerById(byte playerId)
     {
-        return AllPlayers.Find(x => x.Player && x.Player.PlayerId == playerId);
+        return AllPlayers.Find(x => x.Player != null && x.Player.PlayerId == playerId);
     }
     
-    public BetterPlayerControl GetPlayerByOwnerId(int ownerId)
+    public BetterPlayerControl? GetPlayerByOwnerId(int ownerId)
     {
-        return AllPlayers.Find(x => x.Player && x.Player.OwnerId == ownerId);
+        return AllPlayers.Find(x => x.Player != null && x.Player.OwnerId == ownerId);
     }
 
     private static void OnPlayerJoined(PlayerControl player)

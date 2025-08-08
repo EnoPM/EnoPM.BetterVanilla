@@ -25,6 +25,7 @@ public sealed class ModUpdaterUi : MonoBehaviour
     private void Start()
     {
         progressBar.Hide();
+        CheckForUpdates();
     }
 
     public void SetUpdateText(string text)
@@ -57,12 +58,14 @@ public sealed class ModUpdaterUi : MonoBehaviour
             var currentVersion = ColorUtils.ColoredString(ColorUtils.FromHex("#A01919"), $"v{GeneratedProps.Version}");
             var releaseVersion = ColorUtils.ColoredString(ColorUtils.FromHex("#00B03A"), $"v{AvailableRelease.Version.ToString()}");
             SetUpdateText($"BetterVanilla {releaseVersion} is available. You are currently using BetterVanilla {currentVersion}");
-            installButtonText.SetText($"Install BetterVanilla v{AvailableRelease.Version.ToString()}");
+            installButtonText.SetText($"Download v{AvailableRelease.Version.ToString()}");
             SetInstallButtonEnabled(true);
         }
     }
 
-    public void OnCheckForUpdatesButtonClicked()
+    public void OnCheckForUpdatesButtonClicked() => CheckForUpdates();
+
+    private void CheckForUpdates()
     {
         if (ModUpdaterBehaviour.Instance == null) return;
         ModUpdaterBehaviour.Instance.CheckForUpdates(this);
