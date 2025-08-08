@@ -29,7 +29,7 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
         foreach (var option in GetOptions())
         {
             option.SetIsLockedFunc(IsOptionLocked);
-            option.SetLockedText("Available for sponsors");
+            option.SetLockedText("Available for sponsors only");
         }
     }
 
