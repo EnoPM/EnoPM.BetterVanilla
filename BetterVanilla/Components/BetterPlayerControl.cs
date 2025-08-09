@@ -85,13 +85,13 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void OnBodyColorUpdated(int bodyColor)
     {
-        Ls.LogMessage($"{Player.Data.PlayerName} - Body color: {bodyColor}");
+        Ls.LogMessage($"{Player?.Data.PlayerName} - Body color: {bodyColor}");
         RefreshVisorColor();
     }
 
     private void Update()
     {
-        if (Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.IsReady)
+        if (Player != null && PlayerTexts != null && Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.IsReady)
         {
             var isActive = !LocalConditions.IsGameStarted() || LocalConditions.AmDead() || Player.AmOwner;
             PlayerTexts.gameObject.SetActive(isActive);
@@ -132,7 +132,7 @@ public class BetterPlayerControl : MonoBehaviour
     {
         var total = 0;
         var done = 0;
-        if (Player.Data.Tasks != null)
+        if (Player?.Data.Tasks != null)
         {
             foreach (var task in Player.Data.Tasks)
             {
@@ -167,6 +167,16 @@ public class BetterPlayerControl : MonoBehaviour
             return;
         }
         AmSponsor = FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(FriendCode);
+    }
+
+    public void SetSponsorText(string sponsorText)
+    {
+        SponsorText = sponsorText;
+    }
+
+    public void SetSponsorTextColor(Color sponsorTextColor)
+    {
+        SponsorColor = sponsorTextColor;
     }
 
     public void SetVisorColor(Color? color)

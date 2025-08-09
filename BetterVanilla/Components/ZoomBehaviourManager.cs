@@ -82,7 +82,7 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
         CameraOrthographicSize = CachedCameraOrthographicSize;
     }
 
-    public bool CanIncrement(float increment)
+    public bool CanZoomOut(float increment)
     {
         if (IsMeeting)
         {
@@ -91,9 +91,9 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
         return CameraOrthographicSize + increment <= MaxOrthographicSize;
     }
 
-    public void Increment(float increment)
+    public void ZoomOut(float increment)
     {
-        if (!CanIncrement(increment)) return;
+        if (!CanZoomOut(increment)) return;
         if (IsMeeting)
         {
             CachedCameraOrthographicSize = Mathf.Clamp(CachedCameraOrthographicSize + increment, MinOrthographicSize, MaxOrthographicSize);
@@ -104,7 +104,7 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
         }
     }
 
-    public bool CanDecrement(float decrement)
+    public bool CanZoomIn(float decrement)
     {
         if (IsMeeting)
         {
@@ -113,9 +113,9 @@ public sealed class ZoomBehaviourManager : MonoBehaviour
         return CameraOrthographicSize - decrement >= MinOrthographicSize;
     }
     
-    public void Decrement(float increment)
+    public void ZoomIn(float increment)
     {
-        if (!CanDecrement(increment)) return;
+        if (!CanZoomIn(increment)) return;
         if (IsMeeting)
         {
             CachedCameraOrthographicSize = Mathf.Clamp(CachedCameraOrthographicSize - increment, MinOrthographicSize, MaxOrthographicSize);

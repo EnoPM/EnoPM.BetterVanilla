@@ -72,7 +72,7 @@ public static class LocalConditions
 
     public static bool CanZoom()
     {
-        return BetterVanillaManager.Instance.ZoomBehaviour != null && AmDead() && !AmImpostor();
+        return BetterVanillaManager.Instance.ZoomBehaviour != null && AmDead() && !AmImpostor() && IsGameStarted();
     }
 
     public static bool ShouldDisableGameStartRequirement()
@@ -93,5 +93,10 @@ public static class LocalConditions
     public static bool ShouldRevealVentPositionsInMap()
     {
         return LocalOptions.Default.DisplayVentsInMap.Value;
+    }
+
+    public static bool CanCompleteAutoTasks()
+    {
+        return IsGameStarted() && AmDead() && !AmImpostor();
     }
 }

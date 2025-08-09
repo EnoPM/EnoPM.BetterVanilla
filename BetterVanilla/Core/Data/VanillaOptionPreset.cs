@@ -1,28 +1,27 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using AmongUs.GameOptions;
 
 namespace BetterVanilla.Core.Data;
 
 public sealed class VanillaOptionPreset
 {
-    public byte MapId { get; }
-    public float PlayerSpeedMod { get; }
-    public float CrewLightMod { get; }
-    public float ImpostorLightMod { get; }
-    public float KillCooldown { get; }
-    public int NumCommonTasks { get; }
-    public int NumLongTasks { get; }
-    public int NumShortTasks { get; }
-    public int NumEmergencyMeetings { get; }
-    public bool GhostsDoTasks { get; }
-    public int KillDistance { get; }
-    public int DiscussionTime { get; }
-    public int VotingTime { get; }
-    public bool ConfirmImpostors { get; }
-    public bool VisualTasks { get; }
-    public bool AnonymousVotes { get; }
-    public int TaskBarMode { get; }
+    private byte MapId { get; }
+    private float PlayerSpeedMod { get; }
+    private float CrewLightMod { get; }
+    private float ImpostorLightMod { get; }
+    private float KillCooldown { get; }
+    private int NumCommonTasks { get; }
+    private int NumLongTasks { get; }
+    private int NumShortTasks { get; }
+    private int NumEmergencyMeetings { get; }
+    private bool GhostsDoTasks { get; }
+    private int KillDistance { get; }
+    private int DiscussionTime { get; }
+    private int VotingTime { get; }
+    private bool ConfirmImpostors { get; }
+    private bool VisualTasks { get; }
+    private bool AnonymousVotes { get; }
+    private int TaskBarMode { get; }
 
     public void Serialize(BinaryWriter writer)
     {

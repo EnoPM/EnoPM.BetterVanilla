@@ -66,11 +66,6 @@ public static class PlayerControlExtensions
         return results;
     }
 
-    public static bool CanFinishTask(this PlayerControl player)
-    {
-        return player && player.Data && player.Data.IsDead && player.Data.Role && !player.Data.Role.IsImpostor && LocalConditions.IsGameStarted();
-    }
-
     public static IEnumerator CoBetterStart(this PlayerControl pc)
     {
         yield return CoroutineUtils.CoAssertWithTimeout(() => pc.PlayerId != byte.MaxValue, () => { AmongUsClient.Instance.EnqueueDisconnect(DisconnectReasons.Error, "Timeout while waiting for player ID assignment"); }, 30f);

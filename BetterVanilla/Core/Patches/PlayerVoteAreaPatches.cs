@@ -9,7 +9,7 @@ internal static class PlayerVoteAreaPatches
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerVoteArea.Start))]
     private static void StartPostfix(PlayerVoteArea __instance)
     {
-        if (!__instance.PlayerIcon)
+        if (!__instance.PlayerIcon || MeetingHud.Instance == null)
         {
             return;
         }

@@ -45,8 +45,5 @@ public sealed class SerializableGamePreset
         GameOptionsManager.Instance.CurrentGameOptions.SetBool(BoolOptionNames.IsDefaults, false);
         GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;
         GameManager.Instance.LogicOptions.SyncOptions();
-        
-        //GameOptionsManager.Instance.SaveNormalHostOptions();
-        //PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.CurrentGameOptions, AprilFoolsMode.IsAprilFoolsModeToggledOn));
     }
 }

@@ -11,5 +11,6 @@ internal static class HudManagerPatches
     {
         __instance.gameObject.AddComponent<ZoomBehaviourManager>();
         __instance.gameObject.AddComponent<TaskFinisherBehaviour>();
+        __instance.gameObject.AddComponent<AutoTaskBehaviour>();
     }
 }

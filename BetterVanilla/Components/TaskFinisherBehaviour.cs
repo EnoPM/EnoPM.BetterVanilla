@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
@@ -11,12 +10,7 @@ namespace BetterVanilla.Components;
 
 public sealed class TaskFinisherBehaviour : MonoBehaviour
 {
-    private Coroutine Routine { get; set; }
-
-    public bool CanBeStarted()
-    {
-        return PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanFinishTask() && Routine == null;
-    }
+    private Coroutine? Routine { get; set; }
 
     private void Awake()
     {
@@ -62,7 +56,7 @@ public sealed class TaskFinisherBehaviour : MonoBehaviour
     {
         BetterVanillaManager.Instance.Menu.HomeTab.SetTaskProgression(0f);
         var remainingTasks = PlayerControl.LocalPlayer.GetRemainingTasks();
-        while (remainingTasks.Count > 0 && PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanFinishTask())
+        while (remainingTasks.Count > 0 && LocalConditions.CanCompleteAutoTasks())
         {
             if (!IsTaskDoable())
             {

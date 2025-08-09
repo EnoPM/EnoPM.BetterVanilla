@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using BetterVanilla.Options;
+using Hazel;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;

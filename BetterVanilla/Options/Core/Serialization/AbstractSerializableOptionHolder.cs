@@ -29,13 +29,15 @@ public abstract partial class AbstractSerializableOptionHolder
 
     private string FilePath { get; }
     private Dictionary<string, AbstractSerializableOption> Options { get; } = [];
-    private CancellationTokenSource? DebounceToken { get; set; }
+    private Debouncer Debounce { get; set; }
 
     protected int DebounceDelayInSeconds { get; set; } = 5;
 
     protected AbstractSerializableOptionHolder(string filename)
     {
         FilePath = Path.Combine(OptionsDirectory, filename);
+        Debounce = new Debouncer(TimeSpan.FromSeconds(DebounceDelayInSeconds));
+        Debounce.Debounced += Save;
 
         InitOptionProperties();
         LoadOptionValuesFromFile();
@@ -47,29 +49,6 @@ public abstract partial class AbstractSerializableOptionHolder
     }
 
     public void Save() => SaveOptionValuesToFile();
-
-    protected void ValueChangedHandler()
-    {
-        DebounceToken?.Cancel();
-        DebounceToken = new CancellationTokenSource();
-        var token = DebounceToken.Token;
-
-        Task.Run(async () =>
-        {
-            try
-            {
-                await Task.Delay(TimeSpan.FromSeconds(DebounceDelayInSeconds), token);
-                if (!token.IsCancellationRequested)
-                {
-                    SaveOptionValuesToFile();
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                // ignored - debounce canceled
-            }
-        }, token);
-    }
 
     private void SaveOptionValuesToFile()
     {
@@ -362,13 +341,13 @@ public abstract partial class AbstractSerializableOptionHolder
 
     private void RegisterOption(AbstractSerializableOption option)
     {
-        option.ValueChanged += ValueChangedHandler;
+        option.ValueChanged += Debounce.Trigger;
         Options.Add(option.Key, option);
     }
 
     private void UnregisterOption(AbstractSerializableOption option)
     {
-        option.ValueChanged -= ValueChangedHandler;
+        option.ValueChanged -= Debounce.Trigger;
         Options.Remove(option.Key);
     }
 }

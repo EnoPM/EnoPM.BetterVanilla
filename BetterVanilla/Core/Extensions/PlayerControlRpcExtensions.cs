@@ -2,6 +2,7 @@
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Options;
 using Hazel;
+using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
 
@@ -15,8 +16,81 @@ public static partial class PlayerControlRpcExtensions
         PrivateChatMessage,
         ShareHostOption,
         BulkShareHostToClientSettingChange,
-        SetMeetingVote
+        SetMeetingVote,
+        ShareSponsorText,
+        ShareSponsorTextColor,
+        ShareSponsorVisorColor
     }
+
+    #region Sponsors
+
+    public static void RpcShareSponsorText(this PlayerControl sender, string sponsorText)
+    {
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        var writer = sender.StartRpcImmediately(RpcIds.ShareSponsorText);
+        writer.Write(sponsorText);
+        writer.SendImmediately();
+    }
+
+    [RpcHandler(RpcIds.ShareSponsorText)]
+    private static void ShareSponsorTextHandler(this PlayerControl sender, MessageReader reader)
+    {
+        if (sender.AmOwner) return;
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null)
+        {
+            Ls.LogWarning($"[Rpc: {RpcIds.ShareSponsorText.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
+            return;
+        }
+        var sponsorText = reader.ReadString();
+        player.SetSponsorText(sponsorText);
+    }
+    
+    public static void RpcShareSponsorTextColor(this PlayerControl sender, Color color)
+    {
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        var writer = sender.StartRpcImmediately(RpcIds.ShareSponsorTextColor);
+        writer.Write(color);
+        writer.SendImmediately();
+    }
+    
+    [RpcHandler(RpcIds.ShareSponsorTextColor)]
+    private static void ShareSponsorTextColorHandler(this PlayerControl sender, MessageReader reader)
+    {
+        if (sender.AmOwner) return;
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null)
+        {
+            Ls.LogWarning($"[Rpc: {RpcIds.ShareSponsorTextColor.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
+            return;
+        }
+        var color = reader.ReadColor();
+        player.SetSponsorTextColor(color);
+    }
+    
+    public static void RpcShareSponsorVisorColor(this PlayerControl sender, Color color)
+    {
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        var writer = sender.StartRpcImmediately(RpcIds.ShareSponsorVisorColor);
+        writer.Write(color);
+        writer.SendImmediately();
+    }
+    
+    [RpcHandler(RpcIds.ShareSponsorVisorColor)]
+    private static void ShareSponsorVisorColorHandler(this PlayerControl sender, MessageReader reader)
+    {
+        if (sender.AmOwner) return;
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null)
+        {
+            Ls.LogWarning($"[Rpc: {RpcIds.ShareSponsorTextColor.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
+            return;
+        }
+        var color = reader.ReadColor();
+        player.SetVisorColor(color);
+    }
+
+    #endregion
 
     #region MeetingVotes
 

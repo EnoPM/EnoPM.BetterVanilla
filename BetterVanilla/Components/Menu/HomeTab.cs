@@ -47,8 +47,8 @@ public sealed class HomeTab : MonoBehaviour
         finishTaskButton.interactable = IsFinishTasksButtonInteractable();
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
         var canZoom = LocalConditions.CanZoom();
-        zoomInButton.interactable = canZoom && zoomBehaviour.CanIncrement(ZoomIncrementValue);
-        zoomOutButton.interactable = canZoom && zoomBehaviour.CanDecrement(ZoomIncrementValue);
+        zoomInButton.interactable = canZoom && zoomBehaviour.CanZoomOut(ZoomIncrementValue);
+        zoomOutButton.interactable = canZoom && zoomBehaviour.CanZoomIn(ZoomIncrementValue);
         if (zoomBehaviour)
         {
             zoomValueText.SetText($"{zoomBehaviour.GetZoomValue()}x");
@@ -63,15 +63,15 @@ public sealed class HomeTab : MonoBehaviour
     private static void OnZoomInButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (zoomBehaviour == null || !zoomBehaviour.CanIncrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
-        zoomBehaviour.Increment(ZoomIncrementValue);
+        if (zoomBehaviour == null || !zoomBehaviour.CanZoomOut(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
+        zoomBehaviour.ZoomOut(ZoomIncrementValue);
     }
 
     private static void OnZoomOutButtonClick()
     {
         var zoomBehaviour = BetterVanillaManager.Instance.ZoomBehaviour;
-        if (zoomBehaviour == null || !zoomBehaviour.CanDecrement(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
-        zoomBehaviour.Decrement(ZoomIncrementValue);
+        if (zoomBehaviour == null || !zoomBehaviour.CanZoomIn(ZoomIncrementValue) || LocalConditions.AmAlive()) return;
+        zoomBehaviour.ZoomIn(ZoomIncrementValue);
     }
 
     public void RefreshUnlockedFeatures()
@@ -102,7 +102,7 @@ public sealed class HomeTab : MonoBehaviour
 
     private bool IsFinishTasksButtonInteractable()
     {
-        return BetterVanillaManager.Instance.TaskFinisher && BetterVanillaManager.Instance.TaskFinisher.CanBeStarted();
+        return BetterVanillaManager.Instance.TaskFinisher && LocalConditions.CanCompleteAutoTasks();
     }
     
     public void SetTaskProgression(float progression)
