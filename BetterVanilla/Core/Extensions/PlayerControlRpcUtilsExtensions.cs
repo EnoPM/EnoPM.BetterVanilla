@@ -38,6 +38,17 @@ public static partial class PlayerControlRpcExtensions
         {
             BetterVanillaManager.Instance.HostOptions.ShareAllOptions();
         }
+        var betterControl = pc.gameObject.GetComponent<BetterPlayerControl>();
+        if (betterControl == null)
+        {
+            Ls.LogWarning($"Unable to find {nameof(BetterPlayerControl)} component for PlayerControl");
+        }
+        else if (betterControl.AmSponsor)
+        {
+            pc.RpcShareSponsorText(SponsorOptions.Default.SponsorText.Value);
+            pc.RpcShareSponsorTextColor(SponsorOptions.Default.SponsorTextColor.Value);
+            pc.RpcShareSponsorVisorColor(SponsorOptions.Default.VisorColor.Value);
+        }
     }
 
     public static void CustomSpawnHandshake(this PlayerControl pc)
@@ -47,6 +58,13 @@ public static partial class PlayerControlRpcExtensions
         if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
         {
             PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+        }
+        if (LocalConditions.AmSponsor())
+        {
+            Ls.LogMessage($"Sending sponsor rpcs...");
+            SponsorOptions.Default.ShareSponsorText();
+            SponsorOptions.Default.ShareSponsorTextColor();
+            SponsorOptions.Default.ShareVisorColor();
         }
     }
 

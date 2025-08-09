@@ -43,6 +43,8 @@ public static class LocalConditions
 
     public static bool AmAlive() => !AmDead();
 
+    public static bool AmSponsor() => BetterPlayerControl.LocalPlayer != null && BetterPlayerControl.LocalPlayer.AmSponsor;
+
     public static bool IsGameStarted()
     {
         return AmongUsClient.Instance && (AmongUsClient.Instance.IsGameStarted || TutorialManager.InstanceExists);

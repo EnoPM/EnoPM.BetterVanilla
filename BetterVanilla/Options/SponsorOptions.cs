@@ -57,21 +57,21 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
         return !BetterPlayerControl.LocalPlayer.AmSponsor;
     }
 
-    private void ShareSponsorText()
+    public void ShareSponsorText()
     {
         Ls.LogMessage($"Sharing sponsor text");
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcShareSponsorText(SponsorText.Value);
     }
 
-    private void ShareSponsorTextColor()
+    public void ShareSponsorTextColor()
     {
         Ls.LogMessage($"Sharing sponsor text color");
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcShareSponsorTextColor(SponsorTextColor.Value);
     }
 
-    private void ShareVisorColor()
+    public void ShareVisorColor()
     {
         Ls.LogMessage($"Sharing visor color");
         if (PlayerControl.LocalPlayer == null) return;
