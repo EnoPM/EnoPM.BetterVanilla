@@ -14,12 +14,14 @@ public sealed class BetterModMenuUi : BaseWindowUi
     public HomeTabUi homeTab = null!;
     public SponsorTabUi sponsorTab = null!;
     public LocalOptionsTabUi localOptionsTab = null!;
+    public OutfitSaverTabUi outfitSaverTab = null!;
 
     private void Awake()
     {
         versionText.SetText($"v{GeneratedProps.Version}");
         sponsorTab.enabled = false;
         localOptionsTab.enabled = false;
+        outfitSaverTab.enabled = false;
     }
 
     private void Start()
@@ -32,6 +34,7 @@ public sealed class BetterModMenuUi : BaseWindowUi
     {
         sponsorTab.Hide();
         localOptionsTab.Hide();
+        outfitSaverTab.Hide();
         homeTab.Show();
     }
 
@@ -39,6 +42,7 @@ public sealed class BetterModMenuUi : BaseWindowUi
     {
         homeTab.Hide();
         localOptionsTab.Hide();
+        outfitSaverTab.Hide();
         sponsorTab.Show();
     }
 
@@ -46,7 +50,16 @@ public sealed class BetterModMenuUi : BaseWindowUi
     {
         homeTab.Hide();
         sponsorTab.Hide();
+        outfitSaverTab.Hide();
         localOptionsTab.Show();
+    }
+
+    public void OpenOutfitSaverTab()
+    {
+        homeTab.Hide();
+        sponsorTab.Hide();
+        localOptionsTab.Hide();
+        outfitSaverTab.Show();
     }
 
     private void OnEnable()

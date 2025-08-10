@@ -14,6 +14,7 @@ public sealed class VanillaOptionPreset
     private int NumLongTasks { get; }
     private int NumShortTasks { get; }
     private int NumEmergencyMeetings { get; }
+    private int EmergencyCooldown { get; }
     private bool GhostsDoTasks { get; }
     private int KillDistance { get; }
     private int DiscussionTime { get; }
@@ -34,6 +35,7 @@ public sealed class VanillaOptionPreset
         writer.Write(NumLongTasks);
         writer.Write(NumShortTasks);
         writer.Write(NumEmergencyMeetings);
+        writer.Write(EmergencyCooldown);
         writer.Write(GhostsDoTasks);
         writer.Write(KillDistance);
         writer.Write(DiscussionTime);
@@ -55,6 +57,7 @@ public sealed class VanillaOptionPreset
         NumLongTasks = reader.ReadInt32();
         NumShortTasks = reader.ReadInt32();
         NumEmergencyMeetings = reader.ReadInt32();
+        EmergencyCooldown = reader.ReadInt32();
         GhostsDoTasks = reader.ReadBoolean();
         KillDistance = reader.ReadInt32();
         DiscussionTime = reader.ReadInt32();
@@ -76,6 +79,7 @@ public sealed class VanillaOptionPreset
         NumLongTasks = options.NumLongTasks;
         NumShortTasks = options.NumShortTasks;
         NumEmergencyMeetings = options.NumEmergencyMeetings;
+        EmergencyCooldown = options.EmergencyCooldown;
         GhostsDoTasks = options.GhostsDoTasks;
         KillDistance = options.KillDistance;
         DiscussionTime = options.DiscussionTime;
@@ -97,6 +101,7 @@ public sealed class VanillaOptionPreset
         options.SetInt(Int32OptionNames.NumLongTasks, NumLongTasks);
         options.SetInt(Int32OptionNames.NumShortTasks, NumShortTasks);
         options.SetInt(Int32OptionNames.NumEmergencyMeetings, NumEmergencyMeetings);
+        options.SetInt(Int32OptionNames.EmergencyCooldown, EmergencyCooldown);
         options.SetBool(BoolOptionNames.GhostsDoTasks, GhostsDoTasks);
         options.SetInt(Int32OptionNames.KillDistance, KillDistance);
         options.SetInt(Int32OptionNames.DiscussionTime, DiscussionTime);

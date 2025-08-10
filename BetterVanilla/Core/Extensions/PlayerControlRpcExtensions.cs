@@ -35,7 +35,6 @@ public static partial class PlayerControlRpcExtensions
     [RpcHandler(RpcIds.ShareSponsorText)]
     private static void ShareSponsorTextHandler(this PlayerControl sender, MessageReader reader)
     {
-        if (sender.AmOwner) return;
         var player = sender.gameObject.GetComponent<BetterPlayerControl>();
         if (player == null)
         {
@@ -57,7 +56,6 @@ public static partial class PlayerControlRpcExtensions
     [RpcHandler(RpcIds.ShareSponsorTextColor)]
     private static void ShareSponsorTextColorHandler(this PlayerControl sender, MessageReader reader)
     {
-        if (sender.AmOwner) return;
         var player = sender.gameObject.GetComponent<BetterPlayerControl>();
         if (player == null)
         {
@@ -79,11 +77,10 @@ public static partial class PlayerControlRpcExtensions
     [RpcHandler(RpcIds.ShareSponsorVisorColor)]
     private static void ShareSponsorVisorColorHandler(this PlayerControl sender, MessageReader reader)
     {
-        if (sender.AmOwner) return;
         var player = sender.gameObject.GetComponent<BetterPlayerControl>();
         if (player == null)
         {
-            Ls.LogWarning($"[Rpc: {RpcIds.ShareSponsorTextColor.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
+            Ls.LogWarning($"[Rpc: {RpcIds.ShareSponsorVisorColor.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
             return;
         }
         var color = reader.ReadColor();

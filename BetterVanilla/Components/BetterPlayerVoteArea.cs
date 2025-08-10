@@ -21,6 +21,10 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
 
     private IEnumerator CoStart()
     {
+        while (VoteArea == null)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         InfosText = Instantiate(BetterVanillaManager.Instance.BetterVoteAreaTextsPrefab, VoteArea.NameText.transform.parent);
         InfosText.gameObject.hideFlags |= HideFlags.HideAndDontSave;
         InfosText.gameObject.SetActive(true);
@@ -29,11 +33,6 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        
-        
-        var pos = VoteArea.NameText.transform.localPosition;
-        //pos.y = 0.2f;
-        InfosText.transform.localPosition = pos;
         InfosText.SetSponsorText(string.Empty);
         InfosText.SetMainText(string.Empty);
     }

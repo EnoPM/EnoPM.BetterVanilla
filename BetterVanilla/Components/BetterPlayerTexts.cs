@@ -12,11 +12,11 @@ public sealed class BetterPlayerTexts : MonoBehaviour
 
     public void SetMainText(string text)
     {
-        sponsorText.SetText(text);
+        roleAndTaskProgressionText.SetText(text);
     }
     
     public void SetSponsorText(string text)
     {
-        roleAndTaskProgressionText.SetText(text);
+        sponsorText.SetText(text);
     }
 }
