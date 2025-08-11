@@ -90,9 +90,10 @@ public class BetterPlayerControl : MonoBehaviour
             {
                 PlayerTexts.SetMainText(GetBetterInfosText());
                 PlayerTexts.SetSponsorText(GetSponsorText());
+                PlayerTexts.SetHandshakeText(Handshake);
             }
         }
-        if (AmSponsor && Player && Player.AmOwner)
+        if (AmSponsor && Player != null && Player.AmOwner)
         {
             if (SponsorOptions.Default.VisorColor.Value != VisorColor)
             {
