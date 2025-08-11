@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using AmongUs.GameOptions;
-using BetterVanilla.Core.Options;
+﻿using AmongUs.GameOptions;
+using BetterVanilla.Options;
+using BetterVanilla.Options.Core.Host;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
@@ -9,9 +9,9 @@ public static class GameOptionsMenuExtensions
 {
     public static bool CustomValueChanged(this GameOptionsMenu menu, OptionBehaviour optionBehaviour)
     {
-        var customOption = BaseHostOption.AllOptions.Find(x => x.Behaviour == optionBehaviour);
+        var customOption = HostOptions.Default.FindOptionByBehaviour(optionBehaviour);
         if (customOption == null) return true;
-        customOption.UpdateValueFromBehaviour();
+        customOption.UpdateValueFromSettingBehaviour();
         return false;
     }
 
@@ -20,11 +20,11 @@ public static class GameOptionsMenuExtensions
         var y = 0.713f;
         foreach (var allCategory in GameManager.Instance.GetAllCategories())
         {
-            var customHostCategory = HostCategory.AllCategories.Find(x => x.GameOptionsMenuCategory.Pointer == allCategory.Pointer);
+            var isCustomCategory = HostOptions.Default.MenuCategory.Pointer == allCategory.Pointer;
             var categoryHeaderMasked = Object.Instantiate(menu.categoryHeaderOrigin, Vector3.zero, Quaternion.identity, menu.settingsContainer);
-            if (customHostCategory != null)
+            if (isCustomCategory)
             {
-                categoryHeaderMasked.CustomSetHeader(20, customHostCategory);
+                categoryHeaderMasked.CustomSetHeader(20);
             }
             else
             {
@@ -35,7 +35,7 @@ public static class GameOptionsMenuExtensions
             y -= 0.63f;
             foreach (var allGameSetting in allCategory.AllGameSettings)
             {
-                var customHostOption = customHostCategory?.AllOptions.Find(x => x.GameSetting == allGameSetting);
+                var customHostOption = isCustomCategory ? HostOptions.Default.FindOptionByGameSetting(allGameSetting) : null;
                 UpdateSettingConstraints(allGameSetting);
                 switch (allGameSetting.Type)
                 {
@@ -44,7 +44,10 @@ public static class GameOptionsMenuExtensions
                         toggleOptionBehaviour.transform.localPosition = new Vector3(0.952f, y, -2f);
                         toggleOptionBehaviour.SetClickMask(menu.ButtonClickMask);
                         toggleOptionBehaviour.SetUpFromData(allGameSetting, 20);
-                        customHostOption?.OnBehaviourCreated(toggleOptionBehaviour);
+                        if (customHostOption is BoolHostOption customBoolOption)
+                        {
+                            customBoolOption.OnBehaviourCreated(toggleOptionBehaviour);
+                        }
                         menu.Children.Add(toggleOptionBehaviour);
                         break;
                     case OptionTypes.String:
@@ -52,7 +55,6 @@ public static class GameOptionsMenuExtensions
                         stringOptionBehaviour.transform.localPosition = new Vector3(0.952f, y, -2f);
                         stringOptionBehaviour.SetClickMask(menu.ButtonClickMask);
                         stringOptionBehaviour.SetUpFromData(allGameSetting, 20);
-                        customHostOption?.OnBehaviourCreated(stringOptionBehaviour);
                         menu.Children.Add(stringOptionBehaviour);
                         break;
                     case OptionTypes.Float:
@@ -61,7 +63,10 @@ public static class GameOptionsMenuExtensions
                         numberOptionBehaviour.transform.localPosition = new Vector3(0.952f, y, -2f);
                         numberOptionBehaviour.SetClickMask(menu.ButtonClickMask);
                         numberOptionBehaviour.SetUpFromData(allGameSetting, 20);
-                        customHostOption?.OnBehaviourCreated(numberOptionBehaviour);
+                        if (customHostOption is NumberHostOption customNumberOption)
+                        {
+                            customNumberOption.OnBehaviourCreated(numberOptionBehaviour);
+                        }
                         menu.Children.Add(numberOptionBehaviour);
                         break;
                     case OptionTypes.Player:
@@ -69,7 +74,6 @@ public static class GameOptionsMenuExtensions
                         playerOptionBehaviour.transform.localPosition = new Vector3(0.952f, y, -2f);
                         playerOptionBehaviour.SetClickMask(menu.ButtonClickMask);
                         playerOptionBehaviour.SetUpFromData(allGameSetting, 20);
-                        customHostOption?.OnBehaviourCreated(playerOptionBehaviour);
                         menu.Children.Add(playerOptionBehaviour);
                         break;
                 }

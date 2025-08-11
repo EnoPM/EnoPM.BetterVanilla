@@ -3,7 +3,7 @@ using BetterVanilla.Options.Core.Serialization;
 
 namespace BetterVanilla.Options.Core.Local;
 
-public sealed class NumberLocalOption : NumberSerializableOption
+public sealed class NumberLocalOption : NumberSerializableOption, ILocalOption<NumberOptionUi>
 {
     public NumberLocalOption(string key,
         string title,

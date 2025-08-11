@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
 using TMPro;
@@ -22,6 +23,7 @@ public class BetterPlayerControl : MonoBehaviour
     public Color? VisorColor { get; private set; }
     public string? SponsorText { get; private set; }
     public Color? SponsorColor { get; private set; }
+    public BetterVanillaHandshake? Handshake { get; private set; }
 
     private void Awake()
     {
@@ -34,11 +36,10 @@ public class BetterPlayerControl : MonoBehaviour
         this.StartCoroutine(CoStart());
         if (Player != null && Player.AmOwner)
         {
-            Ls.LogMessage($"[BetterPlayerControl] LocalPlayer: {Player.Data.PlayerName}");
             LocalPlayer = this;
+            Handshake = BetterVanillaHandshake.Local;
             FriendCode = EOSManager.Instance.FriendCode;
             UpdateSponsorState();
-            Ls.LogMessage($"[BetterPlayerControl] LocalPlayer sponsor state: {AmSponsor}");
         }
     }
 
@@ -71,16 +72,6 @@ public class BetterPlayerControl : MonoBehaviour
     private BetterPlayerTexts CreateBetterInfosTexts()
     {
         return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player.cosmetics.nameText.transform);
-    }
-
-    private TextMeshPro CreateVanillaInfosText()
-    {
-        var infosText = Instantiate(Player.cosmetics.nameText, Player.cosmetics.nameText.transform.parent);
-        var pos = infosText.transform.localPosition;
-        pos.y = 0.2f;
-        infosText.transform.localPosition = pos;
-        infosText.SetText(string.Empty);
-        return infosText;
     }
 
     private void OnBodyColorUpdated(int bodyColor)
@@ -237,5 +228,10 @@ public class BetterPlayerControl : MonoBehaviour
         FriendCode = friendCode;
         Ls.LogMessage($"Friend code for player {Player.Data.PlayerName}: {FriendCode}");
         UpdateSponsorState();
+    }
+
+    public void SetHandshake(BetterVanillaHandshake handshake)
+    {
+        Handshake = handshake;
     }
 }

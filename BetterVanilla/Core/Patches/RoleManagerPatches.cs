@@ -18,7 +18,7 @@ internal static class RoleManagerPatches
         }
 
         var manager = BetterVanillaManager.Instance;
-        if (manager.HostOptions.AllowTeamPreference.GetBool())
+        if (HostOptions.Default.AllowTeamPreference.Value)
         {
             manager.AllTeamPreferences[PlayerControl.LocalPlayer.OwnerId] = LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both);
         }

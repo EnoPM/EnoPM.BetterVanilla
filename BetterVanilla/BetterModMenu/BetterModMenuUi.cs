@@ -75,6 +75,6 @@ public sealed class BetterModMenuUi : BaseWindowUi
     public override void Hide()
     {
         base.Hide();
-        BetterVanillaManager.Instance.BetterMenu.ButtonUi.Show();
+        BetterVanillaManager.Instance.Menu.ButtonUi.Show();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BetterVanilla.Components;
 using BetterVanilla.Options;
 using UnityEngine;
@@ -100,5 +101,19 @@ public static class LocalConditions
     public static bool CanCompleteAutoTasks()
     {
         return IsGameStarted() && AmDead() && !AmImpostor();
+    }
+
+    public static bool AmHost()
+    {
+        return AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost;
+    }
+
+    public static bool IsBetterVanillaHost()
+    {
+        if (AmHost()) return true;
+        if (AmongUsClient.Instance == null) return false;
+        var hostId = AmongUsClient.Instance.HostId;
+        var player = BetterVanillaManager.Instance.GetPlayerByOwnerId(hostId);
+        return player?.Handshake != null;
     }
 }

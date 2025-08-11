@@ -62,9 +62,8 @@ public sealed class GamePresetsUi : MonoBehaviour
     private List<SerializableGamePreset> LoadPresets()
     {
         var presets = new List<SerializableGamePreset>();
-        var filePath = Path.Combine(ModPaths.ModDataDirectory, "GamePresets");
-        if (!File.Exists(filePath)) return presets;
-        using var file = File.OpenRead(filePath);
+        if (!File.Exists(ModPaths.GamePresetsFile)) return presets;
+        using var file = File.OpenRead(ModPaths.GamePresetsFile);
         using var reader = new BinaryReader(file);
         var count = reader.ReadInt32();
         for (var i = 0; i < count; i++)
@@ -77,8 +76,7 @@ public sealed class GamePresetsUi : MonoBehaviour
 
     private void SavePresets()
     {
-        var filePath = Path.Combine(ModPaths.ModDataDirectory, "GamePresets");
-        using var file = File.Create(filePath);
+        using var file = File.Create(ModPaths.GamePresetsFile);
         using var writer = new BinaryWriter(file);
         writer.Write(Presets.Count);
         foreach (var preset in Presets)

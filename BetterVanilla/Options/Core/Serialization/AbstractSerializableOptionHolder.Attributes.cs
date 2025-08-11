@@ -51,10 +51,12 @@ public partial class AbstractSerializableOptionHolder
     protected sealed class TextOptionAttribute : Attribute
     {
         public string DefaultValue { get; }
+        public int MaxLength { get; }
 
-        public TextOptionAttribute(string defaultValue)
+        public TextOptionAttribute(string defaultValue, int maxLength)
         {
             DefaultValue = defaultValue;
+            MaxLength = maxLength;
         }
     }
     

@@ -24,7 +24,6 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     private string GithubRepository { get; set; } = null!;
     private string GithubBranch { get; set; } = null!;
     private string GithubFilePath { get; set; } = null!;
-    private string SaveFilePath { get; set; } = null!;
     private string? PrivateKey { get; set; }
     private Coroutine? RefreshFeatureRegistryCoroutine { get; set; }
     
@@ -81,7 +80,7 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
 
     private void Save()
     {
-        using var file = File.Create(SaveFilePath);
+        using var file = File.Create(ModPaths.FeatureCodeFile);
         using var writer = new BinaryWriter(file);
         
         writer.Write(LocalCodes.Count);
@@ -95,8 +94,8 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     private void Load()
     {
         LocalCodes.Clear();
-        if (!File.Exists(SaveFilePath)) return;
-        using var file = File.OpenRead(SaveFilePath);
+        if (!File.Exists(ModPaths.FeatureCodeFile)) return;
+        using var file = File.OpenRead(ModPaths.FeatureCodeFile);
         using var reader = new BinaryReader(file);
         var count = reader.ReadInt32();
         for (var i = 0; i < count; i++)
@@ -110,7 +109,6 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        SaveFilePath = Path.Combine(ModPaths.ModDataDirectory, "LocalFeatureCodes");
         PrivateKey = Environment.GetEnvironmentVariable("BETTERVANILLA_PRIVATE_KEY");
         
         GithubRepository = "EnoPM/EnoPM.BetterVanilla";

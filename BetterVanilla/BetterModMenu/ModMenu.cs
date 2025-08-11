@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace BetterVanilla.BetterModMenu;
 
-public sealed class BetterModMenu
+public sealed class ModMenu
 {
     public BetterModMenuButtonUi ButtonUi { get; }
     public BetterModMenuUi Ui { get; }
 
-    public BetterModMenu()
+    public ModMenu()
     {
         var bundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.menu.ui");
         

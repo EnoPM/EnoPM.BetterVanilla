@@ -3,8 +3,8 @@ using BetterVanilla.Options.Core.Serialization;
 
 namespace BetterVanilla.Options.Core.Local;
 
-public sealed class TextLocalOption(string key, string title, string defaultValue)
-    : TextSerializableOption(key, title, defaultValue)
+public sealed class TextLocalOption(string key, string title, string defaultValue, int maxLength)
+    : TextSerializableOption(key, title, defaultValue, maxLength), ILocalOption<TextOptionUi>
 {
     public TextOptionUi? UiOption { get; private set; }
 
@@ -16,6 +16,7 @@ public sealed class TextLocalOption(string key, string title, string defaultValu
     public void RefreshUiOption()
     {
         if (UiOption == null) return;
+        UiOption.textField.characterLimit = MaxLength;
         UiOption.SetLabel(Title);
         UiOption.SetValueWithoutNotify(Value);
     }

@@ -1,6 +1,8 @@
-﻿using BetterVanilla.Components;
+﻿using System.Linq;
+using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
-using BetterVanilla.Core.Options;
+using BetterVanilla.Options;
+using BetterVanilla.Options.Core.Serialization;
 using Hazel;
 using UnityEngine;
 
@@ -21,6 +23,31 @@ public static partial class PlayerControlRpcExtensions
         ShareSponsorTextColor,
         ShareSponsorVisorColor
     }
+
+    #region Handshake
+
+    public static void RpcSendHandshake(this PlayerControl sender, BetterVanillaHandshake handshake)
+    {
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        var writer = sender.StartRpcImmediately(RpcIds.BetterVanillaHandshake);
+        handshake.Serialize(writer);
+        writer.SendImmediately();
+    }
+
+    [RpcHandler(RpcIds.BetterVanillaHandshake)]
+    private static void SendHandshakeHandler(this PlayerControl sender, MessageReader reader)
+    {
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null)
+        {
+            Ls.LogWarning($"[Rpc: {RpcIds.BetterVanillaHandshake.ToString()}] Unable to find sender's {nameof(BetterPlayerControl)}");
+            return;
+        }
+        var handshake = new BetterVanillaHandshake(reader);
+        player.SetHandshake(handshake);
+    }
+
+    #endregion
 
     #region Sponsors
 
@@ -163,23 +190,23 @@ public static partial class PlayerControlRpcExtensions
     #endregion
 
     #region ShareHostOption
-
-    public static void RpcShareHostOption(this PlayerControl sender, BaseOption option)
+    public static void RpcShareHostOption(this PlayerControl sender, AbstractSerializableOption option)
     {
-        if (!AmongUsClient.Instance.AmHost) return;
+        if (!LocalConditions.AmHost()) return;
         var writer = sender.StartRpcImmediately(RpcIds.ShareHostOption);
-        option.WriteIn(writer);
+        writer.Write(option.Key);
+        option.WriteValue(writer);
         writer.SendImmediately();
     }
 
     [RpcHandler(RpcIds.ShareHostOption)]
     private static void ShareHostOptionHandler(this PlayerControl sender, MessageReader reader)
     {
-        var optionName = reader.ReadString();
-        var option = BaseHostOption.AllOptions.Find(x => x.Name == optionName);
+        var optionKey = reader.ReadString();
+        var option = HostOptions.Default.GetOptions().FirstOrDefault(x => x.Key == optionKey);
         if (option == null)
         {
-            Ls.LogError($"Unable to find option {optionName} from RPC");
+            Ls.LogWarning($"Unable to find option {optionKey} from Rpc");
             return;
         }
         option.ReadValue(reader);

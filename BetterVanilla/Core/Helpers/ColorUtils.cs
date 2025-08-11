@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using BetterVanilla.Options;
-using Hazel;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;
@@ -35,10 +34,10 @@ public static class ColorUtils
     
     public static string ToHex(Color color, bool withAlpha = true)
     {
-        var r = Mathf.RoundToInt(color.r * 255);
-        var g = Mathf.RoundToInt(color.g * 255);
-        var b = Mathf.RoundToInt(color.b * 255);
-        var a = Mathf.RoundToInt(color.a * 255);
+        var r = Mathf.Clamp(Mathf.RoundToInt(color.r * 255f), 0, 255);
+        var g = Mathf.Clamp(Mathf.RoundToInt(color.g * 255f), 0, 255);
+        var b = Mathf.Clamp(Mathf.RoundToInt(color.b * 255f), 0, 255);
+        var a = Mathf.Clamp(Mathf.RoundToInt(color.a * 255f), 0, 255);
         var hexColor = $"#{r:X2}{g:X2}{b:X2}";
         return withAlpha ? $"{hexColor}{a:X2}" : hexColor;
     }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BetterVanilla.Core.Options;
+using BetterVanilla.Options;
 
 namespace BetterVanilla.Core.Extensions;
 
@@ -8,11 +8,8 @@ public static class GameManagerExtensions
     public static List<RulesCategory> GetAllCategories(this GameManager gameManager)
     {
         var results = new List<RulesCategory>();
-
-        foreach (var category in HostCategory.AllCategories)
-        {
-            results.Add(category.GameOptionsMenuCategory);
-        }
+        
+        results.Add(HostOptions.Default.MenuCategory);
 
         foreach (var category in gameManager.GameSettingsList.AllCategories)
         {

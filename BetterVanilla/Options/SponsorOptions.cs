@@ -4,6 +4,7 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
+using UnityEngine;
 
 namespace BetterVanilla.Options;
 
@@ -11,7 +12,7 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
 {
     public static readonly SponsorOptions Default = new();
 
-    [TextOption("Sponsor")]
+    [TextOption("Sponsor", 15)]
     [OptionName("Sponsor text")]
     public TextLocalOption SponsorText { get; set; } = null!;
     private Debouncer SponsorTextDebouncer { get; }
@@ -24,6 +25,7 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
     [NumberOption(1f, 1f, 100f, IncrementValue = 1f)]
     [OptionName("Change your level")]
     public NumberLocalOption LevelOverride { get; set; } = null!;
+    private Debouncer LevelOverrideDebouncer { get; }
 
     [ColorOption("#95CADC")]
     [OptionName("Change the visor color")]
@@ -35,7 +37,6 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
         foreach (var option in GetOptions())
         {
             option.SetIsLockedFunc(IsOptionLocked);
-            option.SetLockedText("Available for sponsors only");
         }
 
         SponsorTextDebouncer = new Debouncer(TimeSpan.FromSeconds(2));
@@ -49,32 +50,54 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
         VisorColorDebouncer = new Debouncer(TimeSpan.FromSeconds(2));
         VisorColor.ValueChanged += VisorColorDebouncer.Trigger;
         VisorColorDebouncer.Debounced += ShareVisorColor;
+        
+        LevelOverrideDebouncer = new Debouncer(TimeSpan.FromSeconds(2));
+        LevelOverride.ValueChanged += LevelOverrideDebouncer.Trigger;
+        LevelOverrideDebouncer.Debounced += ShareLevel;
     }
 
-    private static bool IsOptionLocked()
+    private bool IsOptionLocked()
     {
-        if (BetterPlayerControl.LocalPlayer == null || BetterPlayerControl.LocalPlayer.FriendCode == null) return true;
+        if (BetterPlayerControl.LocalPlayer == null || BetterPlayerControl.LocalPlayer.FriendCode == null)
+        {
+            foreach (var option in GetOptions())
+            {
+                option.SetLockedText("Available in lobby");
+            }
+            return true;
+        }
+        if (LocalConditions.IsGameStarted())
+        {
+            foreach (var option in GetOptions())
+            {
+                option.SetLockedText("Not available when the game is started");
+            }
+            return true;
+        }
         return !BetterPlayerControl.LocalPlayer.AmSponsor;
     }
 
     public void ShareSponsorText()
     {
-        Ls.LogMessage($"Sharing sponsor text");
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcShareSponsorText(SponsorText.Value);
     }
 
     public void ShareSponsorTextColor()
     {
-        Ls.LogMessage($"Sharing sponsor text color");
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcShareSponsorTextColor(SponsorTextColor.Value);
     }
 
     public void ShareVisorColor()
     {
-        Ls.LogMessage($"Sharing visor color");
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcShareSponsorVisorColor(VisorColor.Value);
+    }
+
+    private void ShareLevel()
+    {
+        if (PlayerControl.LocalPlayer == null || !LocalConditions.AmSponsor()) return;
+        PlayerControl.LocalPlayer.RpcSetLevel((uint)Mathf.RoundToInt(LevelOverride.Value));
     }
 }

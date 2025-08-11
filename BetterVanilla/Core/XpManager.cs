@@ -45,7 +45,7 @@ public sealed class XpManager
 
     public void SetupCache(ProgressionManager.XpGrantResult xpGrantResult)
     {
-        var currentXp = BetterVanillaManager.Instance.Database.Data.PlayerExp;
+        var currentXp = SerializedPlayerData.Default.Xp;
         var currentLevel = CalculateLevel(currentXp);
         var xpRequiredToCurrentLevel = CalculateXpForLevel(currentLevel);
         OldXpAmount = currentXp - xpRequiredToCurrentLevel;
@@ -60,10 +60,8 @@ public sealed class XpManager
 
     public void ApplyCache()
     {
-        var db = BetterVanillaManager.Instance.Database;
-        db.Data.PlayerExp += GrantedXp;
-        db.Data.PlayerLevel = CalculateLevel(db.Data.PlayerExp);
-        db.Save();
+        SerializedPlayerData.Default.Xp += GrantedXp;
+        SerializedPlayerData.Default.Level += CalculateLevel(SerializedPlayerData.Default.Xp);
     }
 
     public void ClearCache()

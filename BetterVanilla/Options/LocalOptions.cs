@@ -1,4 +1,5 @@
-﻿using BetterVanilla.Core.Data;
+﻿using BetterVanilla.Core;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
@@ -56,11 +57,56 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
     private LocalOptions() : base("local")
     {
         TeamPreference.ValueChanged += OnTeamPreferenceValueChanged;
+        
+        TeamPreference.SetLockedText("Disabled by host");
+        TeamPreference.SetIsLockedFunc(IsTeamPreferenceLocked);
+        
+        DisplayVotesAfterDeath.SetLockedText("Disabled by host");
+        DisplayVotesAfterDeath.SetIsLockedFunc(IsDisplayVotesLocked);
+        
+        DisplayVoteColorsAfterDeath.SetLockedText("Disabled by host");
+        DisplayVoteColorsAfterDeath.SetIsLockedFunc(IsDisplayVotesLocked);
+        
+        HideMyPetAfterDeath.SetLockedText("Forced by host");
+        HideMyPetAfterDeath.SetIsLockedFunc(IsHidePetAfterDeathForced);
     }
     
     private void OnTeamPreferenceValueChanged()
     {
         if (!PlayerControl.LocalPlayer || !AmongUsClient.Instance) return;
         PlayerControl.LocalPlayer.RpcSetTeamPreference(TeamPreference.ParseValue(TeamPreferences.Both));
+    }
+
+    private bool IsTeamPreferenceLocked()
+    {
+        if (!LocalConditions.IsBetterVanillaHost())
+        {
+            TeamPreference.SetLockedText("Host does not use BetterVanilla");
+            return true;
+        }
+        TeamPreference.SetLockedText("Not authorized by host");
+        return !HostOptions.Default.AllowTeamPreference.Value;
+    }
+    private bool IsDisplayVotesLocked()
+    {
+        if (!LocalConditions.IsBetterVanillaHost())
+        {
+            DisplayVotesAfterDeath.SetLockedText("Host does not use BetterVanilla");
+            DisplayVoteColorsAfterDeath.SetLockedText("Host does not use BetterVanilla");
+            return true;
+        }
+        DisplayVotesAfterDeath.SetLockedText("Not authorized by host");
+        DisplayVoteColorsAfterDeath.SetLockedText("Not authorized by host");
+        return !HostOptions.Default.AllowDeadVoteDisplay.Value;
+    }
+    private bool IsHidePetAfterDeathForced()
+    {
+        if (!LocalConditions.IsBetterVanillaHost())
+        {
+            HideMyPetAfterDeath.SetLockedText("Host does not use BetterVanilla");
+            return true;
+        }
+        HideMyPetAfterDeath.SetLockedText("Forced by host");
+        return HostOptions.Default.HideDeadPlayerPets.Value;
     }
 }

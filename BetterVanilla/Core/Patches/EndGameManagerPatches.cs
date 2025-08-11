@@ -13,7 +13,7 @@ internal static class EndGameManagerPatches
         var manager = BetterVanillaManager.Instance;
         manager.AllTeamPreferences.Clear();
         manager.AllForcedTeamAssignments.Clear();
-        manager.Menu.Close();
+        manager.Menu.Hide();
         __instance.Navigation.SetupPlayAgain();
     }
 }

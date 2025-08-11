@@ -1,5 +1,4 @@
-﻿using BetterVanilla.Core.Options;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
 
@@ -8,9 +7,9 @@ public static class CategoryHeaderMaskedExtensions
     private static readonly int StencilComp = Shader.PropertyToID("_StencilComp");
     private static readonly int Stencil = Shader.PropertyToID("_Stencil");
     
-    public static void CustomSetHeader(this CategoryHeaderMasked headerMasked, int maskLayer, HostCategory category)
+    public static void CustomSetHeader(this CategoryHeaderMasked headerMasked, int maskLayer)
     {
-        headerMasked.Title.SetText(category.Name);
+        headerMasked.Title.SetText("Better Vanilla");
         headerMasked.Background.material.SetInt(PlayerMaterial.MaskLayer, maskLayer);
         if (headerMasked.Divider)
         {

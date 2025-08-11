@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BetterVanilla.Options.Core.Local;
 
-public sealed class ColorLocalOption(string key, string title, Color defaultValue) : ColorSerializableOption(key, title, defaultValue)
+public sealed class ColorLocalOption(string key, string title, Color defaultValue) : ColorSerializableOption(key, title, defaultValue), ILocalOption<ColorOptionUi>
 {
     public ColorOptionUi? UiOption { get; private set; }
 

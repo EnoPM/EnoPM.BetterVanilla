@@ -18,13 +18,17 @@ public class TextSerializableOption : AbstractSerializableOption
         }
     }
     
+    public int MaxLength { get; }
+    
     public TextSerializableOption(
         string key,
         string title,
-        string defaultValue
+        string defaultValue,
+        int maxLength
     ) : base(key, title)
     {
         _value = defaultValue;
+        MaxLength = maxLength;
     }
     
     public override string GetValueAsString()

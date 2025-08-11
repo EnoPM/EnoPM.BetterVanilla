@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BetterVanilla.Components;
+using BetterVanilla.Options;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
@@ -17,7 +18,7 @@ public static class MeetingHudExtensions
 
     public static void BetterCastVote(this MeetingHud meetingHud, byte voterId, byte votedId)
     {
-        if (!AmongUsClient.Instance.AmHost || !BetterVanillaManager.Instance.HostOptions.AllowDeadVoteDisplay.GetBool()) return;
+        if (!AmongUsClient.Instance.AmHost || !HostOptions.Default.AllowDeadVoteDisplay.Value) return;
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         if (!voter)
         {
@@ -32,7 +33,7 @@ public static class MeetingHudExtensions
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         var voted = BetterVanillaManager.Instance.GetPlayerById(votedId);
 
-        if (!voter)
+        if (voter == null)
         {
             Ls.LogError($"Unable to find voter by id {voterId}");
             return;
@@ -42,7 +43,7 @@ public static class MeetingHudExtensions
 
         if (CachedVotes.Any(x => x.Voter == voter))
         {
-            Ls.LogError($"{voter.Player.Data.PlayerName} vote is already cached");
+            Ls.LogError($"{voter.Player?.Data.PlayerName} vote is already cached");
             return;
         }
 
@@ -141,6 +142,6 @@ public static class MeetingHudExtensions
     private static void LogVote(BetterPlayerControl voter, BetterPlayerControl suspect)
     {
         if (!LocalConditions.ShouldRevealVotes() || !LocalConditions.ShouldRevealVoteColors()) return;
-        Ls.LogMessage($"{voter.Player.Data.PlayerName} voted for {(suspect ? suspect.Player.Data.PlayerName : "skip")}");
+        Ls.LogMessage($"{voter.Player?.Data.PlayerName} voted for {(suspect != null ? suspect.Player?.Data.PlayerName : "skip")}");
     }
 }

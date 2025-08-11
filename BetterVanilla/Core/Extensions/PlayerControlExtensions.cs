@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
-using BetterVanilla.Components;
-using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
 using InnerNet;
@@ -105,7 +103,7 @@ public static class PlayerControlExtensions
             }
             pc.RpcSetVisor(DataManager.Player.Customization.Visor);
             pc.RpcSetNamePlate(DataManager.Player.Customization.NamePlate);
-            var playerLevel = DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel;
+            var playerLevel = DataManager.Player.Stats.Level + SerializedPlayerData.Default.Level;
             SponsorOptions.Default.LevelOverride.MaxValue = playerLevel + 1;
             pc.RpcSetLevel(SponsorOptions.Default.LevelOverride.IsAllowed() ? (uint)Mathf.RoundToInt(SponsorOptions.Default.LevelOverride.Value - 1f) : playerLevel);
             pc.CustomOwnerSpawnHandshake();
@@ -136,7 +134,7 @@ public static class PlayerControlExtensions
     public static void HidePetIfDead(this PlayerControl pc)
     {
         if (pc == null || pc.Data == null || !pc.AmOwner || !pc.Data.IsDead) return;
-        if (!BetterVanillaManager.Instance.HostOptions.HideDeadPlayerPets.GetBool() &&
+        if (!HostOptions.Default.HideDeadPlayerPets.Value &&
             !LocalOptions.Default.HideMyPetAfterDeath.Value)
         {
             return;

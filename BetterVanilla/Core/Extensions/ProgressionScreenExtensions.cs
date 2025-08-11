@@ -21,7 +21,7 @@ public static class ProgressionScreenExtensions
             var xpManager = BetterVanillaManager.Instance.Xp;
             xpManager.SetupCache(xpGainedResult);
             progressionScreen.InitModdedProgressionScreen();
-            if (xpManager.MaxLevel != DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel && xpManager.GrantedXp > 0)
+            if (xpManager.MaxLevel != DataManager.Player.Stats.Level + SerializedPlayerData.Default.Level && xpManager.GrantedXp > 0)
             {
                 xpManager.ApplyCache();
                 yield return progressionScreen.CoAnimateXpAndLevelUp();
@@ -65,7 +65,7 @@ public static class ProgressionScreenExtensions
     {
         var xpManager = BetterVanillaManager.Instance.Xp;
         var maxLevel = xpManager.MaxLevel;
-        var currentPlayerLevel = DataManager.Player.Stats.Level + BetterVanillaManager.Instance.Database.Data.PlayerLevel;
+        var currentPlayerLevel = DataManager.Player.Stats.Level + SerializedPlayerData.Default.Level;
         
         var xpRequiredToLevelUp = xpManager.XpRequiredToLevelUp;
         var oldXpAmount = xpManager.OldXpAmount;

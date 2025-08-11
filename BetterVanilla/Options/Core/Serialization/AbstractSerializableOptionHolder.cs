@@ -3,30 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using BetterVanilla.Components;
 using BetterVanilla.Core;
+using BetterVanilla.Options.Core.Host;
 using BetterVanilla.Options.Core.Local;
-using Rewired;
 
 namespace BetterVanilla.Options.Core.Serialization;
 
 public abstract partial class AbstractSerializableOptionHolder
 {
-    private static readonly string OptionsDirectory;
-
-    static AbstractSerializableOptionHolder()
-    {
-        OptionsDirectory = Path.Combine(
-            ModPaths.ModDataDirectory,
-            "Options"
-        );
-
-        if (Directory.Exists(OptionsDirectory)) return;
-        Directory.CreateDirectory(OptionsDirectory);
-    }
-
     private string FilePath { get; }
     private Dictionary<string, AbstractSerializableOption> Options { get; } = [];
     private Debouncer Debounce { get; set; }
@@ -35,7 +20,7 @@ public abstract partial class AbstractSerializableOptionHolder
 
     protected AbstractSerializableOptionHolder(string filename)
     {
-        FilePath = Path.Combine(OptionsDirectory, filename);
+        FilePath = Path.Combine(ModPaths.OptionsDirectory, filename);
         Debounce = new Debouncer(TimeSpan.FromSeconds(DebounceDelayInSeconds));
         Debounce.Debounced += Save;
 
@@ -178,13 +163,13 @@ public abstract partial class AbstractSerializableOptionHolder
         TextSerializableOption option;
         if (property.PropertyType == typeof(TextLocalOption))
         {
-            var local = new TextLocalOption(key, title, attribute.DefaultValue);
+            var local = new TextLocalOption(key, title, attribute.DefaultValue, attribute.MaxLength);
             property.SetValue(this, local);
             option = local;
         }
         else if (property.PropertyType == typeof(TextSerializableOption))
         {
-            option = new TextSerializableOption(key, title, attribute.DefaultValue);
+            option = new TextSerializableOption(key, title, attribute.DefaultValue, attribute.MaxLength);
             property.SetValue(this, option);
         }
         else
@@ -209,10 +194,16 @@ public abstract partial class AbstractSerializableOptionHolder
             property.SetValue(this, local);
             option = local;
         }
+        else if (property.PropertyType == typeof(BoolHostOption))
+        {
+            option = new BoolHostOption(key, title, attribute.DefaultValue);
+            property.SetValue(this, option);
+        }
         else if (property.PropertyType == typeof(BoolSerializableOption))
         {
-            option = new BoolSerializableOption(key, title, attribute.DefaultValue);
-            property.SetValue(this, option);
+            var host = new BoolSerializableOption(key, title, attribute.DefaultValue);
+            property.SetValue(this, host);
+            option = host;
         }
         else
         {
@@ -271,6 +262,21 @@ public abstract partial class AbstractSerializableOptionHolder
             );
             property.SetValue(this, local);
             option = local;
+        }
+        else if (property.PropertyType == typeof(NumberHostOption))
+        {
+            var host = new NumberHostOption(
+                key,
+                title,
+                attribute.DefaultValue,
+                attribute.IncrementValue,
+                attribute.MinValue,
+                attribute.MaxValue,
+                attribute.ValuePrefix,
+                attribute.ValueSuffix
+            );
+            property.SetValue(this, host);
+            option = host;
         }
         else if (property.PropertyType == typeof(NumberSerializableOption))
         {

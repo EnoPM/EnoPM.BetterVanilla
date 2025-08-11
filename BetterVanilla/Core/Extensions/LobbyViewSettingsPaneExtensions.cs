@@ -1,4 +1,7 @@
-﻿using BetterVanilla.Core.Options;
+﻿using System.Linq;
+using BetterVanilla.Options;
+using BetterVanilla.Options.Core;
+using BetterVanilla.Options.Core.Host;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Extensions;
@@ -10,11 +13,11 @@ public static class LobbyViewSettingsPaneExtensions
         var y1 = 1.44f;
         foreach (var allCategory in GameManager.Instance.GetAllCategories())
         {
-            var customCategory = HostCategory.AllCategories.Find(x => x.GameOptionsMenuCategory == allCategory);
+            var isCustomCategory = HostOptions.Default.MenuCategory == allCategory;
             var categoryHeaderMasked = Object.Instantiate(pane.categoryHeaderOrigin, pane.settingsContainer);
-            if (customCategory != null)
+            if (isCustomCategory)
             {
-                categoryHeaderMasked.CustomSetHeader(61, customCategory);
+                categoryHeaderMasked.CustomSetHeader(61);
             }
             else
             {
@@ -27,7 +30,7 @@ public static class LobbyViewSettingsPaneExtensions
             for (var index = 0; index < allCategory.AllGameSettings.Count; ++index)
             {
                 var gameSetting = allCategory.AllGameSettings._items[index];
-                var customOption = customCategory?.AllOptions.Find(x => x.GameSetting == gameSetting);
+                var customOption = HostOptions.Default.GetOptions().FirstOrDefault(x => x is IBaseHostOption hostOption && hostOption.GetGameSetting() == gameSetting);
                 var settingsInfoPanel = Object.Instantiate(pane.infoPanelOrigin, pane.settingsContainer);
                 settingsInfoPanel.transform.localScale = Vector3.one;
                 float x;
@@ -38,14 +41,17 @@ public static class LobbyViewSettingsPaneExtensions
                         y2 -= 0.59f;
                 }
                 else
+                {
                     x = -3f;
+                }
                 settingsInfoPanel.transform.localPosition = new Vector3(x, y2, -2f);
                 var num = customOption == null ? GameOptionsManager.Instance.CurrentGameOptions.GetValue(gameSetting) : -1f;
                 if (gameSetting.Type == OptionTypes.Checkbox)
                 {
-                    if (customOption != null)
+                    if (customOption != null && customOption is BoolHostOption customBoolOption)
                     {
-                        settingsInfoPanel.CustomSetInfoCheckbox(61, customOption);
+                        customBoolOption.SetViewSettingBehaviourInfo(settingsInfoPanel, 61);
+                        customBoolOption.OnViewBehaviourCreated(settingsInfoPanel);
                     }
                     else
                     {
@@ -54,9 +60,10 @@ public static class LobbyViewSettingsPaneExtensions
                 }
                 else
                 {
-                    if (customOption != null)
+                    if (customOption != null && customOption is NumberHostOption customNumberOption)
                     {
-                        settingsInfoPanel.CustomSetInfo(61, customOption);
+                        customNumberOption.SetViewSettingBehaviourInfo(settingsInfoPanel, 61);
+                        customNumberOption.OnViewBehaviourCreated(settingsInfoPanel);
                     }
                     else
                     {
@@ -64,7 +71,6 @@ public static class LobbyViewSettingsPaneExtensions
                     }
                 }
                 pane.settingsInfo.Add(settingsInfoPanel.gameObject);
-                customOption?.OnViewBehaviourCreated(settingsInfoPanel);
             }
             y1 = y2 - 0.59f;
         }

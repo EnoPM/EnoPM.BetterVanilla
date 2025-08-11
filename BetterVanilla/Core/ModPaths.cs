@@ -6,6 +6,11 @@ namespace BetterVanilla.Core;
 public static class ModPaths
 {
     public static string ModDataDirectory { get; }
+    public static string GamePresetsFile { get; }
+    public static string FeatureCodeFile { get; }
+    public static string OptionsDirectory { get; }
+    public static string SavedOutfitsFile { get; }
+    public static string PlayerDataFile { get; }
 
     static ModPaths()
     {
@@ -14,7 +19,7 @@ public static class ModPaths
         {
             throw new Exception("Unable to locate appData directory");
         }
-        
+
         ModDataDirectory = Path.Combine(
             appDataDirectory,
             "LocalLow",
@@ -22,7 +27,20 @@ public static class ModPaths
             "BetterVanilla.AmongUs"
         );
 
-        if (Directory.Exists(ModDataDirectory)) return;
-        Directory.CreateDirectory(ModDataDirectory);
+        CreateDirectory(ModDataDirectory);
+        
+        GamePresetsFile = Path.Combine(ModDataDirectory, "GamePresets");
+        FeatureCodeFile = Path.Combine(ModDataDirectory, "LocalFeatureCodes");
+        OptionsDirectory = Path.Combine(ModDataDirectory, "Options");
+        SavedOutfitsFile = Path.Combine(ModDataDirectory, "SavedOutfits");
+        PlayerDataFile = Path.Combine(ModDataDirectory, "PlayerData");
+        
+        CreateDirectory(OptionsDirectory);
+    }
+
+    private static void CreateDirectory(string path)
+    {
+        if (Directory.Exists(path)) return;
+        Directory.CreateDirectory(path);
     }
 }

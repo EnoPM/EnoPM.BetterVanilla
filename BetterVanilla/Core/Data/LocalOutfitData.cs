@@ -6,19 +6,19 @@ namespace BetterVanilla.Core.Data;
 public sealed class LocalOutfitData
 {
     [JsonPropertyName("hat")]
-    public string Hat { get; set; }
+    public string Hat { get; set; } = null!;
     
     [JsonPropertyName("Skin")]
-    public string Skin { get; set; }
+    public string Skin { get; set; } = null!;
     
     [JsonPropertyName("visor")]
-    public string Visor { get; set; }
+    public string Visor { get; set; } = null!;
     
     [JsonPropertyName("pet")]
-    public string Pet { get; set; }
+    public string Pet { get; set; } = null!;
     
     [JsonPropertyName("nameplate")]
-    public string Nameplate { get; set; }
+    public string Nameplate { get; set; } = null!;
 
     public bool IsEquipped()
     {

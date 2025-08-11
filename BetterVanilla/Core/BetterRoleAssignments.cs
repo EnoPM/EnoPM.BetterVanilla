@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
+using BetterVanilla.Options;
 using MonoMod.Utils;
 using UnityEngine;
 
@@ -179,7 +180,7 @@ public sealed class BetterRoleAssignments
 
     private List<PlayerControl> GetTeam(RoleTeamTypes teamType, int teamSize)
     {
-        var weights = CalculateWeights(teamType, !BetterVanillaManager.Instance.HostOptions.AllowTeamPreference.GetBool());
+        var weights = CalculateWeights(teamType, !HostOptions.Default.AllowTeamPreference.Value);
         var result = PickRandomPlayersBasedOnWeights(weights, teamSize);
         return result;
     }

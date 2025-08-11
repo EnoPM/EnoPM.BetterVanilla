@@ -10,7 +10,6 @@ internal static class HudManagerPatches
     private static void StartPostfix(HudManager __instance)
     {
         __instance.gameObject.AddComponent<ZoomBehaviourManager>();
-        __instance.gameObject.AddComponent<TaskFinisherBehaviour>();
         __instance.gameObject.AddComponent<AutoTaskBehaviour>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
 using UnityEngine;
 
@@ -55,5 +56,6 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
         InfosText.SetSponsorText(player.GetSponsorText());
         InfosText.SetMainText(player.GetBetterInfosText());
         InfosText.gameObject.SetActive(true);
+        InfosText.sponsorText.gameObject.SetActive(!DataManager.Settings.Accessibility.ColorBlindMode);
     }
 }

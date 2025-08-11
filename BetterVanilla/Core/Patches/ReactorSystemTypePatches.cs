@@ -1,4 +1,5 @@
 ﻿using BetterVanilla.Components;
+using BetterVanilla.Options;
 using HarmonyLib;
 using Hazel;
 using Il2CppSystem;
@@ -17,7 +18,7 @@ internal static class ReactorSystemTypePatches
         {
             __instance.Countdown = ShipStatus.Instance.Type != ShipStatus.MapType.Pb
                 ? __instance.ReactorDuration
-                : BetterVanillaManager.Instance.HostOptions.PolusReactorCountdown.GetFloat();
+                : HostOptions.Default.PolusReactorCountdown.Value;
             __instance.UserConsolePairs.Clear();
         }
         else if (self == 16)
