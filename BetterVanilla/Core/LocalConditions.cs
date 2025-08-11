@@ -48,7 +48,7 @@ public static class LocalConditions
 
     public static bool IsGameStarted()
     {
-        return AmongUsClient.Instance && (AmongUsClient.Instance.IsGameStarted || TutorialManager.InstanceExists);
+        return AmongUsClient.Instance != null && (AmongUsClient.Instance.IsGameStarted || TutorialManager.InstanceExists);
     }
 
     public static bool IsIncrementMultiplierKeyPressed()

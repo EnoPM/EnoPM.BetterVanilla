@@ -140,7 +140,7 @@ public sealed class GamePresetsUi : MonoBehaviour
             lockOverlay.SetActive(true);
             return;
         }
+        lockOverlay.SetActive(!LocalConditions.AmHost());
         lockOverlay.SetLockedText("Available for host only");
-        lockOverlay.SetActive(!AmongUsClient.Instance.AmHost);
     }
 }
