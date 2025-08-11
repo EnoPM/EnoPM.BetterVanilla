@@ -21,7 +21,7 @@ public static class LocalConditions
 
     public static bool ShouldShowRolesAndTasks(PlayerControl playerControl)
     {
-        return ShouldShowRolesAndTasks() && IsGameStarted() && (PlayerControl.LocalPlayer == playerControl || AmDead());
+        return playerControl != null && ShouldShowRolesAndTasks() && IsGameStarted() && (PlayerControl.LocalPlayer == playerControl || AmDead());
     }
 
     public static bool AmDead()

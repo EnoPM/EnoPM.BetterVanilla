@@ -54,7 +54,7 @@ public static partial class PlayerControlRpcExtensions
 
     public static void CustomSpawnHandshake(this PlayerControl pc)
     {
-        if (!PlayerControl.LocalPlayer) return;
+        if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcSendHandshake(BetterVanillaHandshake.Local);
         PlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
         if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())

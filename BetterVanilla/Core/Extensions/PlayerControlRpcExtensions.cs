@@ -174,16 +174,15 @@ public static partial class PlayerControlRpcExtensions
         var writer = sender.StartRpcImmediately(RpcIds.TeamPreference);
         writer.Write((uint)teamPreference);
         writer.SendImmediately();
-        
-        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
-        if (player == null || player.Handshake != null) return;
-        player.SetHandshake(BetterVanillaHandshake.TooOld);
     }
 
     [RpcHandler(RpcIds.TeamPreference)]
     private static void SetTeamPreferenceHandler(this PlayerControl sender, MessageReader reader)
     {
         sender.SetTeamPreference((TeamPreferences)reader.ReadUInt32());
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null || player.Handshake != null) return;
+        player.SetHandshake(BetterVanillaHandshake.TooOld);
     }
     
     private static void SetTeamPreference(this PlayerControl sender, TeamPreferences teamPreference)

@@ -6,7 +6,6 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
-using TMPro;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -16,13 +15,12 @@ public class BetterPlayerControl : MonoBehaviour
     public static BetterPlayerControl? LocalPlayer { get; private set; }
     
     public PlayerControl? Player { get; private set; }
-    public BetterPlayerTexts? PlayerTexts { get; private set; }
     public string? FriendCode { get; private set; }
     public bool AmSponsor { get; private set; }
-
-    public Color? VisorColor { get; private set; }
-    public string? SponsorText { get; private set; }
-    public Color? SponsorColor { get; private set; }
+    private BetterPlayerTexts? PlayerTexts { get; set; }
+    private Color? VisorColor { get; set; }
+    private string? SponsorText { get; set; }
+    private Color? SponsorColor { get; set; }
     public BetterVanillaHandshake? Handshake { get; private set; }
 
     private void Awake()
@@ -71,7 +69,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private BetterPlayerTexts CreateBetterInfosTexts()
     {
-        return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player.cosmetics.nameText.transform);
+        return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player!.cosmetics.nameText.transform);
     }
 
     private void OnBodyColorUpdated(int bodyColor)
@@ -186,7 +184,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void SetupHostOrDisconnectedInfoText(ref List<string> infos)
     {
-        if (LobbyBehaviour.Instance) return;
+        if (LobbyBehaviour.Instance != null || Player == null) return;
         if (AmongUsClient.Instance && Player.OwnerId == AmongUsClient.Instance.HostId)
         {
             infos.Add(ColorUtils.ColoredString(ColorUtils.HostColor, "Host"));
@@ -199,9 +197,10 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void SetupRoleOrTaskInfoText(ref List<string> infos)
     {
+        if (Player == null) return;
         if (!LocalConditions.ShouldShowRolesAndTasks(Player)) return;
         var role = Player.Data.Role;
-        if (!role) return;
+        if (role == null) return;
         if (role.IsImpostor)
         {
             var roleName = Player.Data.IsDead ? StringNames.Impostor : role.StringName;
@@ -227,7 +226,7 @@ public class BetterPlayerControl : MonoBehaviour
     public void SetFriendCode(string friendCode)
     {
         FriendCode = friendCode;
-        Ls.LogMessage($"Friend code for player {Player.Data.PlayerName}: {FriendCode}");
+        Ls.LogMessage($"Friend code for player {Player?.Data.PlayerName}: {FriendCode}");
         UpdateSponsorState();
     }
 

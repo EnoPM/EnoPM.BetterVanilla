@@ -17,8 +17,9 @@ public sealed class CheatersManager
         return IsCheating(player.Player);
     }
     
-    public bool IsCheating(PlayerControl player)
+    public bool IsCheating(PlayerControl? player)
     {
+        if (player == null) return false;
         var id = player.PlayerId;
         return SickoUsers.ContainsKey(id) || AumUsers.ContainsKey(id);
     }
