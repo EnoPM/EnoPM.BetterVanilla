@@ -39,6 +39,6 @@ public sealed class BetterPlayerTexts : MonoBehaviour
         {
             color = ColorUtils.FromHex("#FF8800");
         }
-        handshakeText.SetText(ColorUtils.ColoredString(color, $"v{handshake.Version}", false));
+        handshakeText.SetText(ColorUtils.ColoredString(color, handshake.Version, false));
     }
 }

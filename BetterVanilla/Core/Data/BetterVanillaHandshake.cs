@@ -6,14 +6,21 @@ namespace BetterVanilla.Core.Data;
 public sealed class BetterVanillaHandshake
 {
     public static readonly BetterVanillaHandshake Local = new();
+    public static readonly BetterVanillaHandshake TooOld = new("v1.x.x");
     
     public string Version { get; }
     public string Guid { get; }
     
-    public BetterVanillaHandshake()
+    private BetterVanillaHandshake()
     {
-        Version = GeneratedProps.Version;
+        Version = $"v{GeneratedProps.Version}";
         Guid = typeof(BetterVanillaPlugin).Module.ModuleVersionId.ToString();
+    }
+
+    private BetterVanillaHandshake(string version)
+    {
+        Version = version;
+        Guid = "too-old";
     }
 
     public BetterVanillaHandshake(MessageReader reader)

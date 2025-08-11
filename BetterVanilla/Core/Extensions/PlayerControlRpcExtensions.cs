@@ -174,6 +174,10 @@ public static partial class PlayerControlRpcExtensions
         var writer = sender.StartRpcImmediately(RpcIds.TeamPreference);
         writer.Write((uint)teamPreference);
         writer.SendImmediately();
+        
+        var player = sender.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null || player.Handshake != null) return;
+        player.SetHandshake(BetterVanillaHandshake.TooOld);
     }
 
     [RpcHandler(RpcIds.TeamPreference)]
