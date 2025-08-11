@@ -134,6 +134,13 @@ public sealed class GamePresetsUi : MonoBehaviour
     private void Update()
     {
         if (lockOverlay == null || AmongUsClient.Instance == null) return;
+        if (LocalConditions.IsGameStarted())
+        {
+            lockOverlay.SetLockedText("Available in lobby");
+            lockOverlay.SetActive(true);
+            return;
+        }
+        lockOverlay.SetLockedText("Available for host only");
         lockOverlay.SetActive(!AmongUsClient.Instance.AmHost);
     }
 }
