@@ -37,7 +37,6 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Assets\game" />
-      <EmbeddedResource Include="Assets\cosmetics.ui" />
       <EmbeddedResource Include="Assets\menu.ui" />
       <EmbeddedResource Include="Assets\better.game" />
     </ItemGroup>
