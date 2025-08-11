@@ -56,6 +56,10 @@ public static partial class PlayerControlRpcExtensions
     {
         if (PlayerControl.LocalPlayer == null) return;
         PlayerControl.LocalPlayer.RpcSendHandshake(BetterVanillaHandshake.Local);
+        if (AmongUsClient.Instance.AmHost)
+        {
+            HostOptions.Default.ShareAllOptions();
+        }
         PlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
         if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
         {

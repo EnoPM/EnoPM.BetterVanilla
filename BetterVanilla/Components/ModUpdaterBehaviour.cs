@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
@@ -14,7 +15,7 @@ namespace BetterVanilla.Components;
 public sealed class ModUpdaterBehaviour : MonoBehaviour
 {
     private const string PreviousFileExtension = "previous";
-    
+
     public static ModUpdaterBehaviour? Instance { get; private set; }
 
     private string GithubRepository { get; set; } = null!;
@@ -67,18 +68,12 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
                 File.Delete($"{ModFilePath}.{PreviousFileExtension}");
             }
             File.Move(ModFilePath, $"{ModFilePath}.{PreviousFileExtension}");
-            
+
             var destinationPath = Path.Combine(directoryPath, asset.Name);
-            
-            var progress = new Progress<float>(x =>
-            {
-                UnityThreadDispatcher.RunOnMainThread(() =>
-                {
-                    ui.ProgressBar.SetProgress(x);
-                });
-            });
+
+            var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
             var requestTask = RequestUtils.DownloadFileAsync(asset.DownloadUrl, destinationPath, progress);
-        
+
             var hasError = false;
             while (!requestTask.IsCompleted)
             {
@@ -108,7 +103,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         ui.SetCheckForUpdatesButtonEnabled(false);
         ui.SetUpdateText("Please wait, the update verification is in progress");
 
-        var requestTask = RequestUtils.GetAsync<GithubRelease>($"https://api.github.com/repos/{GithubRepository}/releases/latest");
+        var requestTask = RequestUtils.GetAsync<List<GithubRelease>>($"https://api.github.com/repos/{GithubRepository}/releases");
         var hasError = false;
         while (!requestTask.IsCompleted)
         {
@@ -123,12 +118,27 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
 
         if (!hasError && requestTask.Result != null)
         {
-            ui.SetAvailableRelease(requestTask.Result);
-            ui.SetCheckForUpdatesButtonEnabled(true);
-            CheckForUpdatesCoroutine = null;
-            yield break;
+            var release = requestTask.Result.FirstOrDefault(IsValidRelease);
+            if (release != null)
+            {
+                ui.SetAvailableRelease(release);
+                ui.SetCheckForUpdatesButtonEnabled(true);
+                CheckForUpdatesCoroutine = null;
+                yield break;
+            }
         }
         ui.SetCheckForUpdatesButtonEnabled(true);
         CheckForUpdatesCoroutine = null;
+    }
+
+    private bool IsValidRelease(GithubRelease release)
+    {
+        var validAssets = release.Assets.Count(x => x.Name.EndsWith(".dll"));
+        if (validAssets == 0) return false;
+        if (!SerializedPlayerData.Default.CheckPrerelease)
+        {
+            return !release.Prerelease;
+        }
+        return true;
     }
 }

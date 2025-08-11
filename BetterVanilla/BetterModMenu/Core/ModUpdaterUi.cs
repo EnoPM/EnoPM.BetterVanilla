@@ -1,11 +1,13 @@
 ﻿using System;
 using BetterVanilla.Components;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.GeneratedRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Action = Il2CppSystem.Action;
 
 namespace BetterVanilla.BetterModMenu.Core;
 
@@ -17,10 +19,23 @@ public sealed class ModUpdaterUi : MonoBehaviour
     public TextMeshProUGUI installButtonText = null!;
     public TextMeshProUGUI updateText = null!;
     public ProgressBarUi progressBar = null!;
+    public Toggle betaReleasesToggle = null!;
     
     public ProgressBarUi ProgressBar => progressBar;
     
     private GithubRelease? AvailableRelease { get; set; }
+
+    private void Awake()
+    {
+        betaReleasesToggle.isOn = SerializedPlayerData.Default.CheckPrerelease;
+        betaReleasesToggle.onValueChanged.AddListener(new Action<bool>(OnBetaReleasesToggleChanged));
+    }
+
+    private void OnBetaReleasesToggleChanged(bool state)
+    {
+        if (ModUpdaterBehaviour.Instance == null) return;
+        SerializedPlayerData.Default.CheckPrerelease = state;
+    }
 
     private void Start()
     {

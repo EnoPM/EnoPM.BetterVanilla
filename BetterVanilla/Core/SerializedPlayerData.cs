@@ -8,6 +8,7 @@ public sealed class SerializedPlayerData
     
     private uint _xp;
     private uint _level;
+    private bool _checkPrerelease;
 
     public uint Xp
     {
@@ -31,6 +32,17 @@ public sealed class SerializedPlayerData
         }
     }
 
+    public bool CheckPrerelease
+    {
+        get => _checkPrerelease;
+        set
+        {
+            if (_checkPrerelease == value) return;
+            _checkPrerelease = value;
+            Save();
+        }
+    }
+
     public SerializedPlayerData()
     {
         if (!File.Exists(ModPaths.PlayerDataFile))
@@ -43,6 +55,7 @@ public sealed class SerializedPlayerData
         using var reader = new BinaryReader(file);
         _xp = reader.ReadUInt32();
         _level = reader.ReadUInt32();
+        _checkPrerelease = reader.BaseStream.Position < reader.BaseStream.Length && reader.ReadBoolean();
     }
 
     private void Save()
@@ -51,5 +64,6 @@ public sealed class SerializedPlayerData
         using var writer = new BinaryWriter(file);
         writer.Write(_xp);
         writer.Write(_level);
+        writer.Write(_checkPrerelease);
     }
 }
