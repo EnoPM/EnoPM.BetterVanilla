@@ -11,6 +11,10 @@ public static class ModPaths
     public static string OptionsDirectory { get; }
     public static string SavedOutfitsFile { get; }
     public static string PlayerDataFile { get; }
+    public static string BepInExContentDirectory { get; }
+    public static string BepInExVersionFile { get; }
+    public static string CurrentBepInExDirectory { get; }
+    public static string PreviousBepInExDirectory { get; }
 
     static ModPaths()
     {
@@ -34,8 +38,13 @@ public static class ModPaths
         OptionsDirectory = Path.Combine(ModDataDirectory, "Options");
         SavedOutfitsFile = Path.Combine(ModDataDirectory, "SavedOutfits");
         PlayerDataFile = Path.Combine(ModDataDirectory, "PlayerData");
+        BepInExContentDirectory = Path.Combine(ModDataDirectory, "BepInExFiles");
+        BepInExVersionFile = Path.Combine(BepInExContentDirectory, "CurrentBepInExVersion");
+        CurrentBepInExDirectory = Path.Combine(BepInExContentDirectory, "Current");
+        PreviousBepInExDirectory = Path.Combine(BepInExContentDirectory, "Previous");
         
         CreateDirectory(OptionsDirectory);
+        CreateDirectory(BepInExContentDirectory);
     }
 
     private static void CreateDirectory(string path)

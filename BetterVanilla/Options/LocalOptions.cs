@@ -101,12 +101,6 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
     }
     private bool IsHidePetAfterDeathForced()
     {
-        if (!LocalConditions.IsBetterVanillaHost())
-        {
-            HideMyPetAfterDeath.SetLockedText("Host does not use BetterVanilla");
-            return true;
-        }
-        HideMyPetAfterDeath.SetLockedText("Forced by host");
         return HostOptions.Default.HideDeadPlayerPets.Value;
     }
 }

@@ -9,8 +9,8 @@ set "Il2CppAutoInteropVersion=v1.1.0"
 set "Il2CppAutoInteropRuntime=win-x64"
 
 set "BepInExVersion=6.0.0"
-set "BepInExBuildNumber=735"
-set "BepInExBuildHash=5fef357"
+set "BepInExBuildNumber=738"
+set "BepInExBuildHash=af0cba7"
 
 set "PluginOutputDirectory=%~1"
 set "UnityProjectDirectory=%~2"

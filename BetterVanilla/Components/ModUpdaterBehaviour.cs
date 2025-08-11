@@ -19,6 +19,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
     public static ModUpdaterBehaviour? Instance { get; private set; }
 
     private string GithubRepository { get; set; } = null!;
+    private string BepInExDownloadUrl { get; set; } = null!;
     private string ModFilePath { get; set; } = null!;
     private Coroutine? CheckForUpdatesCoroutine { get; set; }
     private Coroutine? InstallReleaseCoroutine { get; set; }
@@ -27,6 +28,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
     {
         Instance = this;
         GithubRepository = "EnoPM/EnoPM.BetterVanilla";
+        BepInExDownloadUrl = "https://builds.bepinex.dev/projects/bepinex_be/738/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.738+af0cba7.zip";
         ModFilePath = typeof(BetterVanillaPlugin).Assembly.Location;
     }
 
@@ -40,6 +42,58 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
     {
         if (InstallReleaseCoroutine != null) return;
         InstallReleaseCoroutine = this.StartCoroutine(CoInstallRelease(ui, release));
+    }
+
+    private IEnumerator CoCheckAndDownloadBepInEx(ModUpdaterUi ui)
+    {
+        if (Directory.Exists(ModPaths.PreviousBepInExDirectory))
+        {
+            Directory.Delete(ModPaths.PreviousBepInExDirectory, true);
+        }
+        if (!RequireBepInExUpdate())
+        {
+            yield break;
+        }
+        var tempZipPath = Path.Combine(ModPaths.BepInExContentDirectory, "temp.zip");
+        var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
+        var downloadTask = RequestUtils.DownloadFileAsync(BepInExDownloadUrl, tempZipPath);
+        var hasError = false;
+        while (!downloadTask.IsCompleted)
+        {
+            if (downloadTask.Exception != null)
+            {
+                Ls.LogWarning(downloadTask.Exception.Message);
+                hasError = true;
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (!hasError)
+        {
+            ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
+            InstallReleaseCoroutine = null;
+            yield break;
+        }
+    }
+
+    private void SaveBepInExVersion()
+    {
+        using var file = File.Create(ModFilePath);
+        using var writer = new BinaryWriter(file);
+        writer.Write(BepInExDownloadUrl);
+    }
+
+    private bool RequireBepInExUpdate()
+    {
+        if (!File.Exists(ModPaths.BepInExVersionFile))
+        {
+            return true;
+        }
+        using var file = File.OpenRead(ModPaths.BepInExVersionFile);
+        using var reader = new BinaryReader(file);
+        var downloadUrl = reader.ReadString();
+        return downloadUrl != BepInExDownloadUrl;
     }
 
     private IEnumerator CoInstallRelease(ModUpdaterUi ui, GithubRelease release)
