@@ -22,9 +22,6 @@ if "%ReleaseVersion%"=="" (
 
 set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x86-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
 
-
-set "AmongUsBepInExDownloadUrl=https://raw.githubusercontent.com/EnoPM/EnoPM.BetterVanilla/refs/heads/master/release-files/AmongUs.BepInEx.zip"
-
 set "TempDirectory=%~dp0.create-release-temp"
 
 if "%BuildCacheDirectory%"=="" (
@@ -112,6 +109,7 @@ if not exist "%BepInExDirectory%\BepInEx\interop" (
         call :DownloadFile "%BepInExDownloadUrl%" "%BepInExAmongUsZipPath%"
     )
     call :Unzip "%BepInExAmongUsZipPath%" "%BepInExDirectory%\BepInEx"
+    call :MoveFile "%BepInExDirectory%\BepInEx\steam_appid.txt" "%BepInExDirectory%\steam_appid.txt"
 )
 
 goto :eof
