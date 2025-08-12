@@ -17,19 +17,18 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
     private const string PreviousFileExtension = "previous";
 
     public static ModUpdaterBehaviour? Instance { get; private set; }
-
-    private string GithubRepository { get; set; } = null!;
-    private string BepInExDownloadUrl { get; set; } = null!;
-    private string ModFilePath { get; set; } = null!;
     private Coroutine? CheckForUpdatesCoroutine { get; set; }
     private Coroutine? InstallReleaseCoroutine { get; set; }
+    private BepInExUpdater BepInExUpdater { get; set; } = null!;
 
     private void Awake()
     {
         Instance = this;
-        GithubRepository = "EnoPM/EnoPM.BetterVanilla";
-        BepInExDownloadUrl = "https://builds.bepinex.dev/projects/bepinex_be/738/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.738+af0cba7.zip";
-        ModFilePath = typeof(BetterVanillaPlugin).Assembly.Location;
+        BepInExUpdater = new BepInExUpdater(
+            new Version(6, 0, 0),
+            738,
+            "af0cba7"
+        );
     }
 
     public void CheckForUpdates(ModUpdaterUi ui)
@@ -44,69 +43,22 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         InstallReleaseCoroutine = this.StartCoroutine(CoInstallRelease(ui, release));
     }
 
-    private IEnumerator CoCheckAndDownloadBepInEx(ModUpdaterUi ui)
-    {
-        if (Directory.Exists(ModPaths.PreviousBepInExDirectory))
-        {
-            Directory.Delete(ModPaths.PreviousBepInExDirectory, true);
-        }
-        if (!RequireBepInExUpdate())
-        {
-            yield break;
-        }
-        var tempZipPath = Path.Combine(ModPaths.BepInExContentDirectory, "temp.zip");
-        var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
-        var downloadTask = RequestUtils.DownloadFileAsync(BepInExDownloadUrl, tempZipPath);
-        var hasError = false;
-        while (!downloadTask.IsCompleted)
-        {
-            if (downloadTask.Exception != null)
-            {
-                Ls.LogWarning(downloadTask.Exception.Message);
-                hasError = true;
-                break;
-            }
-            yield return new WaitForEndOfFrame();
-        }
-
-        if (!hasError)
-        {
-            ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
-            InstallReleaseCoroutine = null;
-            yield break;
-        }
-    }
-
-    private void SaveBepInExVersion()
-    {
-        using var file = File.Create(ModFilePath);
-        using var writer = new BinaryWriter(file);
-        writer.Write(BepInExDownloadUrl);
-    }
-
-    private bool RequireBepInExUpdate()
-    {
-        if (!File.Exists(ModPaths.BepInExVersionFile))
-        {
-            return true;
-        }
-        using var file = File.OpenRead(ModPaths.BepInExVersionFile);
-        using var reader = new BinaryReader(file);
-        var downloadUrl = reader.ReadString();
-        return downloadUrl != BepInExDownloadUrl;
-    }
-
     private IEnumerator CoInstallRelease(ModUpdaterUi ui, GithubRelease release)
     {
         ui.SetCheckForUpdatesButtonEnabled(false);
         ui.SetInstallButtonEnabled(false);
         ui.ProgressBar.Show();
         ui.ProgressBar.SetProgress(0f);
-
-        var directoryPath = Path.GetDirectoryName(ModFilePath);
-        if (directoryPath == null)
+        
+        var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
+        
+        ui.SetUpdateText($"Updating BepInEx...");
+        yield return BepInExUpdater.CoUpdateIfNecessary(progress);
+        
+        var directoryPath = Path.Combine(ModPaths.CurrentBepInExDirectory, "BepInEx", "plugins");
+        if (!Directory.Exists(directoryPath))
         {
-            Ls.LogError($"Unable to find directory of {ModFilePath}");
+            Ls.LogError($"Plugins directory '{directoryPath}' does not exist");
             ui.SetCheckForUpdatesButtonEnabled(true);
             ui.SetInstallButtonEnabled(true);
             InstallReleaseCoroutine = null;
@@ -116,38 +68,28 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         var assets = release.Assets.Where(x => x.Name.EndsWith(".dll"));
         foreach (var asset in assets)
         {
+            ui.SetUpdateText($"Downloading {asset.Name}...");
+            
+            var filePath = Path.Combine(directoryPath, asset.Name);
             ui.ProgressBar.SetProgress(0f);
-            if (File.Exists($"{ModFilePath}.{PreviousFileExtension}"))
+            if (File.Exists($"{filePath}.{PreviousFileExtension}"))
             {
-                File.Delete($"{ModFilePath}.{PreviousFileExtension}");
+                File.Delete($"{filePath}.{PreviousFileExtension}");
             }
-            File.Move(ModFilePath, $"{ModFilePath}.{PreviousFileExtension}");
-
-            var destinationPath = Path.Combine(directoryPath, asset.Name);
-
-            var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
-            var requestTask = RequestUtils.DownloadFileAsync(asset.DownloadUrl, destinationPath, progress);
-
-            var hasError = false;
-            while (!requestTask.IsCompleted)
+            if (File.Exists(filePath))
             {
-                if (requestTask.Exception != null)
-                {
-                    Ls.LogWarning(requestTask.Exception.Message);
-                    hasError = true;
-                    break;
-                }
-                yield return new WaitForEndOfFrame();
+                File.Move(filePath, $"{filePath}.{PreviousFileExtension}");
             }
-
-            if (!hasError)
+            
+            yield return RequestUtils.CoDownloadFile(asset.DownloadUrl, filePath, progress);
+            if (!File.Exists(filePath))
             {
-                ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
+                ui.SetCheckForUpdatesButtonEnabled(true);
+                ui.SetInstallButtonEnabled(true);
                 InstallReleaseCoroutine = null;
                 yield break;
             }
-            ui.SetCheckForUpdatesButtonEnabled(true);
-            ui.SetInstallButtonEnabled(true);
+            ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
             InstallReleaseCoroutine = null;
         }
     }
@@ -157,7 +99,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         ui.SetCheckForUpdatesButtonEnabled(false);
         ui.SetUpdateText("Please wait, the update verification is in progress");
 
-        var requestTask = RequestUtils.GetAsync<List<GithubRelease>>($"https://api.github.com/repos/{GithubRepository}/releases");
+        var requestTask = RequestUtils.GetAsync<List<GithubRelease>>($"https://api.github.com/repos/{BepInExUpdater.GithubRepository}/releases");
         var hasError = false;
         while (!requestTask.IsCompleted)
         {
@@ -185,7 +127,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         CheckForUpdatesCoroutine = null;
     }
 
-    private bool IsValidRelease(GithubRelease release)
+    private static bool IsValidRelease(GithubRelease release)
     {
         var validAssets = release.Assets.Count(x => x.Name.EndsWith(".dll"));
         if (validAssets == 0) return false;

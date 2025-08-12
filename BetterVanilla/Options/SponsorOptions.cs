@@ -74,6 +74,14 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
             }
             return true;
         }
+        if (!LocalConditions.AmSponsor())
+        {
+            foreach (var option in GetOptions())
+            {
+                option.SetLockedText("Available for sponsors");
+            }
+            return true;
+        }
         return !BetterPlayerControl.LocalPlayer.AmSponsor;
     }
 

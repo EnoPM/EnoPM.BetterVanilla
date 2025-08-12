@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;
 
@@ -20,11 +22,26 @@ public static class RequestUtils
 
     public static async Task<T?> GetAsync<T>(string url, JsonSerializerOptions? options = null)
     {
+        Ls.LogMessage($"URL: {url}");
         using var response = await UserClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
         await using var stream = await response.Content.ReadAsStreamAsync();
         return await JsonSerializer.DeserializeAsync<T>(stream, options);
+    }
+
+    public static IEnumerator CoDownloadFile(string url, string destinationPath, IProgress<float>? progress = null)
+    {
+        var downloadTask = DownloadFileAsync(url, destinationPath, progress);
+        while (!downloadTask.IsCompleted)
+        {
+            if (downloadTask.Exception != null)
+            {
+                Ls.LogWarning(downloadTask.Exception.Message);
+                break;
+            }
+            yield return null;
+        }
     }
 
     public static async Task DownloadFileAsync(string url, string destinationPath, IProgress<float>? progress = null)

@@ -111,7 +111,7 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     {
         PrivateKey = Environment.GetEnvironmentVariable("BETTERVANILLA_PRIVATE_KEY");
         
-        GithubRepository = "EnoPM/EnoPM.BetterVanilla";
+        GithubRepository = BepInExUpdater.GithubRepository;
         GithubFilePath = "features-registry.json";
         GithubBranch = "master";
         
