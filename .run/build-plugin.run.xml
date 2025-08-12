@@ -5,7 +5,7 @@
     <option name="WORKING_DIRECTORY" value="./release-files" />
     <option name="PARENT_ENVS" value="true" />
     <option name="SCRIPT_NAME" value="build-plugin.bat" />
-    <option name="PARAMETERS" value="&quot;D:\GameDevelopment\AmongUs\DevFiles\BepInEx\plugins&quot; &quot;D:\Projects\BetterVanilla UnityEditor\My project&quot;" />
+    <option name="PARAMETERS" value="&quot;D:\GameDevelopment\AmongUs\GameFiles\BetterVanilla\ModFiles\6.0.0-738-af0cba7\BepInEx\plugins&quot; &quot;D:\Projects\BetterVanilla UnityEditor\My project&quot;" />
     <method v="2" />
   </configuration>
 </component>

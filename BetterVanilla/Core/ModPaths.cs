@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BepInEx;
 
 namespace BetterVanilla.Core;
 
@@ -11,10 +12,7 @@ public static class ModPaths
     public static string OptionsDirectory { get; }
     public static string SavedOutfitsFile { get; }
     public static string PlayerDataFile { get; }
-    public static string BepInExContentDirectory { get; }
-    public static string BepInExVersionFile { get; }
-    public static string CurrentBepInExDirectory { get; }
-    public static string PreviousBepInExDirectory { get; }
+    public static string BepInExVersionsDirectory { get; }
 
     static ModPaths()
     {
@@ -38,13 +36,10 @@ public static class ModPaths
         OptionsDirectory = Path.Combine(ModDataDirectory, "Options");
         SavedOutfitsFile = Path.Combine(ModDataDirectory, "SavedOutfits");
         PlayerDataFile = Path.Combine(ModDataDirectory, "PlayerData");
-        BepInExContentDirectory = Path.Combine(ModDataDirectory, "BepInExFiles");
-        BepInExVersionFile = Path.Combine(BepInExContentDirectory, "CurrentBepInExVersion");
-        CurrentBepInExDirectory = Path.Combine(BepInExContentDirectory, "Current");
-        PreviousBepInExDirectory = Path.Combine(BepInExContentDirectory, "Previous");
+        BepInExVersionsDirectory = Path.Combine(Paths.GameRootPath, "BetterVanilla", "ModFiles");
         
         CreateDirectory(OptionsDirectory);
-        CreateDirectory(BepInExContentDirectory);
+        CreateDirectory(BepInExVersionsDirectory);
     }
 
     private static void CreateDirectory(string path)

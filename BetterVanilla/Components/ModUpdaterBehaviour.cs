@@ -52,10 +52,10 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         
         var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
         
-        ui.SetUpdateText($"Updating BepInEx...");
+        ui.SetUpdateText("Updating BepInEx...");
         yield return BepInExUpdater.CoUpdateIfNecessary(progress);
         
-        var directoryPath = Path.Combine(ModPaths.CurrentBepInExDirectory, "BepInEx", "plugins");
+        var directoryPath = Path.Combine(BepInExUpdater.CurrentBepInExDirectory, "BepInEx", "plugins");
         if (!Directory.Exists(directoryPath))
         {
             Ls.LogError($"Plugins directory '{directoryPath}' does not exist");
@@ -89,9 +89,9 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
                 InstallReleaseCoroutine = null;
                 yield break;
             }
-            ui.SetUpdateText("The update download is complete. Please restart your game to install the update.");
-            InstallReleaseCoroutine = null;
         }
+        ui.SetUpdateText("The download is complete. Please restart your game to install the update.");
+        InstallReleaseCoroutine = null;
     }
 
     private IEnumerator CoCheckForUpdates(ModUpdaterUi ui)

@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using BepInEx;
 using BetterVanilla.Core.Helpers;
+using UnityEngine;
 
 namespace BetterVanilla.Core;
 
@@ -14,18 +15,23 @@ public sealed class BepInExUpdater
     
     private string BepInExDownloadUrl { get; }
     
+    public string CurrentBepInExDirectory { get; }
+    
     public BepInExUpdater(Version version, uint buildNumber, string buildHash)
     {
         BepInExDownloadUrl = $"https://builds.bepinex.dev/projects/bepinex_be/{buildNumber}/BepInEx-Unity.IL2CPP-win-x86-{version.Major}.{version.Minor}.{version.Build}-be.{buildNumber}+{buildHash}.zip";
+        CurrentBepInExDirectory = Path.Combine(ModPaths.BepInExVersionsDirectory, $"{version.Major}.{version.Minor}.{version.Build}-{buildNumber}-{buildHash}");
     }
 
     public IEnumerator CoUpdateIfNecessary(IProgress<float>? progress = null)
     {
-        if (!IsUpdateRequired())
+        DeleteOldBepInExVersions();
+        if (Directory.Exists(CurrentBepInExDirectory))
         {
             yield break;
         }
         yield return CoInstallBepInEx(progress);
+        yield return new WaitForSeconds(2f);
     }
     
     private IEnumerator CoInstallBepInEx(IProgress<float>? progress = null)
@@ -34,12 +40,11 @@ public sealed class BepInExUpdater
         yield return RequestUtils.CoDownloadFile(BepInExDownloadUrl, tempFile, progress);
         if (!File.Exists(tempFile)) yield break;
         
-        InitDirectory();
         ExtractArchive(tempFile);
         File.Delete(tempFile);
-        if (!Directory.Exists(ModPaths.CurrentBepInExDirectory)) yield break;
+        if (!Directory.Exists(CurrentBepInExDirectory)) yield break;
         
-        var configDirectory = Path.Combine(ModPaths.CurrentBepInExDirectory, "BepInEx", "config");
+        var configDirectory = Path.Combine(CurrentBepInExDirectory, "BepInEx", "config");
         if (!Directory.Exists(configDirectory))
         {
             Directory.CreateDirectory(configDirectory);
@@ -49,29 +54,9 @@ public sealed class BepInExUpdater
         if (!File.Exists(configFile)) yield break;
 
         UpdateDoorstopConfig();
-        SaveBepInExVersion();
-    }
-    
-    private bool IsUpdateRequired()
-    {
-        if (!File.Exists(ModPaths.BepInExVersionFile))
-        {
-            return true;
-        }
-        using var file = File.OpenRead(ModPaths.BepInExVersionFile);
-        using var reader = new BinaryReader(file);
-        var downloadUrl = reader.ReadString();
-        return downloadUrl != BepInExDownloadUrl;
-    }
-    
-    private void SaveBepInExVersion()
-    {
-        using var file = File.Create(ModPaths.BepInExVersionFile);
-        using var writer = new BinaryWriter(file);
-        writer.Write(BepInExDownloadUrl);
     }
 
-    private static void UpdateDoorstopConfig()
+    private void UpdateDoorstopConfig()
     {
         var filePath = Path.Combine(Paths.GameRootPath, "doorstop_config.ini");
         var text = File.ReadAllText(filePath);
@@ -80,37 +65,37 @@ public sealed class BepInExUpdater
         {
             if (rows[i].StartsWith("target_assembly ="))
             {
-                rows[i] = $"target_assembly = {Path.Combine(ModPaths.CurrentBepInExDirectory, "BepInEx", "core", "BepInEx.Unity.IL2CPP.dll")}";
+                rows[i] = $"target_assembly = {Path.Combine(CurrentBepInExDirectory, "BepInEx", "core", "BepInEx.Unity.IL2CPP.dll")}";
                 continue;
             }
             if (rows[i].StartsWith("coreclr_path ="))
             {
-                rows[i] = $"coreclr_path = {Path.Combine(ModPaths.CurrentBepInExDirectory, "dotnet", "coreclr.dll")}";
+                rows[i] = $"coreclr_path = {Path.Combine(CurrentBepInExDirectory, "dotnet", "coreclr.dll")}";
                 continue;
             }
             if (rows[i].StartsWith("coreclr_path ="))
             {
-                rows[i] = $"corlib_dir = {Path.Combine(ModPaths.CurrentBepInExDirectory, "dotnet")}";
+                rows[i] = $"corlib_dir = {Path.Combine(CurrentBepInExDirectory, "dotnet")}";
             }
         }
         File.WriteAllText(filePath, string.Join('\n', rows));
     }
 
-    private static void ExtractArchive(string archivePath)
+    private void ExtractArchive(string archivePath)
     {
         using var file = File.OpenRead(archivePath);
         using var archive = new ZipArchive(file, ZipArchiveMode.Read);
-        Directory.CreateDirectory(ModPaths.CurrentBepInExDirectory);
-        archive.ExtractToDirectory(ModPaths.CurrentBepInExDirectory);
+        Directory.CreateDirectory(CurrentBepInExDirectory);
+        archive.ExtractToDirectory(CurrentBepInExDirectory);
     }
 
-    private static void InitDirectory()
+    private void DeleteOldBepInExVersions()
     {
-        if (Directory.Exists(ModPaths.PreviousBepInExDirectory))
+        foreach (var directory in Directory.GetDirectories(ModPaths.BepInExVersionsDirectory))
         {
-            Directory.Delete(ModPaths.PreviousBepInExDirectory, true);
+            if (directory == CurrentBepInExDirectory || directory == Path.GetDirectoryName(Paths.BepInExRootPath)) continue;
+            Ls.LogMessage($"Directory to delete: {directory}");
+            Directory.Delete(directory, true);
         }
-        if (!Directory.Exists(ModPaths.CurrentBepInExDirectory)) return;
-        Directory.Move(ModPaths.CurrentBepInExDirectory, ModPaths.PreviousBepInExDirectory);
     }
 }
