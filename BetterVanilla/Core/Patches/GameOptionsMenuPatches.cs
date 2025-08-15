@@ -1,4 +1,6 @@
 ﻿using BetterVanilla.Core.Extensions;
+using BetterVanilla.Options;
+using BetterVanilla.Options.Core;
 using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
@@ -17,5 +19,14 @@ internal static class GameOptionsMenuPatches
     private static bool ValueChangedPrefix(GameOptionsMenu __instance, OptionBehaviour option)
     {
         return __instance.CustomValueChanged(option);
+    }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(GameOptionsMenu.Update))]
+    private static void UpdatePostfix(GameOptionsMenu __instance)
+    {
+        foreach (var option in HostOptions.Default.GetOptions())
+        {
+            option.UpdateBehaviour();
+        }
     }
 }

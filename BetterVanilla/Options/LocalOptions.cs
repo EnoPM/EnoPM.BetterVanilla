@@ -53,6 +53,10 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
     [ColorOption("#56FFB0")]
     [OptionName("Task text gradient end color")]
     public ColorLocalOption TaskEndColor { get; set; } = null!;
+    
+    [BoolOption(true)]
+    [OptionName("Display BetterVanilla version")]
+    public BoolLocalOption DisplayBetterVanillaVersion { get; set; } = null!;
 
     private LocalOptions() : base("local")
     {
@@ -99,7 +103,7 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
         DisplayVoteColorsAfterDeath.SetLockedText("Not authorized by host");
         return !HostOptions.Default.AllowDeadVoteDisplay.Value;
     }
-    private bool IsHidePetAfterDeathForced()
+    private static bool IsHidePetAfterDeathForced()
     {
         return HostOptions.Default.HideDeadPlayerPets.Value;
     }

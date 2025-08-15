@@ -75,10 +75,36 @@ public sealed class NumberHostOption : NumberSerializableOption, IHostOption<Flo
     
     public void SetViewSettingBehaviourInfo(ViewSettingsInfoPanel viewBehaviour, int maskLayer)
     {
+        var allowed = IsAllowed();
+        var color = allowed ? Palette.EnabledColor : Palette.DisabledClear;
         viewBehaviour.titleText.SetText(Title);
         viewBehaviour.settingText.SetText(GetValueAsString());
         viewBehaviour.disabledBackground.gameObject.SetActive(false);
         viewBehaviour.background.gameObject.SetActive(true);
         viewBehaviour.SetMaskLayer(maskLayer);
+        if (viewBehaviour.settingText.color != color)
+        {
+            viewBehaviour.settingText.color = color;
+        }
+    }
+    
+    public override void UpdateBehaviour()
+    {
+        base.UpdateBehaviour();
+        if (SettingBehaviour == null) return;
+        var interactable = IsAllowed();
+        var color = interactable ? Palette.EnabledColor : Palette.DisabledClear;
+        SettingBehaviour.MinusBtn.SetInteractable(interactable);
+        SettingBehaviour.PlusBtn.SetInteractable(interactable);
+        SettingBehaviour.MinusBtn.enabled = interactable;
+        SettingBehaviour.PlusBtn.enabled = interactable;
+        if (SettingBehaviour.ValueText.color != color)
+        {
+            SettingBehaviour.ValueText.color = color;
+        }
+        if (interactable)
+        {
+            SettingBehaviour.AdjustButtonsActiveState();
+        }
     }
 }

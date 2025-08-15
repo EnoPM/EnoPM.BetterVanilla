@@ -19,5 +19,6 @@ internal sealed class BetterVanillaPlugin : BasePlugin
         AddComponent<FeatureCodeBehaviour>();
         AddComponent<BetterVanillaManager>();
         AddComponent<ModUpdaterBehaviour>();
+        AddComponent<PlayerShieldBehaviour>();
     }
 }

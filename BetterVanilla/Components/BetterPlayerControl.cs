@@ -22,6 +22,7 @@ public class BetterPlayerControl : MonoBehaviour
     private string? SponsorText { get; set; }
     private Color? SponsorColor { get; set; }
     public BetterVanillaHandshake? Handshake { get; private set; }
+    public bool IsProtected { get; set; }
 
     private void Awake()
     {
@@ -86,9 +87,43 @@ public class BetterPlayerControl : MonoBehaviour
             PlayerTexts.gameObject.SetActive(isActive);
             if (isActive)
             {
-                PlayerTexts.SetMainText(GetBetterInfosText());
-                PlayerTexts.SetSponsorText(GetSponsorText());
-                PlayerTexts.SetHandshakeText(Handshake);
+                var infos = GetBetterInfosText();
+                if (string.IsNullOrEmpty(infos))
+                {
+                    PlayerTexts.SetMainTextActive(false);
+                }
+                else
+                {
+                    PlayerTexts.SetMainTextActive(true);
+                    PlayerTexts.SetMainText(infos);
+                }
+                var sponsorText = GetSponsorText();
+                if (string.IsNullOrEmpty(sponsorText) || !AmSponsor)
+                {
+                    PlayerTexts.SetSponsorTextActive(false);
+                }
+                else
+                {
+                    PlayerTexts.SetSponsorTextActive(true);
+                    PlayerTexts.SetSponsorText(sponsorText);
+                }
+                if (Handshake == null || !LocalOptions.Default.DisplayBetterVanillaVersion.Value)
+                {
+                    PlayerTexts.SetHandshakeTextActive(false);
+                }
+                else
+                {
+                    PlayerTexts.SetHandshakeTextActive(true);
+                    PlayerTexts.SetHandshakeText(Handshake);
+                }
+            }
+            if (IsProtected)
+            {
+                Player.cosmetics.nameText.SetText($"{Player.Data.PlayerName}\n<size=50%>Protected ({Mathf.RoundToInt(PlayerShieldBehaviour.Instance.Timer)}s)</size>");
+            }
+            else
+            {
+                Player.cosmetics.nameText.SetText(Player.Data.PlayerName);
             }
         }
         if (AmSponsor && Player != null && Player.AmOwner)
@@ -145,7 +180,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     public string GetSponsorText()
     {
-        if (!AmSponsor || SponsorColor == null || SponsorText == null) return string.Empty;
+        if (!AmSponsor || SponsorColor == null || string.IsNullOrWhiteSpace(SponsorText)) return string.Empty;
         return ColorUtils.ColoredString(SponsorColor.Value, SponsorText, false);
     }
 

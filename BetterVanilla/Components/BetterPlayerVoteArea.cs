@@ -56,6 +56,6 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
         InfosText.SetSponsorText(player.GetSponsorText());
         InfosText.SetMainText(player.GetBetterInfosText());
         InfosText.gameObject.SetActive(true);
-        InfosText.sponsorText.gameObject.SetActive(!DataManager.Settings.Accessibility.ColorBlindMode);
+        InfosText.SetSponsorTextActive(!DataManager.Settings.Accessibility.ColorBlindMode);
     }
 }

@@ -27,6 +27,14 @@ public class HostOptions : AbstractSerializableOptionHolder
     [NumberOption(60f, 15f, 120f, IncrementValue = 0.5f, ValueSuffix = "s")]
     [OptionName("Polus reactor countdown")]
     public NumberHostOption PolusReactorCountdown { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Protect first killed player")]
+    public BoolHostOption ProtectFirstKilledPlayer { get; set; } = null!;
+    
+    [NumberOption(60f, 15f, 300f, IncrementValue = 1f, ValueSuffix = "s")]
+    [OptionName("Protection duration")]
+    public NumberHostOption ProtectionDuration { get; set; } = null!;
 
     public HostOptions() : base("host")
     {
@@ -35,6 +43,10 @@ public class HostOptions : AbstractSerializableOptionHolder
             CategoryName = StringNames.None,
             AllGameSettings = new Il2CppSystem.Collections.Generic.List<BaseGameSetting>()
         };
+        
+        PolusReactorCountdown.SetIsLockedFunc(IsNotPolusMap);
+        HideDeadPlayerPets.SetIsLockedFunc(IsNotPolusMap);
+        ProtectionDuration.SetIsLockedFunc(IsProtectionDisabled);
 
         foreach (var option in GetOptions())
         {
@@ -51,6 +63,16 @@ public class HostOptions : AbstractSerializableOptionHolder
                 Ls.LogWarning($"Unsupported host option {option.Key}");
             }
         }
+    }
+
+    private bool IsProtectionDisabled()
+    {
+        return !ProtectFirstKilledPlayer.Value;
+    }
+
+    private bool IsNotPolusMap()
+    {
+        return GameOptionsManager.Instance.CurrentGameOptions.MapId != (byte)MapNames.Polus;
     }
     
     public void ShareAllOptions()

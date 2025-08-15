@@ -94,6 +94,11 @@ public sealed class BetterVanillaManager : MonoBehaviour
         return AllPlayers.Find(x => x.Player != null && x.Player.OwnerId == ownerId);
     }
 
+    public BetterPlayerControl? GetPlayerByFriendCode(string friendCode)
+    {
+        return AllPlayers.Find(x => x.FriendCode != null && x.FriendCode == friendCode);
+    }
+
     private static void OnPlayerJoined(PlayerControl player)
     {
         player.gameObject.AddComponent<BetterPlayerControl>();

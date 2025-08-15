@@ -28,6 +28,11 @@ public abstract class AbstractSerializableOption(string key, string title)
     public bool IsNotAllowed() => IsLocked() || IsHidden();
     public bool IsAllowed() => !IsNotAllowed();
 
+    public virtual void UpdateBehaviour()
+    {
+        
+    }
+
     public void SetIsLockedFunc(Func<bool>? isLockedFunc)
     {
         IsLockedFunc = isLockedFunc;

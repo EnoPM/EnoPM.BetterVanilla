@@ -11,6 +11,7 @@ public sealed class LockOverlayUi : MonoBehaviour
 
     public void SetLockedText(string lockedText)
     {
+        if (text == null) return;
         text.SetText(lockedText);
     }
 }

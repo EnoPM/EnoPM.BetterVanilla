@@ -17,19 +17,24 @@ public sealed class BetterPlayerTexts : MonoBehaviour
     {
         roleAndTaskProgressionText.SetText(text);
     }
+
+    public void SetMainTextActive(bool state)
+    {
+        roleAndTaskProgressionText.gameObject.SetActive(state);
+    }
     
     public void SetSponsorText(string text)
     {
         sponsorText.SetText(text);
     }
 
-    public void SetHandshakeText(BetterVanillaHandshake? handshake)
+    public void SetSponsorTextActive(bool state)
     {
-        if (handshake == null)
-        {
-            handshakeText.SetText(string.Empty);
-            return;
-        }
+        sponsorText.gameObject.SetActive(state);
+    }
+
+    public void SetHandshakeText(BetterVanillaHandshake handshake)
+    {
         var color = Color.green;
         if (BetterVanillaHandshake.Local.Version != handshake.Version)
         {
@@ -40,5 +45,10 @@ public sealed class BetterPlayerTexts : MonoBehaviour
             color = ColorUtils.FromHex("#FF8800");
         }
         handshakeText.SetText(ColorUtils.ColoredString(color, handshake.Version, false));
+    }
+
+    public void SetHandshakeTextActive(bool state)
+    {
+        handshakeText.gameObject.SetActive(state);
     }
 }

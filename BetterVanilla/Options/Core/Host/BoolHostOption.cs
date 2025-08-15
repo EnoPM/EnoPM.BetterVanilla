@@ -67,12 +67,38 @@ public sealed class BoolHostOption : BoolSerializableOption, IHostOption<Checkbo
 
     public void SetViewSettingBehaviourInfo(ViewSettingsInfoPanel viewBehaviour, int maskLayer)
     {
+        var allowed = IsAllowed();
+        var color = allowed ? Palette.EnabledColor : Palette.DisabledClear;
         viewBehaviour.titleText.SetText(Title);
         viewBehaviour.settingText.SetText(string.Empty);
         viewBehaviour.checkMarkOff.gameObject.SetActive(!Value);
         viewBehaviour.background.gameObject.SetActive(true);
         viewBehaviour.checkMark.gameObject.SetActive(Value);
+        if (viewBehaviour.background.color != color)
+        {
+            viewBehaviour.background.color = color;
+        }
+        if (viewBehaviour.checkMarkOff.color != color)
+        {
+            viewBehaviour.checkMarkOff.color = color;
+        }
+        if (viewBehaviour.checkMark.color != color)
+        {
+            viewBehaviour.checkMark.color = color;
+        }
         viewBehaviour.SetMaskLayer(maskLayer);
+    }
+    public override void UpdateBehaviour()
+    {
+        base.UpdateBehaviour();
+        if (SettingBehaviour == null) return;
+        var interactable = IsAllowed();
+        var color = interactable ? Palette.EnabledColor : Palette.DisabledClear;
+        if (SettingBehaviour.CheckMark.color != color)
+        {
+            SettingBehaviour.CheckMark.color = color;
+        }
+        SettingBehaviour.enabled = interactable;
     }
 
 }
