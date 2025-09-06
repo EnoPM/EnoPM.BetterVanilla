@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.CosmeticsComp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Cosmetics.Api", "BetterVanilla.Cosmetics.Api\BetterVanilla.Cosmetics.Api.csproj", "{250584C2-ABC3-4940-9CF1-0523A7FC39C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Installer", "BetterVanilla.Installer\BetterVanilla.Installer.csproj", "{37D3A2ED-3373-418C-8C88-21884D45582D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,12 @@ Global
 		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
 		{250584C2-ABC3-4940-9CF1-0523A7FC39C2}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.CodeGen|Any CPU.ActiveCfg = Debug|Any CPU
+		{37D3A2ED-3373-418C-8C88-21884D45582D}.CodeGen|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(RiderSharedRunConfigurations) = postSolution
 	EndGlobalSection

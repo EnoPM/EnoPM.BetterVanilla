@@ -73,7 +73,7 @@ public sealed class BepInExUpdater
                 rows[i] = $"coreclr_path = {Path.Combine(CurrentBepInExDirectory, "dotnet", "coreclr.dll")}";
                 continue;
             }
-            if (rows[i].StartsWith("coreclr_path ="))
+            if (rows[i].StartsWith("corlib_dir ="))
             {
                 rows[i] = $"corlib_dir = {Path.Combine(CurrentBepInExDirectory, "dotnet")}";
             }

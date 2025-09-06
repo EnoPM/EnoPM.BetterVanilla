@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>BetterVanillaInstaller</AssemblyName>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ApplicationIcon>icons/icon.ico</ApplicationIcon>
+        
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <StripSymbols>true</StripSymbols>
+        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <!-- <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile> -->
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="logo.txt" />
+    </ItemGroup>
+
+</Project>
