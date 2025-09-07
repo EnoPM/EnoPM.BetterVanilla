@@ -1,6 +1,6 @@
-﻿using BetterVanilla.Core;
+﻿using BetterVanilla.Components;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
-using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 
@@ -77,8 +77,8 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
     
     private void OnTeamPreferenceValueChanged()
     {
-        if (!PlayerControl.LocalPlayer || !AmongUsClient.Instance) return;
-        PlayerControl.LocalPlayer.RpcSetTeamPreference(TeamPreference.ParseValue(TeamPreferences.Both));
+        if (BetterPlayerControl.LocalPlayer == null || AmongUsClient.Instance == null) return;
+        BetterPlayerControl.LocalPlayer.RpcSetTeamPreference(TeamPreference.ParseValue(TeamPreferences.Both));
     }
 
     private bool IsTeamPreferenceLocked()

@@ -87,20 +87,20 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
 
     public void ShareSponsorText()
     {
-        if (PlayerControl.LocalPlayer == null) return;
-        PlayerControl.LocalPlayer.RpcShareSponsorText(SponsorText.Value);
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        BetterPlayerControl.LocalPlayer.RpcSetSponsorText(SponsorText.Value);
     }
 
     public void ShareSponsorTextColor()
     {
-        if (PlayerControl.LocalPlayer == null) return;
-        PlayerControl.LocalPlayer.RpcShareSponsorTextColor(SponsorTextColor.Value);
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        BetterPlayerControl.LocalPlayer.RpcSetSponsorTextColor(SponsorTextColor.Value);
     }
 
     public void ShareVisorColor()
     {
-        if (PlayerControl.LocalPlayer == null) return;
-        PlayerControl.LocalPlayer.RpcShareSponsorVisorColor(VisorColor.Value);
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        BetterPlayerControl.LocalPlayer.RpcSetVisorColor(VisorColor.Value);
     }
 
     private void ShareLevel()

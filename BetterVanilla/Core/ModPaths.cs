@@ -36,7 +36,7 @@ public static class ModPaths
         OptionsDirectory = Path.Combine(ModDataDirectory, "Options");
         SavedOutfitsFile = Path.Combine(ModDataDirectory, "SavedOutfits");
         PlayerDataFile = Path.Combine(ModDataDirectory, "PlayerData");
-        BepInExVersionsDirectory = Path.Combine(Paths.GameRootPath, "BetterVanilla", "ModFiles");
+        BepInExVersionsDirectory = Path.Combine(Paths.GameRootPath, "BetterVanilla", "BepInExVersions");
         
         CreateDirectory(OptionsDirectory);
         CreateDirectory(BepInExVersionsDirectory);

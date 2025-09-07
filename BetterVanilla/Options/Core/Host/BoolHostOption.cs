@@ -1,6 +1,6 @@
 ﻿using AmongUs.GameOptions;
+using BetterVanilla.Components;
 using BetterVanilla.Core;
-using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
@@ -25,9 +25,9 @@ public sealed class BoolHostOption : BoolSerializableOption, IHostOption<Checkbo
 
     private void OnValueChanged()
     {
-        if (LocalConditions.AmHost())
+        if (LocalConditions.AmHost() && BetterPlayerControl.LocalPlayer != null)
         {
-            PlayerControl.LocalPlayer.RpcShareHostOption(this);
+            BetterPlayerControl.LocalPlayer.RpcSetHostOptionValue(this);
         }
         UpdateBehaviours();
     }

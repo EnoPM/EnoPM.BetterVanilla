@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
 using InnerNet;
@@ -20,7 +22,7 @@ public static class PlayerControlExtensions
         AmongUsClient.Instance.ReportPlayer(client.Id, reason);
     }
     
-    public static ClientData GetClient(this PlayerControl player)
+    public static ClientData? GetClient(this PlayerControl player)
     {
         try
         {
@@ -34,7 +36,7 @@ public static class PlayerControlExtensions
     
     public static int GetClientId(this PlayerControl player)
     {
-        return player?.GetClient()?.Id ?? -1;
+        return player.GetClient()?.Id ?? -1;
     }
     
     public static void BetterCompleteTask(this PlayerControl pc, NormalPlayerTask task)
@@ -55,7 +57,7 @@ public static class PlayerControlExtensions
             if (!playerTask) continue;
             if (playerTask.IsComplete) continue;
             var normalPlayerTask = playerTask.TryCast<NormalPlayerTask>();
-            if (normalPlayerTask)
+            if (normalPlayerTask != null)
             {
                 if (normalPlayerTask.IsComplete) continue;
                 results.Add(normalPlayerTask);
@@ -150,5 +152,54 @@ public static class PlayerControlExtensions
         source.NetTransform.enabled = canMove;
         source.MyPhysics.enabled = canMove;
         source.NetTransform.Halt();
+    }
+    
+    public static void CustomOwnerSpawnHandshake(this PlayerControl pc)
+    {
+        var player = pc.gameObject.GetComponent<BetterPlayerControl>();
+        if (player == null)
+        {
+            Ls.LogError($"Unable to start {nameof(CustomOwnerSpawnHandshake)} because it doesn't have a {nameof(BetterPlayerControl)}");
+            return;
+        }
+        
+        player.RpcSetHandshake(BetterVanillaHandshake.Local);
+        player.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
+
+        if (FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
+        {
+            player.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+        }
+
+        if (LocalConditions.AmHost())
+        {
+            HostOptions.Default.ShareAllOptions();
+        }
+
+        if (player.AmSponsor)
+        {
+            player.RpcSetSponsorText(SponsorOptions.Default.SponsorText.Value);
+            player.RpcSetSponsorTextColor(SponsorOptions.Default.SponsorTextColor.Value);
+            player.RpcSetVisorColor(SponsorOptions.Default.VisorColor.Value);
+        }
+    }
+
+    public static void CustomSpawnHandshake(this PlayerControl pc)
+    {
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        BetterPlayerControl.LocalPlayer.RpcSetHandshake(BetterVanillaHandshake.Local);
+        if (LocalConditions.AmHost())
+        {
+            HostOptions.Default.ShareAllOptions();
+        }
+        BetterPlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
+        if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
+        {
+            BetterPlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+        }
+        if (!LocalConditions.AmSponsor()) return;
+        SponsorOptions.Default.ShareSponsorText();
+        SponsorOptions.Default.ShareSponsorTextColor();
+        SponsorOptions.Default.ShareVisorColor();
     }
 }

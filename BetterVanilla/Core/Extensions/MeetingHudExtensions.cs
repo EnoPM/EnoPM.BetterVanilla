@@ -18,14 +18,14 @@ public static class MeetingHudExtensions
 
     public static void BetterCastVote(this MeetingHud meetingHud, byte voterId, byte votedId)
     {
-        if (!AmongUsClient.Instance.AmHost || !HostOptions.Default.AllowDeadVoteDisplay.Value) return;
+        if (!LocalConditions.AmHost() || !HostOptions.Default.AllowDeadVoteDisplay.Value || BetterPlayerControl.LocalPlayer == null) return;
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
         if (!voter)
         {
             Ls.LogWarning($"Player {voterId} has not been found in BetterCastVote.");
             return;
         }
-        PlayerControl.LocalPlayer.RpcSetMeetingVote(voterId, votedId);
+        BetterPlayerControl.LocalPlayer.RpcSetMeetingVote(voterId, votedId);
     }
 
     public static void CastVote(byte voterId, byte votedId)
@@ -64,9 +64,9 @@ public static class MeetingHudExtensions
     
     private static void DeleteAllCachedVoteSpreaders()
     {
-        foreach (var vote in CachedVotes.Where(x => x.Renderer))
+        foreach (var vote in CachedVotes.Where(x => x.Renderer != null))
         {
-            vote.Renderer.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
+            vote.Renderer!.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
             Object.Destroy(vote.Renderer);
         }
     }
@@ -99,12 +99,12 @@ public static class MeetingHudExtensions
                 {
                     PlayerMaterial.SetColors(Palette.DisabledGrey, vote.Renderer);
                 }
-                else
+                else if (vote.Voter.Player != null)
                 {
                     PlayerMaterial.SetColors(vote.Voter.Player.Data.DefaultOutfit.ColorId, vote.Renderer);
                 }
             }
-            if (vote.Renderer)
+            if (vote.Renderer != null)
             {
                 vote.Renderer.enabled = shouldRevealVotes;
             }
@@ -113,8 +113,8 @@ public static class MeetingHudExtensions
 
     private static void CreateBetterVoteIcon(this MeetingHud meetingHud, VoteData vote)
     {
-        var votedPva = vote.Voted ? meetingHud.playerStates.FirstOrDefault(x => x && x.TargetPlayerId == vote.Voted.Player.PlayerId) : null;
-        var parent = votedPva ? votedPva.transform : meetingHud.SkippedVoting.transform;
+        var votedPva = vote.Voted != null ? meetingHud.playerStates.FirstOrDefault(x => x && x.TargetPlayerId == vote.Voted.Player?.PlayerId) : null;
+        var parent = votedPva != null ? votedPva.transform : meetingHud.SkippedVoting.transform;
         if (!parent)
         {
             Ls.LogWarning($"No transform found");
@@ -132,14 +132,14 @@ public static class MeetingHudExtensions
         vote.Renderer = voteIcon;
     }
 
-    private class VoteData(BetterPlayerControl voter, BetterPlayerControl voted)
+    private class VoteData(BetterPlayerControl voter, BetterPlayerControl? voted)
     {
         public readonly BetterPlayerControl Voter = voter;
-        public readonly BetterPlayerControl Voted = voted;
-        public SpriteRenderer Renderer;
+        public readonly BetterPlayerControl? Voted = voted;
+        public SpriteRenderer? Renderer;
     }
     
-    private static void LogVote(BetterPlayerControl voter, BetterPlayerControl suspect)
+    private static void LogVote(BetterPlayerControl voter, BetterPlayerControl? suspect)
     {
         if (!LocalConditions.ShouldRevealVotes() || !LocalConditions.ShouldRevealVoteColors()) return;
         Ls.LogMessage($"{voter.Player?.Data.PlayerName} voted for {(suspect != null ? suspect.Player?.Data.PlayerName : "skip")}");

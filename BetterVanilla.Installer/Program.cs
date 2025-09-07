@@ -11,13 +11,13 @@ internal static class Program
         try
         {
             var gameDirectoryPath = Directory.GetCurrentDirectory();
-            
+
             ProcessUtility.EnsureGameDirectoryIsValidAsync(gameDirectoryPath);
             ProcessUtility.EnsureProcessIsNotRunning(gameDirectoryPath);
-            
+
             var installer = new ModInstaller(gameDirectoryPath);
             await installer.StartAsync();
-            
+
             Console.WriteLine();
             ConsoleUtility.WriteLine(ConsoleColor.Green, "[X] BetterVanilla was successfully installed!");
         }
@@ -32,7 +32,8 @@ internal static class Program
 
     private static void PrintLogo()
     {
-        var logoFile = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterVanilla.Installer.logo.txt");
+        var logoFile = Assembly.GetExecutingAssembly()
+            .GetManifestResourceStream("BetterVanilla.Installer.logo.txt");
         if (logoFile == null) return;
         var logoText = new StreamReader(logoFile).ReadToEnd();
         var rows = logoText.Split('\n');

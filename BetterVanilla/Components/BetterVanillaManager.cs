@@ -8,7 +8,6 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
-using BetterVanilla.Cosmetics;
 using HarmonyLib;
 using UnityEngine;
 
@@ -25,7 +24,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public ChatCommandsManager ChatCommands { get; private set; } = null!;
     public CheatersManager Cheaters { get; private set; } = null!;
     public XpManager Xp { get; private set; } = null!;
-    public CosmeticManager Cosmetics { get; private set; } = null!;
     public ModMenu Menu { get; private set; } = null!;
     public ZoomBehaviourManager ZoomBehaviour { get; internal set; } = null!;
     public Sprite VentSprite { get; private set; } = null!;
@@ -40,7 +38,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         ChatCommands = new ChatCommandsManager();
         Cheaters = new CheatersManager();
         Xp = new XpManager();
-        Cosmetics = new CosmeticManager();
         Menu = new ModMenu();
         
         var gameBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.game");

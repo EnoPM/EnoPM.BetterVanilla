@@ -1,7 +1,8 @@
-﻿using System;
-using BetterVanilla.Components;
+﻿using System.Collections;
+using System.Linq;
+using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
-using BetterVanilla.Core.Data;
+using BetterVanilla.Core.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,9 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
     public Color runningColor;
     public Color pausedColor;
     public Color completedColor;
+    
+    private Coroutine? AutoTaskCoroutine { get; set; }
+    private Vector2? CurrentPosition { get; set; }
 
     private void Awake()
     {
@@ -25,21 +29,101 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
 
     public void OnAutoTaskButtonClicked()
     {
-        if (AutoTaskBehaviour.Instance == null) return;
-        if (AutoTaskBehaviour.Instance.IsStarted)
+        if (AutoTaskCoroutine != null)
         {
             Ls.LogMessage($"Stopping AutoTaskBehaviour");
-            AutoTaskBehaviour.Instance.StateUpdated -= OnAutoTaskBehaviourStateUpdated;
-            AutoTaskBehaviour.Instance.Stop();
+            StopCoroutine(AutoTaskCoroutine);
+            AutoTaskCoroutine = null;
             Reset();
         }
         else
         {
             Ls.LogMessage($"Starting AutoTaskBehaviour");
-            AutoTaskBehaviour.Instance.StateUpdated += OnAutoTaskBehaviourStateUpdated;
-            var progress = new Progress<float>(progressBar.SetProgress);
-            AutoTaskBehaviour.Instance.Run(progress);
+            AutoTaskCoroutine = this.StartCoroutine(CoRun());
         }
+    }
+
+    private IEnumerator CoRun()
+    {
+        CurrentPosition = null;
+        var remainingTasks = PlayerControl.LocalPlayer.GetRemainingTasks();
+        while (remainingTasks.Count > 0 && LocalConditions.CanCompleteAutoTasks())
+        {
+            if (MeetingHud.Instance != null)
+            {
+                SetPaused();
+                yield return new WaitForEndOfFrame();
+                continue;
+            }
+            SetRunning();
+            var taskToComplete = remainingTasks.PickOneRandom();
+            yield return CoCompleteTask(taskToComplete);
+            remainingTasks = PlayerControl.LocalPlayer != null ? PlayerControl.LocalPlayer.GetRemainingTasks() : [];
+        }
+        SetCompleted();
+        progressBar.SetProgress(1f);
+        AutoTaskCoroutine = null;
+    }
+    
+    private IEnumerator CoCompleteTask(NormalPlayerTask task)
+    {
+        Ls.LogMessage($"Autocompleting task '{TranslationController.Instance.GetString(TranslationController.Instance.GetTaskName(task.TaskType))}'");
+        progressBar.SetProgress(0f);
+        const float duration = 5f;
+        var taskPosition = GetTaskConsolePosition(task);
+        var currentPosition = GetCurrentPosition();
+        var speed = GetPlayerSpeed();
+        var travelTime = speed > 0f ? Vector2.Distance(currentPosition, taskPosition) / speed : 10f;
+        var taskDuration = travelTime + duration;
+        var timer = 0f;
+        while (travelTime > timer)
+        {
+            if (MeetingHud.Instance != null)
+            {
+                yield break;
+            }
+            timer += Time.deltaTime;
+            progressBar.SetProgress(timer / taskDuration);
+            yield return new WaitForEndOfFrame();
+        }
+        CurrentPosition = taskPosition;
+        
+        while (taskDuration > timer)
+        {
+            if (MeetingHud.Instance != null)
+            {
+                yield break;
+            }
+            timer += Time.deltaTime;
+            progressBar.SetProgress(timer / taskDuration);
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (MeetingHud.Instance != null)
+        {
+            yield break;
+        }
+        
+        progressBar.SetProgress(1f);
+        PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+        yield return new WaitForSeconds(1f);
+    }
+    
+    private Vector2 GetCurrentPosition()
+    {
+        if (CurrentPosition != null) return CurrentPosition.Value;
+        return PlayerControl.LocalPlayer.transform.position;
+    }
+
+    private static float GetPlayerSpeed()
+    {
+        return PlayerControl.LocalPlayer.MyPhysics.TrueSpeed;
+    }
+
+    private static Vector2 GetTaskConsolePosition(NormalPlayerTask task)
+    {
+        var consolePositions = task.FindConsolesPos();
+        return consolePositions._items.FirstOrDefault();
     }
 
     public void Reset()
@@ -49,40 +133,25 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
         progressBar.SetProgress(0f);
     }
 
-    private void OnAutoTaskBehaviourStateUpdated(AutoTaskState previousState, AutoTaskState currentState)
+    private void SetRunning()
     {
-        switch (currentState)
-        {
-            case AutoTaskState.Running:
-                button.image.color = cancelColor;
-                progressBarBackground.color = runningColor;
-                button.interactable = true;
-                break;
-            case AutoTaskState.Paused:
-                button.image.color = cancelColor;
-                button.interactable = true;
-                progressBarBackground.color = pausedColor;
-                break;
-            case AutoTaskState.Completed:
-                button.image.color = cancelColor;
-                button.interactable = false;
-                progressBarBackground.color = completedColor;
-                break;
-        }
-        if (currentState == AutoTaskState.Running)
-        {
-            
-            return;
-        }
-        if (currentState == AutoTaskState.Paused)
-        {
-            
-            return;
-        }
-        if (currentState == AutoTaskState.Completed)
-        {
-            progressBarBackground.color = completedColor;
-            button.interactable = false;
-        }
+        button.image.color = cancelColor;
+        progressBarBackground.color = runningColor;
+        button.interactable = true;
+    }
+
+    private void SetPaused()
+    {
+        button.image.color = cancelColor;
+        button.interactable = true;
+        progressBarBackground.color = pausedColor;
+        CurrentPosition = null;
+    }
+
+    private void SetCompleted()
+    {
+        button.image.color = cancelColor;
+        button.interactable = false;
+        progressBarBackground.color = completedColor;
     }
 }

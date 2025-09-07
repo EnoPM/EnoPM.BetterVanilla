@@ -41,6 +41,10 @@
       <EmbeddedResource Include="Assets\better.game" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Cosmetics\" />
+    </ItemGroup>
+
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
         <PropertyGroup>
             <GeneratedText><![CDATA[

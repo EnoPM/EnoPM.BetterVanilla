@@ -1,5 +1,5 @@
-﻿using BetterVanilla.Core.Data;
-using BetterVanilla.Core.Extensions;
+﻿using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Options.Core.Local;
 using BetterVanilla.Options.Core.Serialization;
 
@@ -47,8 +47,8 @@ public sealed class FeatureOptions : AbstractSerializableOptionHolder
     
     private void OnForcedTeamAssignmentValueChanged()
     {
-        if (PlayerControl.LocalPlayer == null || AmongUsClient.Instance == null) return;
+        if (BetterPlayerControl.LocalPlayer == null || AmongUsClient.Instance == null) return;
 
-        PlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+        BetterPlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
     }
 }

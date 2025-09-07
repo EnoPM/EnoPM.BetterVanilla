@@ -5,7 +5,9 @@ using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Core.Rpc;
 using BetterVanilla.Options;
+using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -268,5 +270,59 @@ public class BetterPlayerControl : MonoBehaviour
     public void SetHandshake(BetterVanillaHandshake handshake)
     {
         Handshake = handshake;
+    }
+
+    public void RpcSetHandshake(BetterVanillaHandshake handshake)
+    {
+        var rpc = new HandshakeRpc(this, handshake);
+        rpc.Send();
+    }
+
+    public void RpcSetSponsorText(string sponsorText)
+    {
+        var rpc = new SponsorTextRpc(this, sponsorText);
+        rpc.Send();
+    }
+
+    public void RpcSetSponsorTextColor(Color sponsorTextColor)
+    {
+        var rpc = new SponsorTextColorRpc(this, sponsorTextColor);
+        rpc.Send();
+    }
+
+    public void RpcSetVisorColor(Color color)
+    {
+        var rpc = new SponsorVisorColorRpc(this, color);
+        rpc.Send();
+    }
+
+    public void RpcSetMeetingVote(byte voterId, byte votedId)
+    {
+        var rpc = new MeetingVoteRpc(this, voterId, votedId);
+        rpc.Send();
+    }
+
+    public void RpcSetTeamPreference(TeamPreferences preference)
+    {
+        var rpc = new TeamPreferenceRpc(this, preference);
+        rpc.Send();
+    }
+
+    public void RpcSetForcedTeamAssignment(TeamPreferences preference)
+    {
+        var rpc = new ForcedTeamAssignmentRpc(this, preference);
+        rpc.Send();
+    }
+
+    public void RpcSetHostOptionValue(AbstractSerializableOption option)
+    {
+        var rpc = new HostOptionRpc(this, option);
+        rpc.Send();
+    }
+
+    public void RpcSendPrivateChatMessage(int receiverOwnerId, string message)
+    {
+        var rpc = new PrivateChatMessageRpc(this, receiverOwnerId, message);
+        rpc.Send();
     }
 }

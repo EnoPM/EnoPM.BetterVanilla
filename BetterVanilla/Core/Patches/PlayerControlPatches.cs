@@ -12,9 +12,9 @@ internal static class PlayerControlPatches
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerControl.HandleRpc))]
     private static void HandleRpcPostfix(PlayerControl __instance, byte callId, MessageReader reader)
     {
-        if (callId == PlayerControlRpcExtensions.ReservedRpcCallId)
+        if (callId == CustomRpcMessage.ReservedRpcCallId)
         {
-            __instance.HandleCustomRpc(reader);
+            CustomRpcMessage.HandleRpcMessage(__instance, reader);
         }
         else
         {

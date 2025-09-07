@@ -1,4 +1,5 @@
-﻿using BetterVanilla.Core;
+﻿using BetterVanilla.Components;
+using BetterVanilla.Core;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options.Core;
 using BetterVanilla.Options.Core.Host;
@@ -77,10 +78,10 @@ public class HostOptions : AbstractSerializableOptionHolder
     
     public void ShareAllOptions()
     {
-        if (!LocalConditions.AmHost()) return;
+        if (!LocalConditions.AmHost() || BetterPlayerControl.LocalPlayer == null) return;
         foreach (var option in GetOptions())
         {
-            PlayerControl.LocalPlayer.RpcShareHostOption(option);
+            BetterPlayerControl.LocalPlayer.RpcSetHostOptionValue(option);
         }
     }
 
