@@ -86,7 +86,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
     {
         var cosmeticData = base.ToCosmeticData();
 
-        if (!ViewDataCache.TryGetValue(Name, out var viewData))
+        if (!ViewDataCache.TryGetValue(ProductId, out var viewData))
         {
             viewData = ToViewData();
         }
@@ -130,7 +130,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
     {
         if (FrontAnimationFrames?.Count == 0 && BackAnimationFrames?.Count == 0)
         {
-            ViewDataCache.TryGetValue(Name, out var viewData);
+            ViewDataCache.TryGetValue(ProductId, out var viewData);
             parent.FrontLayer.sprite = FlipResource != null && flipX ? FlipResource : viewData?.MainImage;
             parent.BackLayer.sprite = BackFlipResource != null && flipX ? BackFlipResource : viewData?.BackImage;
         }

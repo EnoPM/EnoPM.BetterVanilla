@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BetterVanilla.Components;
 using BetterVanilla.Core.Extensions;
-using BetterVanilla.Core.Helpers;
-using Hazel;
 
 namespace BetterVanilla.Core;
 
@@ -43,7 +41,7 @@ public sealed class ChatCommandsManager
     {
         var receiver = PlayerControl.AllPlayerControls.ToArray()
             .FirstOrDefault(x => x.OwnerId == targetOwnerId && x.Data != null);
-        if (receiver == null || receiver.OwnerId != PlayerControl.LocalPlayer.OwnerId) return;
+        if (receiver == null || !receiver.AmOwner && !sender.AmOwner) return;
         LastPrivateMessageSenderName = sender.Data.PlayerName;
         HudManager.Instance.Chat.AddPrivateChat(sender, receiver, message);
     }

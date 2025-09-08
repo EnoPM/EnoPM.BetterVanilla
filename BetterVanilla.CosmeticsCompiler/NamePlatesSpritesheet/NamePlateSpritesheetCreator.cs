@@ -1,68 +1,16 @@
-using System.Text.Json;
-using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.CosmeticsCompiler.Core;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
 
-public sealed class NamePlateSpritesheetCreator : IDisposable
+public sealed class NamePlateSpritesheetCreator : BaseSpritesheetCreator<CreateNameplateSpritesheetOptions, LoadableNamePlate, SerializedNamePlate>
 {
-    private CreateNameplateSpritesheetOptions Options { get; }
-    private LoadableNamePlate NamePlate { get; }
-    private string SpritesheetOutputPath { get; }
-    private string HatManifestOutputPath { get; }
-
-    public NamePlateSpritesheetCreator(CreateNameplateSpritesheetOptions options)
+    public NamePlateSpritesheetCreator(CreateNameplateSpritesheetOptions options) : base(options, new LoadableNamePlate(options))
     {
-        Options = options;
-        NamePlate = new LoadableNamePlate(Options);
-        SpritesheetOutputPath = Path.Combine(Options.OutputDirectoryPath, NamePlate.Name + ".png");
-        HatManifestOutputPath = Path.Combine(Options.OutputDirectoryPath, NamePlate.Name + ".spritesheet.json");
+        
     }
 
-    public void Process()
-    {
-        LoadAllSprites();
-        
-        CalculateSpritePositions();
-        
-        using var spritesheet = DrawSpritesheet();
-        spritesheet.Save(SpritesheetOutputPath);
-        
-        var manifest = Serialize(NamePlate);
-        var serializedManifest = JsonSerializer.Serialize(manifest);
-        File.WriteAllText(HatManifestOutputPath, serializedManifest);
-    }
-
-    private Image<Rgba32> DrawSpritesheet()
-    {
-        var width = NamePlate.AllSprites.Max(x => x.Sprite.X + x.Sprite.Width);
-        var height = NamePlate.AllSprites.Max(x => x.Sprite.Y + x.Sprite.Height);
-
-        var spriteSheet = new Image<Rgba32>(width, height);
-        foreach (var spriteFile in NamePlate.AllSprites)
-        {
-            var sprite = spriteFile.Sprite;
-            var image = sprite.Image;
-            if (image == null)
-            {
-                throw new Exception($"Sprite not loaded: {spriteFile.Sprite.Name} - {spriteFile.Path}");
-            }
-            spriteSheet.Mutate(
-                ctx => ctx.DrawImage(
-                    image,
-                    new Point(sprite.X, sprite.Y),
-                    1f
-                )
-            );
-        }
-        return spriteSheet;
-    }
-
-    private SerializedNamePlate Serialize(LoadableNamePlate namePlate)
+    protected override SerializedNamePlate Serialize(LoadableNamePlate namePlate)
     {
         return new SerializedNamePlate
         {
@@ -73,86 +21,5 @@ public sealed class NamePlateSpritesheetCreator : IDisposable
         };
     }
 
-    private SerializedSprite Serialize(SpriteFile spriteFile)
-    {
-        return new SerializedSprite
-        {
-            Path = SpritesheetOutputPath,
-            X = spriteFile.Sprite.X,
-            Y = spriteFile.Sprite.Y,
-            Width = spriteFile.Sprite.Width,
-            Height = spriteFile.Sprite.Height,
-        };
-    }
-
-    private void CalculateSpritePositions(int padding = 2)
-    {
-        var maxWidth = CalculateMaxSpritesheetWidth();
-
-        var x = 0;
-        var y = 0;
-        var height = 0;
-
-        var spriteFiles = GetSortedSpriteFiles();
-        foreach (var file in spriteFiles)
-        {
-            var image = file.Sprite.Image;
-            if (image == null)
-            {
-                throw new Exception($"Sprite not loaded: {file.Sprite.Name} - {file.Path}");
-            }
-            if (x + image.Width > maxWidth)
-            {
-                x = 0;
-                y += height + padding;
-                height = 0;
-            }
-            file.Sprite.X = x;
-            file.Sprite.Y = y;
-
-            x += image.Width + padding;
-            height = Math.Max(height, image.Height);
-        }
-    }
-
-    private List<SpriteFile> GetSortedSpriteFiles()
-    {
-        return NamePlate.AllSprites
-            .OrderByDescending(x => x.Sprite.Height)
-            .ToList();
-    }
-
-    private int CalculateMaxSpritesheetWidth()
-    {
-        var sum = NamePlate.AllSprites.Sum(x => x.Sprite.Width * x.Sprite.Height);
-
-        return RoundedUpPowerOfTwo(
-            (int)Math.Ceiling(
-                Math.Sqrt(sum)
-            )
-        );
-    }
-
-    private void LoadAllSprites()
-    {
-        foreach (var sprite in NamePlate.AllSprites)
-        {
-            sprite.Sprite.Load();
-        }
-    }
-
-    public void Dispose()
-    {
-        foreach (var sprite in NamePlate.AllSprites)
-        {
-            sprite.Sprite.Dispose();
-        }
-    }
-
-    private static int RoundedUpPowerOfTwo(int n)
-    {
-        var power = 1;
-        while (power < n) power <<= 1;
-        return power;
-    }
+    protected override List<SpriteFile> GetAllSprites() => Cosmetic.AllSprites;
 }

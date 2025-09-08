@@ -60,7 +60,7 @@ public abstract class BaseCosmetic<TViewData, TParent, TData> : ICosmeticItem
 
     public virtual TViewData ToViewData(TViewData viewData)
     {
-        ViewDataCache.TryAdd(Name, viewData);
+        ViewDataCache.TryAdd(ProductId, viewData);
         return viewData;
     }
 
@@ -71,5 +71,10 @@ public abstract class BaseCosmetic<TViewData, TParent, TData> : ICosmeticItem
         cosmeticData.Free = false;
         cosmeticData.BundleId = "BetterVanilla";
         return cosmeticData;
+    }
+
+    public string GetDisplayName()
+    {
+        return Author != null ? $"{Name}\n<size=50%>by {Author.Name}</size>" : Name;
     }
 }

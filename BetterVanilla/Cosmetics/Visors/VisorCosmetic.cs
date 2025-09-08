@@ -69,7 +69,7 @@ public sealed class VisorCosmetic : BaseCosmetic<VisorViewData, VisorLayer, Viso
     {
         var cosmeticData = base.ToCosmeticData();
         
-        if (!ViewDataCache.TryGetValue(Name, out var viewData))
+        if (!ViewDataCache.TryGetValue(ProductId, out var viewData))
         {
             viewData = ToViewData();
         }

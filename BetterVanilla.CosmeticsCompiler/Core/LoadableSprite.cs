@@ -1,11 +1,12 @@
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace BetterVanilla.CosmeticsCompiler.Core;
 
 public sealed class LoadableSprite( string filePath, string name) : IDisposable
 {
     public string Name { get; set; } = name;
-    public Image? Image { get; set; }
+    public Image<Rgba32>? Image { get; set; }
     public int X { get; set; } = -1;
     public int Y { get; set; } = -1;
     public int Width => Image?.Width ?? -1;
@@ -14,7 +15,7 @@ public sealed class LoadableSprite( string filePath, string name) : IDisposable
     public void Load()
     {
         if (Image != null) return;
-        Image = Image.Load(filePath);
+        Image = SixLabors.ImageSharp.Image.Load<Rgba32>(filePath);
     }
 
     public void Dispose()
