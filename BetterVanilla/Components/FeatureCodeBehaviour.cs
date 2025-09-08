@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
-using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -16,6 +16,8 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     public static FeatureCodeBehaviour? Instance { get; private set; }
     
     public Dictionary<string, List<string>> Codes { get; set; } = new();
+    public Dictionary<string, List<string>> CosmeticCodes { get; set; } = new();
+    public HashSet<string> SponsorCosmetics { get; set; } = [];
     public List<string> SponsorFriendCodes { get; set; } = [];
     private HashSet<string> AvailableHashes { get; } = [];
     private HashSet<string> LocalCodes { get; } = [];
@@ -41,11 +43,12 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     public FeatureCodeResult ApplyCode(string code)
     {
         var hash = StringUtils.CalculateSHA256(code);
+        Ls.LogMessage($"Applying code: '{code}'. Corresponding hash: '{hash}'");
         if (!AvailableHashes.Contains(hash))
         {
             return FeatureCodeResult.Invalid;
         }
-        if (!CanBeUnlocked(hash))
+        if (!CanBeUnlocked(hash) && !CosmeticCodes.ContainsKey(hash))
         {
             return FeatureCodeResult.Unauthorized;
         }
@@ -61,6 +64,17 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
         Ls.LogInfo($"Code '{code}' successfully enabled!");
         Save();
         return FeatureCodeResult.Enabled;
+    }
+
+    public bool IsCosmeticUnlockable(string productId)
+    {
+        return CosmeticCodes.Any(x => x.Value.Contains(productId));
+    }
+
+    public bool IsCosmeticUnlocked(string productId)
+    {
+        var hash = CosmeticCodes.FirstOrDefault(x => x.Value.Contains(productId)).Key;
+        return hash != null && LocalHashes.Contains(hash);
     }
 
     public bool IsUnlocked(string hash)
@@ -155,15 +169,15 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
         {
             SponsorFriendCodes = requestTask.Result.ContributorFriendCodes;
             Codes = requestTask.Result.FeatureHashPermissions;
+            CosmeticCodes = requestTask.Result.HashedCosmetics;
+            SponsorCosmetics = requestTask.Result.SponsorCosmetics.ToHashSet();
+
+            foreach (var cosmeticHash in CosmeticCodes.Keys)
+            {
+                RegisterHash(cosmeticHash);
+            }
         }
         
         RefreshFeatureRegistryCoroutine = null;
-    }
-
-    public string GenerateFeatureCode(AbstractSerializableOption option)
-    {
-        var key = option.Key;
-        
-        return key;
     }
 }

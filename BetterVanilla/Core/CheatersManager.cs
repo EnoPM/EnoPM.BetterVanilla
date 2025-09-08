@@ -57,7 +57,7 @@ public sealed class CheatersManager
             }
         }
         if (IsCheating(player)) return;
-        //player.ReportPlayer(ReportReasons.Cheating_Hacking);
+        player.ReportPlayer(ReportReasons.Cheating_Hacking);
         AumUsers.Add(player.PlayerId, player.FriendCode);
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BetterVanilla.Cosmetics.Api.Hats;
 
 public interface IHatResources<TResource>

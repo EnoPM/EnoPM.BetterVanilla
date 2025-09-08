@@ -39,11 +39,21 @@
       <EmbeddedResource Include="Assets\game" />
       <EmbeddedResource Include="Assets\menu.ui" />
       <EmbeddedResource Include="Assets\better.game" />
+      <EmbeddedResource Include="Assets\Cosmetics.bundle" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Cosmetics\" />
+      <ProjectReference Include="..\BetterVanilla.Cosmetics.Api\BetterVanilla.Cosmetics.Api.csproj" />
     </ItemGroup>
+    
+    <Target Name="IncludeCosmeticsApi" BeforeTargets="CoreCompile">
+        <ItemGroup>
+            <Compile Include="$(SolutionDir)\BetterVanilla.Cosmetics.Api\Core\**\*.cs" />
+            <Compile Include="$(SolutionDir)\BetterVanilla.Cosmetics.Api\Hats\**\*.cs" />
+            <Compile Include="$(SolutionDir)\BetterVanilla.Cosmetics.Api\NamePlates\**\*.cs" />
+            <Compile Include="$(SolutionDir)\BetterVanilla.Cosmetics.Api\Visors\**\*.cs" />
+        </ItemGroup>
+    </Target>
 
     <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile" Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
         <PropertyGroup>

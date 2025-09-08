@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using BetterVanilla.Cosmetics.Api.Core;
 using BetterVanilla.Cosmetics.Api.Core.Serialization;

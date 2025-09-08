@@ -54,41 +54,24 @@
     ]
   },
   "task_durations": {
-    "SubmitScan": {
-      "min_duration": 8,
-      "max_duration": 10
-    },
-    "PrimeShields": {
-      "min_duration": 3,
-      "max_duration": 6
-    },
-    "FuelEngines": {
-      "duration": 35
-    },
-    "ChartCourse": {
-      "min_duration": 3,
-      "max_duration": 7
-    },
-    "StartReactor": {
-      "min_duration": 25,
-      "max_duration": 50
-    },
-    "SwipeCard": {
-      "min_duration": 2,
-      "max_duration": 12
-    },
-    "ClearAsteroids": {
-      "min_duration": 14,
-      "max_duration": 22
-    },
-    "UploadData": {
-      "min_duration": 10,
-      "max_duration": 13,
-      "step_delay": 10
-    },
-    "InspectSample": {
-      "duration": 3,
-      "step_delay": 60
-    }
+  },
+  "sponsor_cosmetics": [
+    "bv_hat_Purple_Raven",
+    "bv_hat_Viking_Helmet",
+    "bv_hat_Wizard",
+    "bv_hat_Beer_Hair",
+    "bv_visor_Beer_Mustache",
+    "bv_visor_Brown_Beard",
+    "bv_visor_Incognito",
+    "bv_visor_Loco"
+  ],
+  "hashed_cosmetics": {
+    "F69F4D7EBE6EF0DE745FB51D3717C4645AE3D22021A34114BBC106A8E33C2DC9": [
+      "bv_hat_Cat_Hat",
+      "bv_hat_Sleepy_Cloud"
+    ],
+    "9BF8148FB5005251E19901FC1E89E87427ED951B623007C06148905E0A5710C2": [
+      "bv_hat_Raven"
+    ]
   }
 }

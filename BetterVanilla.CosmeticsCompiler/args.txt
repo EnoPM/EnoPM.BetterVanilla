@@ -47,9 +47,9 @@ create-hat-spritesheet
 
 create-hat-spritesheet
 --name
-"sleepy cloud"
+"Sleepy Cloud"
 --output
-"D:\GameDevelopment\AmongUs\Spritesheets"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla"
 --author
 "Stell"
 --main-resource
@@ -93,7 +93,7 @@ create-hat-spritesheet
 "Cat Hat"
 --adaptive
 --output
-"D:\GameDevelopment\AmongUs\Spritesheets"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
 --author
 "EnoPM"
 --main-resource
@@ -204,3 +204,117 @@ create-hat-spritesheet
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_008.png"
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_009.png"
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_010.png"
+
+create-hat-spritesheet
+--name
+"Purple Raven"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Purple_Raven.png"
+
+create-hat-spritesheet
+--adaptive
+--name
+"Raven"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Raven_adaptive.png"
+
+create-hat-spritesheet
+--adaptive
+--name
+"Wizard"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Wizard_adaptive.png"
+
+create-hat-spritesheet
+--name
+"Beer Hat"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Beer"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Beer_hair2.png"
+--back-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Beer_hair.png"
+--climb-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Beer_hair3.png"
+
+create-hat-spritesheet
+--name
+"Viking Helmet"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Viking_Helmet.png"
+
+create-visor-spritesheet
+--name
+"Beer Mustache"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors"
+--author
+"Beer"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Visors\Beer_mustache.png"
+
+create-visor-spritesheet
+--name
+"Brown Beard"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Visors\Brown_Beard.png"
+
+create-visor-spritesheet
+--name
+"Incognito"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Visors\Incognito.png"
+
+create-visor-spritesheet
+--name
+"Loco"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Visors\Loco.png"
+
+bundle
+--compression
+--output
+"D:\Projects\BetterVanilla\BetterVanilla\Assets\Cosmetics.bundle"
+--hats
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Beer Hat.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Cat Hat.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Purple Raven.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Raven.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Sleepy Cloud.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Wizard.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Viking Helmet.spritesheet.json"
+--visors
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Beer Mustache.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Brown Beard.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Incognito.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Loco.spritesheet.json"

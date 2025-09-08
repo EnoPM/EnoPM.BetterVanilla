@@ -44,7 +44,14 @@ public static class LocalConditions
 
     public static bool AmAlive() => !AmDead();
 
-    public static bool AmSponsor() => BetterPlayerControl.LocalPlayer != null && BetterPlayerControl.LocalPlayer.AmSponsor;
+    public static bool AmSponsor()
+    {
+        if (FeatureCodeBehaviour.Instance == null || !EOSManager.InstanceExists || string.IsNullOrEmpty(EOSManager.Instance.FriendCode))
+        {
+            return false;
+        }
+        return FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(EOSManager.Instance.FriendCode);
+    }
 
     public static bool IsGameStarted()
     {

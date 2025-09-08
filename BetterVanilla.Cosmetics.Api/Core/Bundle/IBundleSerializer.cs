@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace BetterVanilla.Cosmetics.Api.Core.Bundle;
 
 internal interface IBundleSerializer

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.BetterModMenu;
 using BetterVanilla.GeneratedRuntime;
@@ -8,6 +9,8 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Cosmetics;
+using BetterVanilla.Cosmetics.Api.Core.Bundle;
 using HarmonyLib;
 using UnityEngine;
 
@@ -58,6 +61,13 @@ public sealed class BetterVanillaManager : MonoBehaviour
         betterGame.Unload(false);
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
+        
+        var cosmeticBundle = Assembly.GetExecutingAssembly()
+            .GetManifestResourceStream("BetterVanilla.Assets.Cosmetics.bundle");
+        if (cosmeticBundle != null)
+        {
+            CosmeticsManager.RegisterBundle(CosmeticBundle.Deserialize(cosmeticBundle));
+        }
         
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is loaded!");
     }

@@ -1,3 +1,4 @@
+using System.IO;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.Cosmetics.Api.Visors;

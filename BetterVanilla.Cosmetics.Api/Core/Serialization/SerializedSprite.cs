@@ -1,9 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using JetBrains.Annotations;
 
 namespace BetterVanilla.Cosmetics.Api.Core.Serialization;
 
-[UsedImplicitly]
 public sealed class SerializedSprite
 {
     [JsonPropertyName("path")]
