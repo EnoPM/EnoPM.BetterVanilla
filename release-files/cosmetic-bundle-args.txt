@@ -1,94 +1,4 @@
-﻿bundle
---compression
---output
-"D:\GameDevelopment\AmongUs\Spritesheets\BetterVanillaCosmetics.bundle"
---hats
-"D:\GameDevelopment\AmongUs\Spritesheets\hermes.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Spritesheets\ballerina.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Spritesheets\sleepy cloud.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Spritesheets\Cat Hat.spritesheet.json"
---visors
-"D:\GameDevelopment\AmongUs\Spritesheets\TV Static.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Spritesheets\Ghost Mask.spritesheet.json"
-
-create-visor-spritesheet
---name
-"Ghost Mask"
---author
-"EnoPM"
---output
-"D:\GameDevelopment\AmongUs\Spritesheets"
---main-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\visors\Ghost_Mask.png"
-
-create-visor-spritesheet
---name
-"TV Static"
---author
-"EnoPM"
---output
-"D:\GameDevelopment\AmongUs\Spritesheets"
---main-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\visors\TVStatic.png"
-
-create-hat-spritesheet
---name
-"ballerina"
---output
-"D:\GameDevelopment\AmongUs\Spritesheets"
---author
-"ShieldLion"
---adaptive
---bounce
---main-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\ballerina_adaptive_bounce.png"
---climb-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\ballerina_adaptive_climb.png"
-
-create-hat-spritesheet
---name
-"Sleepy Cloud"
---output
-"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla"
---author
-"Stell"
---main-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
---front-animation-frames
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_001.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_002.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_003.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_004.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_005.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_006.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_007.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_008.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_009.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_010.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_011.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_012.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_013.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_014.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_015.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_016.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_017.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_018.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_019.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_020.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_021.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_022.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_023.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_024.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_025.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_026.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_027.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_028.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_029.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_030.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_031.png"
-
-create-hat-spritesheet
+﻿create-hat-spritesheet
 --name
 "Cat Hat"
 --adaptive
@@ -171,39 +81,46 @@ create-hat-spritesheet
 
 create-hat-spritesheet
 --name
-"hermes"
+"Sleepy Cloud"
 --output
-"D:\GameDevelopment\AmongUs\Spritesheets"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla"
 --author
-"EnoPM"
+"Stell"
 --main-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_000.png"
---back-resource
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
 --front-animation-frames
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_000.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_001.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_002.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_003.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_004.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_005.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_006.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_007.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_008.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_009.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesFront_010.png"
---back-animation-frames
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_000.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_001.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_002.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_003.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_004.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_005.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_006.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_007.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_008.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_009.png"
-"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Hermes\HermesBack_010.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_000.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_001.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_002.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_003.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_004.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_005.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_006.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_007.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_008.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_009.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_010.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_011.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_012.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_013.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_014.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_015.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_016.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_017.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_018.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_019.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_020.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_021.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_022.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_023.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_024.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_025.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_026.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_027.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_028.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_029.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_030.png"
+"C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_031.png"
 
 create-hat-spritesheet
 --name
@@ -315,6 +232,6 @@ bundle
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Viking Helmet.spritesheet.json"
 --visors
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Beer Mustache.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Brown Beard.spritesheet.json"
+# "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Brown Beard.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Incognito.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Loco.spritesheet.json"

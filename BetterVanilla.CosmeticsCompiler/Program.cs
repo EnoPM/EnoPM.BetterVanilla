@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using BetterVanilla.Cosmetics.Api.Core.Bundle;
-using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.CosmeticsCompiler.Bundle;
 using BetterVanilla.CosmeticsCompiler.HatsSpritesheet;
 using BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
@@ -20,6 +20,83 @@ internal static class Program
     };
 
     private static void Main(string[] args)
+    {
+        if (args.Length == 1 && args[0].StartsWith('@'))
+        {
+            var path = args[0][1..].Trim('"');
+            Console.WriteLine($"Running from file {path}");
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            var lines = File.ReadAllLines(path);
+            var current = new List<string>();
+            foreach (var line in lines)
+            {
+                if (line.StartsWith('#')) continue;
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    RunIfNotEmpty(current);
+                    current.Clear();
+                }
+                else
+                {
+                    current.AddRange(SplitCommandLine(line));
+                }
+            }
+            RunIfNotEmpty(current);
+        }
+        else
+        {
+            Run(args);
+        }
+    }
+    
+    private static void RunIfNotEmpty(List<string> args)
+    {
+        if (args.Count <= 0) return;
+        Run(args.ToArray());
+    }
+    
+    private static IEnumerable<string> SplitCommandLine(string commandLine)
+    {
+        if (string.IsNullOrWhiteSpace(commandLine))
+        {
+            return [];
+        }
+
+        var args = new List<string>();
+        var current = new StringBuilder();
+        var inQuotes = false;
+
+        foreach (var c in commandLine)
+        {
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (char.IsWhiteSpace(c) && !inQuotes)
+            {
+                if (current.Length <= 0) continue;
+                args.Add(current.ToString());
+                current.Clear();
+            }
+            else
+            {
+                current.Append(c);
+            }
+        }
+
+        if (current.Length > 0)
+        {
+            args.Add(current.ToString());
+        }
+
+        return args;
+    }
+
+    private static void Run(string[] args)
     {
         Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, CreateVisorSpritesheetOptions, CreateNameplateSpritesheetOptions, BundleOptions>(args)
             .WithParsed<GenerateSchemaOptions>(GenerateSchema)
