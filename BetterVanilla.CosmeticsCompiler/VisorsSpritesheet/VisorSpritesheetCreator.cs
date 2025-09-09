@@ -19,7 +19,8 @@ public sealed class VisorSpritesheetCreator : BaseSpritesheetCreator<CreateVisor
             MainResource = Serialize(visor.MainResource),
             LeftResource = visor.LeftResource == null ? null : Serialize(visor.LeftResource),
             ClimbResource = visor.ClimbResource == null ? null : Serialize(visor.ClimbResource),
-            FloorResource = visor.FloorResource == null ? null : Serialize(visor.FloorResource)
+            FloorResource = visor.FloorResource == null ? null : Serialize(visor.FloorResource),
+            FrontAnimationFrames = visor.FrontAnimationFrames?.Select(Serialize).ToList(),
         };
     }
     

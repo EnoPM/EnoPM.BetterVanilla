@@ -51,6 +51,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
         ClimbResource = hat.ClimbResource != null ? cache.GetSprite(hat.ClimbResource) : null;
         FrontAnimationFrames = hat.FrontAnimationFrames?.Select(cache.GetSprite).ToList();
         BackAnimationFrames = hat.BackAnimationFrames?.Select(cache.GetSprite).ToList();
+        NoVisors = hat.NoVisors;
     }
 
     private HatCosmetic(SerializedHat hat, Sprite mainResource) : base(hat.Name, hat.Author)

@@ -20,6 +20,8 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
     
     public SpriteFile? FloorResource { get; set; }
     
+    public List<SpriteFile>? FrontAnimationFrames { get; set; }
+
     public bool BehindHats { get; set; }
 
     public List<SpriteFile> AllSprites { get; } = [];
@@ -49,6 +51,16 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
         {
             FloorResource = CreateSpriteFile(nameof(FloorResource), options.FloorResourceFilePath);
         }
+        
+        var frontAnimationFrames = options.FrontAnimationFrameFilePaths.ToList();
+        if (frontAnimationFrames.Count != 0)
+        {
+            FrontAnimationFrames = [];
+            for (var i = 0; i < frontAnimationFrames.Count; i++)
+            {
+                FrontAnimationFrames.Add(CreateFrontAnimationSpriteFile(frontAnimationFrames[i], i));
+            }
+        }
     }
 
     private SpriteFile CreateSpriteFile(string resourceName, string resourcePath)
@@ -67,5 +79,11 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
         var spriteFile = new SpriteFile(resourcePath, name);
         AllSprites.Add(spriteFile);
         return spriteFile;
+    }
+    
+    private SpriteFile CreateFrontAnimationSpriteFile(string resourcePath, int frameIndex)
+    {
+        var name = $"AnimatedFrontFrame_{frameIndex:000}";
+        return CreateSpriteFile(name, resourcePath);
     }
 }

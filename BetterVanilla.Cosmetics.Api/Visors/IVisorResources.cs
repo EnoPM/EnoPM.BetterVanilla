@@ -1,4 +1,6 @@
-﻿namespace BetterVanilla.Cosmetics.Api.Visors;
+﻿using System.Collections.Generic;
+
+namespace BetterVanilla.Cosmetics.Api.Visors;
 
 public interface IVisorResources<TResource>
 {
@@ -9,4 +11,6 @@ public interface IVisorResources<TResource>
     public TResource? ClimbResource { get; set; }
     
     public TResource? FloorResource { get; set; }
+    
+    public List<TResource>? FrontAnimationFrames { get; set; }
 }

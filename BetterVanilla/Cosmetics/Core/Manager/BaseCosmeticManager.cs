@@ -111,7 +111,7 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
         return RegisteredCosmetics.Values.ToList();
     }
 
-    public virtual void UpdateAnimationFrames()
+    public void UpdateAnimationFrames()
     {
         foreach (var cosmetic in GetAllRegisteredCosmetics())
         {

@@ -38,6 +38,7 @@ public sealed class CosmeticBundle
         CacheSprite(cosmetic.LeftResource);
         CacheSprite(cosmetic.ClimbResource);
         CacheSprite(cosmetic.FloorResource);
+        CacheSprite(cosmetic.FrontAnimationFrames);
         
         Visors.Add(cosmetic);
     }

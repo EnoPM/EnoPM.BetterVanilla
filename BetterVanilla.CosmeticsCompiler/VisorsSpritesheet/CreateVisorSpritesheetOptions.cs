@@ -21,4 +21,7 @@ public sealed class CreateVisorSpritesheetOptions : BaseCosmeticOptions
     
     [Option("floor-resource", HelpText = "Visor floor resource file path")]
     public string? FloorResourceFilePath { get; [UsedImplicitly] set; }
+    
+    [Option("front-animation-frames", HelpText = "Front animation frame resource file paths")]
+    public IEnumerable<string> FrontAnimationFrameFilePaths { get; [UsedImplicitly] set; } = null!;
 }

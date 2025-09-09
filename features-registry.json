@@ -57,19 +57,23 @@
   "task_durations": {
   },
   "sponsor_cosmetics": [
-    "bv_hat_Purple_Raven",
-    "bv_hat_Viking_Helmet",
-    "bv_hat_Wizard",
-    "bv_hat_Beer_Hair",
-    "bv_visor_Beer_Mustache",
-    "bv_visor_Brown_Beard",
-    "bv_visor_Incognito",
-    "bv_visor_Loco"
+    "bv_hat_Imperus",
+    "bv_hat_Samurai",
+    "bv_hat_Jazzy_Kate",
+    "bv_visor_Music_Notes",
+    "bv_visor_Goofy_Glasses",
+    "bv_visor_Blink_Blush",
+    "bv_visor_Blink",
+    "bv_visor_Battery"
   ],
   "hashed_cosmetics": {
     "F69F4D7EBE6EF0DE745FB51D3717C4645AE3D22021A34114BBC106A8E33C2DC9": [
       "bv_hat_Cat_Hat",
-      "bv_hat_Sleepy_Cloud"
+      "bv_hat_Sleepy_Cloud",
+      "bv_hat_Happy_Cloud",
+      "bv_hat_Sad_Cloud",
+      "bv_hat_Angry_Cloud",
+      "bv_visor_Fishies"
     ],
     "9BF8148FB5005251E19901FC1E89E87427ED951B623007C06148905E0A5710C2": [
       "bv_hat_Raven"

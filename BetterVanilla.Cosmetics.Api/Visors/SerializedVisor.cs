@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using BetterVanilla.Cosmetics.Api.Core;
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 
@@ -18,6 +19,9 @@ public sealed class SerializedVisor : SerializedCosmetic, IVisor<SerializedSprit
     [JsonPropertyName("floor_resource")]
     public SerializedSprite? FloorResource { get; set; }
     
+    [JsonPropertyName("front_animation_frames")]
+    public List<SerializedSprite>? FrontAnimationFrames { get; set; }
+
     [JsonPropertyName("behind_hats")]
     public bool BehindHats { get; set; }
 }
