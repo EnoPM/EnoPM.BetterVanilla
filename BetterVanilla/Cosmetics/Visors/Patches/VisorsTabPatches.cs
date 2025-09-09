@@ -1,5 +1,6 @@
 ﻿using System;
 using AmongUs.Data;
+using BetterVanilla.Core.Extensions;
 using BetterVanilla.Cosmetics.Core.Utils;
 using HarmonyLib;
 using UnityEngine;
@@ -15,6 +16,13 @@ internal static class VisorsTabPatches
     {
         __instance.OnTabEnable();
         return false;
+    }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(VisorsTab.SelectVisor))]
+    [HarmonyPatch(nameof(VisorsTab.ClickEquip))]
+    private static void SelectVisorPostfix(VisorsTab __instance)
+    {
+        __instance.PlayerPreview.SetLocalVisorColor();
     }
 
     private static void OnTabEnable(this VisorsTab visorsTab)

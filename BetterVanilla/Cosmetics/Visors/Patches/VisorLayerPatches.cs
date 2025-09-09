@@ -16,7 +16,7 @@ internal static class VisorLayerPatches
         }
         if (!CosmeticsManager.Visors.TryGetViewData(__instance.visorData.ProductId, out var viewData)) return true;
 
-        if (data == null || data != __instance.visorData)
+        if (data == null || data.ProductId != __instance.visorData.ProductId)
         {
             __instance.Image.sprite = null;
         }
@@ -96,7 +96,7 @@ internal static class VisorLayerPatches
         {
             return true;
         }
-        if (flipX && asset.LeftIdleFrame)
+        if (flipX && asset.LeftIdleFrame != null)
         {
             __instance.Image.sprite = asset.LeftIdleFrame;
         }

@@ -49,9 +49,8 @@ public sealed class MemorySpritesheet : BaseSpritesheet
             serialized.Width,
             serialized.Height
         );
-        var pivot = new Vector2(0.53f, 0.575f);
 
-        sprite = Sprite.Create(Spritesheet, rect, pivot, 100f);
+        sprite = Sprite.Create(Spritesheet, rect, Pivot, PixelsPerUnit);
         sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         sprite.name = "BetterVanillaSprite";
 

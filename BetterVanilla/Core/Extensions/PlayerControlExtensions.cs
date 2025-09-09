@@ -33,17 +33,6 @@ public static class PlayerControlExtensions
             return null;
         }
     }
-    
-    public static int GetClientId(this PlayerControl player)
-    {
-        return player.GetClient()?.Id ?? -1;
-    }
-    
-    public static void BetterCompleteTask(this PlayerControl pc, NormalPlayerTask task)
-    {
-        task.taskStep = task.MaxStep;
-        task.NextStep();
-    }
 
     public static List<NormalPlayerTask> GetRemainingTasks(this PlayerControl player)
     {
@@ -105,20 +94,20 @@ public static class PlayerControlExtensions
             }
             pc.RpcSetVisor(DataManager.Player.Customization.Visor);
             pc.RpcSetNamePlate(DataManager.Player.Customization.NamePlate);
-            var playerLevel = DataManager.Player.Stats.Level + SerializedPlayerData.Default.Level;
-            SponsorOptions.Default.LevelOverride.MaxValue = playerLevel + 1;
+            var playerLevel = DataManager.Player.Stats.Level;
+            SponsorOptions.Default.LevelOverride.MaxValue = DataManager.Player.Stats.Level + 1;
             pc.RpcSetLevel(SponsorOptions.Default.LevelOverride.IsAllowed() ? (uint)Mathf.RoundToInt(SponsorOptions.Default.LevelOverride.Value - 1f) : playerLevel);
             pc.CustomOwnerSpawnHandshake();
-            if (!pc.Data.Role)
-            {
-                pc.Data.Role = Object.Instantiate(GameData.Instance.DefaultRole);
-                pc.Data.Role.Initialize(pc);
-            }
             yield return null;
         }
         else
         {
             pc.StartCoroutine(pc.ClientInitialize());
+        }
+        if (pc.Data.Role == null)
+        {
+            pc.Data.Role = Object.Instantiate(GameData.Instance.DefaultRole);
+            pc.Data.Role.Initialize(pc);
         }
         pc.MyPhysics.SetBodyType(pc.BodyType);
         if (pc.isNew)

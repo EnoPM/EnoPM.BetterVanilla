@@ -1,5 +1,6 @@
 ﻿using System;
 using AmongUs.Data;
+using BetterVanilla.Core.Extensions;
 using BetterVanilla.Cosmetics.Core.Utils;
 using HarmonyLib;
 using UnityEngine;
@@ -10,6 +11,13 @@ namespace BetterVanilla.Cosmetics.Hats.Patches;
 [HarmonyPatch(typeof(HatsTab))]
 internal static class HatsTabPatches
 {
+    
+    [HarmonyPostfix, HarmonyPatch(nameof(HatsTab.SelectHat))]
+    [HarmonyPatch(nameof(HatsTab.ClickEquip))]
+    private static void SelectHatPostfix(VisorsTab __instance)
+    {
+        __instance.PlayerPreview.SetLocalVisorColor();
+    }
 
     [HarmonyPrefix, HarmonyPatch(nameof(HatsTab.OnEnable))]
     private static bool OnEnablePrefix(HatsTab __instance)

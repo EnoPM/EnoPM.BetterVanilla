@@ -1,4 +1,7 @@
-﻿using BetterVanilla.Components;
+﻿using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Components;
+using BetterVanilla.Core.Extensions;
 using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
@@ -42,5 +45,23 @@ internal static class GameStartManagerPatches
         }
 
         return true;
+    }
+
+    [HarmonyPrefix, HarmonyPatch(nameof(GameStartManager.UpdateHostPanelImage))]
+    private static bool UpdateHostPanelImagePrefix(GameStartManager __instance, NetworkedPlayerInfo player)
+    {
+        __instance.StartCoroutine(__instance.CoUpdateHostPanelImage(player));
+        return false;
+    }
+
+    private static IEnumerator CoUpdateHostPanelImage(this GameStartManager gameStartManager, NetworkedPlayerInfo playerInfo)
+    {
+        yield return gameStartManager.HostInfoPanel.SetCosmetics(playerInfo);
+        var player = BetterVanillaManager.Instance.GetPlayerById(playerInfo.PlayerId);
+        if (player == null)
+        {
+            yield break;
+        }
+        gameStartManager.HostInfoPanel.player.SetVisorColor(player.GetVisorColor());
     }
 }

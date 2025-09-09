@@ -33,5 +33,9 @@ internal static class CosmeticsLayerPatches
         {
             CosmeticsManager.Visors.PopulateParentFromAsset(visor, viewData);
         }
+        else
+        {
+            visor.PopulateFromViewData();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace BetterVanilla.Core;
 
@@ -21,6 +22,7 @@ public sealed class SerializedPlayerData
         }
     }
 
+    [Obsolete("Use vanilla level instead")]
     public uint Level
     {
         get => _level;

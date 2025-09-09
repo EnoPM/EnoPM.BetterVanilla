@@ -9,17 +9,16 @@ namespace BetterVanilla.Core.Patches;
 [HarmonyPatch(typeof(PlayerControl))]
 internal static class PlayerControlPatches
 {
-    [HarmonyPostfix, HarmonyPatch(nameof(PlayerControl.HandleRpc))]
-    private static void HandleRpcPostfix(PlayerControl __instance, byte callId, MessageReader reader)
+    [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.HandleRpc))]
+    private static bool HandleRpcPostfix(PlayerControl __instance, byte callId, MessageReader reader)
     {
         if (callId == CustomRpcMessage.ReservedRpcCallId)
         {
             CustomRpcMessage.HandleRpcMessage(__instance, reader);
+            return false;
         }
-        else
-        {
-            BetterVanillaManager.Instance.Cheaters.HandleRpc(__instance, callId, reader);
-        }
+        BetterVanillaManager.Instance.Cheaters.HandleRpc(__instance, callId, reader);
+        return true;
     }
 
     [HarmonyPostfix, HarmonyPatch(nameof(PlayerControl.Awake))]
@@ -90,7 +89,10 @@ internal static class PlayerControlPatches
     private static void MurderPlayerPostfix(PlayerControl __instance, PlayerControl target, MurderResultFlags resultFlags)
     {
         if (target == null || target.Data == null || __instance == null || __instance.Data == null) return;
-        Ls.LogMessage($"{__instance.Data.PlayerName} killed {target.Data.PlayerName}: {resultFlags.ToString()}");
+        if (LocalConditions.AmDead())
+        {
+            Ls.LogMessage($"{__instance.Data.PlayerName} killed {target.Data.PlayerName}: {resultFlags.ToString()}");
+        }
         if (resultFlags != MurderResultFlags.Succeeded && resultFlags != MurderResultFlags.DecisionByHost) return;
         PlayerShieldBehaviour.Instance.SetKilledPlayer(target);
     }

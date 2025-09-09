@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Core.Extensions;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -53,6 +54,7 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
             InfosText.gameObject.SetActive(false);
             return;
         }
+        VoteArea.PlayerIcon.SetVisorColor(player.GetVisorColor());
         InfosText.SetSponsorText(player.GetSponsorText());
         InfosText.SetMainText(player.GetBetterInfosText());
         InfosText.gameObject.SetActive(true);

@@ -12,7 +12,6 @@ internal static class PlayerPurchasesDataPatches
     {
         if (bundleKey == "BetterVanilla")
         {
-            Ls.LogInfo($"Checking custom cosmetic unlocked '{itemKey}'");
             __result = CosmeticsManager.IsUnlocked(itemKey);
             return;
         }

@@ -26,7 +26,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
     public readonly Dictionary<int, TeamPreferences> AllForcedTeamAssignments = [];
     public ChatCommandsManager ChatCommands { get; private set; } = null!;
     public CheatersManager Cheaters { get; private set; } = null!;
-    public XpManager Xp { get; private set; } = null!;
     public ModMenu Menu { get; private set; } = null!;
     public ZoomBehaviourManager ZoomBehaviour { get; internal set; } = null!;
     public Sprite VentSprite { get; private set; } = null!;
@@ -40,7 +39,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         ChatCommands = new ChatCommandsManager();
         Cheaters = new CheatersManager();
-        Xp = new XpManager();
         Menu = new ModMenu();
         
         var gameBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.game");

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
+using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Core.Rpc;
+using BetterVanilla.Cosmetics;
 using BetterVanilla.Options;
 using BetterVanilla.Options.Core.Serialization;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace BetterVanilla.Components;
 public class BetterPlayerControl : MonoBehaviour
 {
     public static BetterPlayerControl? LocalPlayer { get; private set; }
-    
+
     public PlayerControl? Player { get; private set; }
     public string? FriendCode { get; private set; }
     public bool AmSponsor { get; private set; }
@@ -67,8 +68,15 @@ public class BetterPlayerControl : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName}");
+
+        while (!Player.cosmetics.initialized)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         Player.cosmetics.add_OnColorChange(new Action<int>(OnBodyColorUpdated));
+        RefreshVisorColor();
+        
+        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName}");
     }
 
     private BetterPlayerTexts CreateBetterInfosTexts()
@@ -215,9 +223,22 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void RefreshVisorColor()
     {
-        if (Player == null || Player.cosmetics == null) return;
-        var color = VisorColor ?? Palette.VisorColor;
-        Player.cosmetics.currentBodySprite.BodySprite.material.SetColor(PlayerMaterial.VisorColor, color);
+        if (!AmSponsor || Player == null || Player.cosmetics == null || !Player.cosmetics.initialized) return;
+        Player.cosmetics.currentBodySprite.BodySprite.SetVisorColor(GetVisorColor());
+        RefreshHatColor();
+        //RefreshHostPanel();
+        //RefreshCustomizationMenu();
+    }
+    
+    public Color GetVisorColor() => VisorColor ?? Palette.VisorColor;
+
+    public void RefreshHatColor()
+    {
+        if (Player == null || Player.cosmetics == null || !Player.cosmetics.initialized || Player.cosmetics.hat == null || Player.cosmetics.hat.Hat == null) return;
+        if (CosmeticsManager.Hats.TryGetViewData(Player.cosmetics.hat.Hat.ProductId, out var viewData) && viewData.MatchPlayerColor)
+        {
+            Player.cosmetics.hat.FrontLayer.SetVisorColor(GetVisorColor());
+        }
     }
 
     private void SetupHostOrDisconnectedInfoText(ref List<string> infos)

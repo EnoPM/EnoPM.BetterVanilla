@@ -123,6 +123,7 @@ create-hat-spritesheet
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Sleepy Cloud\sleepycloud_031.png"
 
 create-hat-spritesheet
+--adaptive
 --name
 "Purple Raven"
 --output
@@ -940,6 +941,7 @@ create-hat-spritesheet
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\Happy Cloud\happycloud_019.png"
 
 create-hat-spritesheet
+--bounce
 --adaptive
 --name
 "Fedora"
@@ -967,6 +969,17 @@ create-hat-spritesheet
 --climb-resource
 "C:\Users\EnoPM\OneDrive\Images\StellarHats-main\hats\ferret_adaptive_climb.png"
 
+create-hat-spritesheet
+--adaptive
+--name
+"Tangela"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Tangela_adaptive.png"
+
 bundle
 --compression
 --output
@@ -974,7 +987,7 @@ bundle
 --hats
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Beer Hair.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Cat Hat.spritesheet.json"
-"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Purple Raven.spritesheet.json"
+# "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Purple Raven.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Raven.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Sleepy Cloud.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Wizard.spritesheet.json"
@@ -988,6 +1001,7 @@ bundle
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Happy Cloud.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Fedora.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Ferret.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Tangela.spritesheet.json"
 --visors
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Beer Mustache.spritesheet.json"
 # "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Brown Beard.spritesheet.json"

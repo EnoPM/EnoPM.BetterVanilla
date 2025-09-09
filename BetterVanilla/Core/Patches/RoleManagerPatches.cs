@@ -12,6 +12,8 @@ internal static class RoleManagerPatches
     [HarmonyPrefix, HarmonyPatch(nameof(RoleManager.SelectRoles))]
     private static bool SelectRolesPrefix(RoleManager __instance)
     {
+        Ls.LogMessage($"AllRoles: {__instance.AllRoles.Count}");
+        
         if (GameOptionsManager.Instance.currentGameMode != GameModes.Normal)
         {
             return true;
