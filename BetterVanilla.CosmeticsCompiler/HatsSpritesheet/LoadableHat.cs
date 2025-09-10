@@ -45,6 +45,10 @@ public class LoadableHat : IHat<SpriteFile>
                 Name = options.AuthorName
             };
         }
+        if (options.FlipResourceFilePath != null)
+        {
+            FlipResource = CreateSpriteFile(nameof(FlipResource), options.FlipResourceFilePath);
+        }
         if (options.BackResourceFilePath != null)
         {
             BackResource = CreateSpriteFile(nameof(BackResource), options.BackResourceFilePath);

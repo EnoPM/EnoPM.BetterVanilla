@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BetterVanilla.Core;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.Cosmetics.Core;
 using BetterVanilla.Cosmetics.Core.Spritesheet;
@@ -46,6 +47,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
 
     public HatCosmetic(SerializedHat hat, SpritesheetCache cache) : this(hat, cache.GetSprite(hat.MainResource))
     {
+        FlipResource = hat.FlipResource != null ? cache.GetSprite(hat.FlipResource) : null;
         BackResource = hat.BackResource != null ? cache.GetSprite(hat.BackResource) : null;
         BackFlipResource = hat.BackFlipResource != null ? cache.GetSprite(hat.BackFlipResource) : null;
         ClimbResource = hat.ClimbResource != null ? cache.GetSprite(hat.ClimbResource) : null;
@@ -129,22 +131,28 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
 
     public override void RefreshAnimatedFrames(HatParent parent, bool flipX)
     {
-        if (FrontAnimationFrames?.Count == 0 && BackAnimationFrames?.Count == 0)
+        if (FrontAnimationFrames == null || FrontAnimationFrames.Count == 0)
         {
-            ViewDataCache.TryGetValue(ProductId, out var viewData);
-            parent.FrontLayer.sprite = FlipResource != null && flipX ? FlipResource : viewData?.MainImage;
-            parent.BackLayer.sprite = BackFlipResource != null && flipX ? BackFlipResource : viewData?.BackImage;
+            if (FlipResource != null)
+            {
+                parent.FrontLayer.sprite = flipX ? FlipResource : MainResource;
+            }
         }
         else
         {
-            if (FrontAnimationFrames != null && FrontAnimationFrames.Count != 0)
+            parent.FrontLayer.sprite = FrontAnimationFrames[CurrentFrontFrame];
+        }
+
+        if (BackAnimationFrames == null || BackAnimationFrames.Count == 0)
+        {
+            if (BackFlipResource != null)
             {
-                parent.FrontLayer.sprite = FrontAnimationFrames[CurrentFrontFrame];
+                parent.BackLayer.sprite = flipX ? BackFlipResource : BackResource ?? MainResource;
             }
-            if (BackAnimationFrames != null && BackAnimationFrames.Count != 0)
-            {
-                parent.BackLayer.sprite = BackAnimationFrames[CurrentBackFrame];
-            }
+        }
+        else
+        {
+            parent.BackLayer.sprite = BackAnimationFrames[CurrentBackFrame];
         }
     }
 }
