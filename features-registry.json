@@ -57,14 +57,19 @@
   "task_durations": {
   },
   "sponsor_cosmetics": [
-    "bv_hat_Imperus",
     "bv_hat_Samurai",
     "bv_hat_Jazzy_Kate",
     "bv_visor_Music_Notes",
     "bv_visor_Goofy_Glasses",
     "bv_visor_Blink_Blush",
     "bv_visor_Blink",
-    "bv_visor_Battery"
+    "bv_visor_Battery",
+    "bv_hat_Cat_Hat",
+    "bv_hat_Sleepy_Cloud",
+    "bv_hat_Happy_Cloud",
+    "bv_hat_Sad_Cloud",
+    "bv_hat_Angry_Cloud",
+    "bv_visor_Fishies"
   ],
   "hashed_cosmetics": {
     "F69F4D7EBE6EF0DE745FB51D3717C4645AE3D22021A34114BBC106A8E33C2DC9": [
