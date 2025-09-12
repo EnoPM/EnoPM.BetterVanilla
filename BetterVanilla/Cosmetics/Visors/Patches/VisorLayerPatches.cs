@@ -1,5 +1,4 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace BetterVanilla.Cosmetics.Visors.Patches;
@@ -10,22 +9,27 @@ internal static class VisorLayerPatches
     [HarmonyPrefix, HarmonyPatch(nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
     private static bool SetVisorPrefix(VisorLayer __instance, VisorData data, int color)
     {
-        if (__instance == null || __instance.visorData == null)
+        if (__instance == null)
         {
             return true;
         }
-        if (!CosmeticsManager.Visors.TryGetViewData(__instance.visorData.ProductId, out var viewData)) return true;
-
-        if (data == null || data.ProductId != __instance.visorData.ProductId)
+        if (__instance.visorData != null &&
+            CosmeticsManager.Visors.TryGetViewData(__instance.visorData.ProductId, out _) &&
+            (data == null || !CosmeticsManager.Visors.IsCustomCosmetic(data.ProductId)))
         {
             __instance.Image.sprite = null;
         }
+
         __instance.visorData = data;
         __instance.SetMaterialColor(color);
-        __instance.PopulateFromViewData();
-        
-        
-        return false;
+
+        if (data != null && CosmeticsManager.Visors.IsCustomCosmetic(data.ProductId))
+        {
+            __instance.PopulateFromViewData();
+            return false;
+        }
+
+        return true;
     }
 
     [HarmonyPrefix, HarmonyPatch(nameof(VisorLayer.UpdateMaterial))]

@@ -87,6 +87,8 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
         return ViewDataCache.TryGetValue(key, out viewData);
     }
 
+    public bool IsCustomCosmetic(string key) => ViewDataCache.ContainsKey(key);
+
     public bool TryGetViewDataByName(string name, [MaybeNullWhen(false)] out TViewData viewData)
     {
         foreach (var item in ViewDataCache.Values)

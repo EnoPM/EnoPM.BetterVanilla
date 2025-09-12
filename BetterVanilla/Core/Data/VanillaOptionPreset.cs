@@ -68,26 +68,26 @@ public sealed class VanillaOptionPreset
         TaskBarMode = reader.ReadInt32();
     }
 
-    public VanillaOptionPreset(NormalGameOptionsV09 options)
+    public VanillaOptionPreset(IGameOptions options)
     {
         MapId = options.MapId;
-        PlayerSpeedMod = options.PlayerSpeedMod;
-        CrewLightMod = options.CrewLightMod;
-        ImpostorLightMod = options.ImpostorLightMod;
-        KillCooldown = options.KillCooldown;
-        NumCommonTasks = options.NumCommonTasks;
-        NumLongTasks = options.NumLongTasks;
-        NumShortTasks = options.NumShortTasks;
-        NumEmergencyMeetings = options.NumEmergencyMeetings;
-        EmergencyCooldown = options.EmergencyCooldown;
-        GhostsDoTasks = options.GhostsDoTasks;
-        KillDistance = options.KillDistance;
-        DiscussionTime = options.DiscussionTime;
-        VotingTime = options.VotingTime;
-        ConfirmImpostors = options.ConfirmImpostor;
-        VisualTasks = options.VisualTasks;
-        AnonymousVotes = options.AnonymousVotes;
-        TaskBarMode = (int)options.TaskBarMode;
+        PlayerSpeedMod = options.TryGetFloat(FloatOptionNames.PlayerSpeedMod, out var playerSpeedMod) ? playerSpeedMod : 0f;
+        CrewLightMod = options.TryGetFloat(FloatOptionNames.CrewLightMod, out var crewLightMod) ? crewLightMod : 0f;
+        ImpostorLightMod = options.TryGetFloat(FloatOptionNames.ImpostorLightMod, out var impostorLightMod) ? impostorLightMod : 0f;
+        KillCooldown = options.TryGetFloat(FloatOptionNames.KillCooldown, out var killCooldown) ? killCooldown : 0f;
+        NumCommonTasks = options.TryGetInt(Int32OptionNames.NumCommonTasks, out var numCommonTasks) ? numCommonTasks : 0;
+        NumLongTasks = options.TryGetInt(Int32OptionNames.NumLongTasks, out var numLongTasks) ? numLongTasks : 0;
+        NumShortTasks = options.TryGetInt(Int32OptionNames.NumShortTasks, out var numShortTasks) ? numShortTasks : 0;
+        NumEmergencyMeetings = options.TryGetInt(Int32OptionNames.NumEmergencyMeetings, out var numEmergencyMeetings) ? numEmergencyMeetings : 0;
+        EmergencyCooldown = options.TryGetInt(Int32OptionNames.EmergencyCooldown, out var emergencyCooldown) ? emergencyCooldown : 0;
+        GhostsDoTasks = options.TryGetBool(BoolOptionNames.GhostsDoTasks, out var ghostsDoTasks) && ghostsDoTasks;
+        KillDistance = options.TryGetInt(Int32OptionNames.KillDistance, out var killDistance) ? killDistance : 0;
+        DiscussionTime = options.TryGetInt(Int32OptionNames.DiscussionTime, out var discussionTime) ? discussionTime : 0;
+        VotingTime = options.TryGetInt(Int32OptionNames.VotingTime, out var votingTime) ? votingTime : 0;
+        ConfirmImpostors = options.TryGetBool(BoolOptionNames.ConfirmImpostor, out var confirmImpostors) && confirmImpostors;
+        VisualTasks = options.TryGetBool(BoolOptionNames.VisualTasks, out var visualTasks) && visualTasks;
+        AnonymousVotes = options.TryGetBool(BoolOptionNames.AnonymousVotes, out var anonymousVotes) && anonymousVotes;
+        TaskBarMode = options.TryGetInt(Int32OptionNames.TaskBarMode, out var taskBarMode) ? taskBarMode : 0;
     }
 
     public void Apply(IGameOptions options)

@@ -15,12 +15,7 @@ public sealed class SerializableGamePreset
     public SerializableGamePreset(string name)
     {
         Name = name;
-        var vanillaOptions = GameOptionsManager.Instance.CurrentGameOptions.TryCast<NormalGameOptionsV09>();
-        if (vanillaOptions == null)
-        {
-            throw new Exception($"Unable to cast normalGameHostOptions to {nameof(NormalGameOptionsV09)}");
-        }
-        VanillaOptions = new VanillaOptionPreset(vanillaOptions);
+        VanillaOptions = new VanillaOptionPreset(GameOptionsManager.Instance.CurrentGameOptions);
         BetterOptions = new BetterOptionPreset();
     }
 
@@ -40,11 +35,6 @@ public sealed class SerializableGamePreset
 
     public void Apply()
     {
-        var options = GameOptionsManager.Instance.CurrentGameOptions.TryCast<NormalGameOptionsV09>();
-        if (options == null)
-        {
-            throw new Exception($"Unable to cast CurrentGameOptions to {nameof(NormalGameOptionsV09)}");
-        }
         VanillaOptions.Apply(GameOptionsManager.Instance.CurrentGameOptions);
         
         GameOptionsManager.Instance.CurrentGameOptions.SetBool(BoolOptionNames.IsDefaults, false);
