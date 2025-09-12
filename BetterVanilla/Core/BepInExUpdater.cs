@@ -4,14 +4,14 @@ using System.IO;
 using System.IO.Compression;
 using BepInEx;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Cosmetics.Core;
 using UnityEngine;
 
 namespace BetterVanilla.Core;
 
 public sealed class BepInExUpdater
 {
-    public const string GithubRepository = "EnoPM/EnoPM.BetterVanilla";
-    private const string ConfigFileDownloadUrl = $"https://raw.githubusercontent.com/{GithubRepository}/refs/heads/master/BepInEx.cfg";
+    private const string ConfigFileName = "BepInEx.cfg";
     
     private string BepInExDownloadUrl { get; }
     
@@ -50,7 +50,7 @@ public sealed class BepInExUpdater
             Directory.CreateDirectory(configDirectory);
         }
         var configFile = Path.Combine(configDirectory, "BepInEx.cfg");
-        yield return RequestUtils.CoDownloadFile(ConfigFileDownloadUrl, configFile, progress);
+        yield return RequestUtils.CoDownloadFile(Github.GetFileUrl(ConfigFileName), configFile, progress);
         if (!File.Exists(configFile)) yield break;
 
         UpdateDoorstopConfig();

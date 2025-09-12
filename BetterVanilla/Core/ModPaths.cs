@@ -13,6 +13,9 @@ public static class ModPaths
     public static string SavedOutfitsFile { get; }
     public static string PlayerDataFile { get; }
     public static string BepInExVersionsDirectory { get; }
+    public static string CosmeticsDirectory { get; }
+    public static string CosmeticsBundlesDirectory { get; }
+    public static string CosmeticsBundleRegistryFile { get; }
 
     static ModPaths()
     {
@@ -37,7 +40,12 @@ public static class ModPaths
         SavedOutfitsFile = Path.Combine(ModDataDirectory, "SavedOutfits");
         PlayerDataFile = Path.Combine(ModDataDirectory, "PlayerData");
         BepInExVersionsDirectory = Path.Combine(Paths.GameRootPath, "BetterVanilla", "BepInExVersions");
+        CosmeticsDirectory = Path.Combine(ModDataDirectory, "Cosmetics");
+        CosmeticsBundlesDirectory = Path.Combine(CosmeticsDirectory, "Bundles");
+        CosmeticsBundleRegistryFile = Path.Combine(CosmeticsDirectory, "Registry");
         
+        CreateDirectory(CosmeticsDirectory);
+        CreateDirectory(CosmeticsBundlesDirectory);
         CreateDirectory(OptionsDirectory);
         CreateDirectory(BepInExVersionsDirectory);
     }

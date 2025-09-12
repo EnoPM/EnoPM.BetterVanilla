@@ -8,6 +8,7 @@ using BetterVanilla.BetterModMenu.Core;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Cosmetics.Core;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -49,12 +50,12 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         ui.SetInstallButtonEnabled(false);
         ui.ProgressBar.Show();
         ui.ProgressBar.SetProgress(0f);
-        
+
         var progress = new Progress<float>(x => { UnityThreadDispatcher.RunOnMainThread(() => { ui.ProgressBar.SetProgress(x); }); });
-        
+
         ui.SetUpdateText("Updating BepInEx...");
         yield return BepInExUpdater.CoUpdateIfNecessary(progress);
-        
+
         var directoryPath = Path.Combine(BepInExUpdater.CurrentBepInExDirectory, "BepInEx", "plugins");
         if (!Directory.Exists(directoryPath))
         {
@@ -69,7 +70,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         foreach (var asset in assets)
         {
             ui.SetUpdateText($"Downloading {asset.Name}...");
-            
+
             var filePath = Path.Combine(directoryPath, asset.Name);
             ui.ProgressBar.SetProgress(0f);
             if (File.Exists($"{filePath}.{PreviousFileExtension}"))
@@ -80,7 +81,7 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
             {
                 File.Move(filePath, $"{filePath}.{PreviousFileExtension}");
             }
-            
+
             yield return RequestUtils.CoDownloadFile(asset.DownloadUrl, filePath, progress);
             if (!File.Exists(filePath))
             {
@@ -99,29 +100,20 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         ui.SetCheckForUpdatesButtonEnabled(false);
         ui.SetUpdateText("Please wait, the update verification is in progress");
 
-        var requestTask = RequestUtils.GetAsync<List<GithubRelease>>($"https://api.github.com/repos/{BepInExUpdater.GithubRepository}/releases");
-        var hasError = false;
-        while (!requestTask.IsCompleted)
-        {
-            if (requestTask.Exception != null)
-            {
-                Ls.LogWarning(requestTask.Exception.Message);
-                hasError = true;
-                break;
-            }
-            yield return new WaitForEndOfFrame();
-        }
+        List<GithubRelease>? releases = null;
+        yield return RequestUtils.CoGet<List<GithubRelease>>(
+            $"https://api.github.com/repos/{Github.Repository}/releases",
+            v => { releases = v; },
+            ex => { Ls.LogWarning(ex.Message); }
+        );
 
-        if (!hasError && requestTask.Result != null)
+        var release = releases?.FirstOrDefault(IsValidRelease);
+        if (release != null)
         {
-            var release = requestTask.Result.FirstOrDefault(IsValidRelease);
-            if (release != null)
-            {
-                ui.SetAvailableRelease(release);
-                ui.SetCheckForUpdatesButtonEnabled(true);
-                CheckForUpdatesCoroutine = null;
-                yield break;
-            }
+            ui.SetAvailableRelease(release);
+            ui.SetCheckForUpdatesButtonEnabled(true);
+            CheckForUpdatesCoroutine = null;
+            yield break;
         }
         ui.SetCheckForUpdatesButtonEnabled(true);
         CheckForUpdatesCoroutine = null;

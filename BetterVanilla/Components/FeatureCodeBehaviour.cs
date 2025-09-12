@@ -7,6 +7,8 @@ using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
+using BetterVanilla.Cosmetics.Core;
+using BetterVanilla.Cosmetics.Core.Data;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -14,21 +16,19 @@ namespace BetterVanilla.Components;
 public sealed class FeatureCodeBehaviour : MonoBehaviour
 {
     public static FeatureCodeBehaviour? Instance { get; private set; }
-    
+
     public Dictionary<string, List<string>> Codes { get; set; } = new();
     public Dictionary<string, List<string>> CosmeticCodes { get; set; } = new();
+    public List<CosmeticsBundleVersion>? CosmeticsBundleVersions { get; private set; }
     public HashSet<string> SponsorCosmetics { get; set; } = [];
     public List<string> SponsorFriendCodes { get; set; } = [];
     private HashSet<string> AvailableHashes { get; } = [];
     private HashSet<string> LocalCodes { get; } = [];
     private HashSet<string> LocalHashes { get; } = [];
-
-    private string GithubRepository { get; set; } = null!;
-    private string GithubBranch { get; set; } = null!;
     private string GithubFilePath { get; set; } = null!;
     private string? PrivateKey { get; set; }
     private Coroutine? RefreshFeatureRegistryCoroutine { get; set; }
-    
+
     public void ReloadFeatureRegistry()
     {
         if (RefreshFeatureRegistryCoroutine != null) return;
@@ -96,7 +96,7 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     {
         using var file = File.Create(ModPaths.FeatureCodeFile);
         using var writer = new BinaryWriter(file);
-        
+
         writer.Write(LocalCodes.Count);
 
         foreach (var code in LocalCodes)
@@ -124,11 +124,8 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
     private void Awake()
     {
         PrivateKey = Environment.GetEnvironmentVariable("BETTERVANILLA_PRIVATE_KEY");
-        
-        GithubRepository = BepInExUpdater.GithubRepository;
         GithubFilePath = "features-registry.json";
-        GithubBranch = "master";
-        
+
         Instance = this;
     }
 
@@ -153,31 +150,30 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
 
     private IEnumerator CoReloadFeatureRegistry()
     {
-        var requestTask = RequestUtils.GetAsync<FeaturesRegistry>($"https://raw.githubusercontent.com/{GithubRepository}/refs/heads/{GithubBranch}/{GithubFilePath}");
-        while (!requestTask.IsCompleted)
+        FeaturesRegistry? registry = null;
+        yield return RequestUtils.CoGet<FeaturesRegistry>(
+            Github.GetFileUrl(GithubFilePath),
+            v => registry = v,
+            ex => Ls.LogWarning(ex.Message)
+        );
+        if (registry == null)
         {
-            if (requestTask.Exception != null)
-            {
-                Ls.LogWarning(requestTask.Exception.Message);
-                RefreshFeatureRegistryCoroutine = null;
-                yield break;
-            }
-            yield return new WaitForEndOfFrame();
+            RefreshFeatureRegistryCoroutine = null;
+            yield break;
         }
 
-        if (requestTask.Result != null)
-        {
-            SponsorFriendCodes = requestTask.Result.ContributorFriendCodes;
-            Codes = requestTask.Result.FeatureHashPermissions;
-            CosmeticCodes = requestTask.Result.HashedCosmetics;
-            SponsorCosmetics = requestTask.Result.SponsorCosmetics.ToHashSet();
-
-            foreach (var cosmeticHash in CosmeticCodes.Keys)
-            {
-                RegisterHash(cosmeticHash);
-            }
-        }
+        SponsorFriendCodes = registry.ContributorFriendCodes;
+        Codes = registry.FeatureHashPermissions;
+        CosmeticCodes = registry.HashedCosmetics;
+        SponsorCosmetics = registry.SponsorCosmetics.ToHashSet();
+        CosmeticsBundleVersions = registry.CosmeticsBundleVersions;
         
+
+        foreach (var cosmeticHash in CosmeticCodes.Keys)
+        {
+            RegisterHash(cosmeticHash);
+        }
+
         RefreshFeatureRegistryCoroutine = null;
     }
 }

@@ -7,24 +7,24 @@ namespace BetterVanilla.Cosmetics.Api.Visors;
 
 public sealed class SerializedVisor : SerializedCosmetic, IVisor<SerializedSprite>
 {
-    [JsonPropertyName("main_resource")]
+    [JsonPropertyName("a")]
     public SerializedSprite MainResource { get; set; } = null!;
     
-    [JsonPropertyName("preview_resource")]
+    [JsonPropertyName("b")]
     public SerializedSprite PreviewResource { get; set; } = null!;
     
-    [JsonPropertyName("left_resource")]
+    [JsonPropertyName("c")]
     public SerializedSprite? LeftResource { get; set; }
     
-    [JsonPropertyName("climb_resource")]
+    [JsonPropertyName("d")]
     public SerializedSprite? ClimbResource { get; set; }
     
-    [JsonPropertyName("floor_resource")]
+    [JsonPropertyName("e")]
     public SerializedSprite? FloorResource { get; set; }
     
-    [JsonPropertyName("front_animation_frames")]
+    [JsonPropertyName("f")]
     public List<SerializedSprite>? FrontAnimationFrames { get; set; }
 
-    [JsonPropertyName("behind_hats")]
+    [JsonPropertyName("g")]
     public bool BehindHats { get; set; }
 }

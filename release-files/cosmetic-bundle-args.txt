@@ -1323,7 +1323,7 @@ create-hat-spritesheet
 bundle
 --compression
 --output
-"D:\Projects\BetterVanilla\BetterVanilla\Assets\Cosmetics.bundle"
+"D:\Projects\BetterVanilla\CosmeticsBundles\Cosmetics.bundle"
 --hats
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Beer Hair.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Cat Hat.spritesheet.json"

@@ -21,11 +21,6 @@ public static class CosmeticsManager
     public static void RegisterBundle(CosmeticBundle bundle)
     {
         var cache = new SpritesheetCache(bundle.AllSpritesheet);
-
-        foreach (var key in bundle.AllSpritesheet.Keys)
-        {
-            Ls.LogInfo($"Registering spritesheet: {key}");
-        }
         
         Ls.LogInfo($"[Hats] Registering {bundle.Hats.Count} cosmetics");
         foreach (var serialized in bundle.Hats)

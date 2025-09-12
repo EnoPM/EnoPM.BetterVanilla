@@ -78,5 +78,11 @@
     "9BF8148FB5005251E19901FC1E89E87427ED951B623007C06148905E0A5710C2": [
       "bv_hat_Raven"
     ]
-  }
+  },
+  "cosmetics_bundle_versions": [
+    {
+      "hash": "ee2e8b76-7301-4972-8d53-a62f7f7e0f61",
+      "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.3/Cosmetics.bundle"
+    }
+  ]
 }

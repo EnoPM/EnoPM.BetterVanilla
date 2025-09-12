@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace BetterVanilla.Core.Helpers;
 
@@ -20,7 +19,27 @@ public static class RequestUtils
         UserClient.DefaultRequestHeaders.UserAgent.ParseAdd("BetterVanillaUpdater/1.0");
     }
 
-    public static async Task<T?> GetAsync<T>(string url, JsonSerializerOptions? options = null)
+    public static IEnumerator CoGet<T>(string url, Action<T> onResult, Action<Exception>? onException = null, JsonSerializerOptions? options = null) where T : class
+    {
+        var requestTask = GetAsync<T>(url, options);
+        while (!requestTask.IsCompleted)
+        {
+            if (requestTask.Exception != null)
+            {
+                onException?.Invoke(requestTask.Exception);
+                yield break;
+            }
+            yield return null;
+        }
+        if (requestTask.Result == null)
+        {
+            onException?.Invoke(new Exception($"Unable to get result: {url}"));
+            yield break;
+        }
+        onResult.Invoke(requestTask.Result);
+    }
+
+    public static async Task<T?> GetAsync<T>(string url, JsonSerializerOptions? options = null) where T : class
     {
         Ls.LogMessage($"URL: {url}");
         using var response = await UserClient.GetAsync(url);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using BetterVanilla.Cosmetics.Core.Data;
 
 namespace BetterVanilla.Core.Data;
 
@@ -19,4 +20,8 @@ public sealed class FeaturesRegistry
     
     [JsonPropertyName("hashed_cosmetics")]
     public Dictionary<string, List<string>> HashedCosmetics { get; set; } = new();
+    
+    [JsonPropertyName("cosmetics_bundle_versions")]
+    public List<CosmeticsBundleVersion> CosmeticsBundleVersions { get; set; } = null!;
+    
 }

@@ -60,13 +60,6 @@ public sealed class BetterVanillaManager : MonoBehaviour
 
         GameEventManager.PlayerJoined += OnPlayerJoined;
         
-        var cosmeticBundle = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream("BetterVanilla.Assets.Cosmetics.bundle");
-        if (cosmeticBundle != null)
-        {
-            CosmeticsManager.RegisterBundle(CosmeticBundle.Deserialize(cosmeticBundle));
-        }
-        
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} is loaded!");
     }
     
@@ -86,7 +79,17 @@ public sealed class BetterVanillaManager : MonoBehaviour
         
         ModManager.Instance.ShowModStamp();
         
+        yield return CoLoadCosmetics();
+        
         Ls.LogInfo($"Plugin {GeneratedProps.Name} v{GeneratedProps.Version} was successfully started!");
+    }
+
+    private IEnumerator CoLoadCosmetics()
+    {
+        Ls.LogInfo("Loading cosmetics bundle...");
+        var loader = gameObject.AddComponent<CosmeticsLoader>();
+        yield return loader.CoLoadCosmetics();
+        Destroy(loader);
     }
 
     public BetterPlayerControl? GetPlayerById(byte playerId)

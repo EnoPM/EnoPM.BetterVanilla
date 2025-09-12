@@ -7,33 +7,33 @@ namespace BetterVanilla.Cosmetics.Api.Hats;
 
 public sealed class SerializedHat : SerializedCosmetic, IHat<SerializedSprite>
 {
-    [JsonPropertyName("bounce")]
+    [JsonPropertyName("a")]
     public bool Bounce { get; set; }
     
-    [JsonPropertyName("no_visors")]
+    [JsonPropertyName("b")]
     public bool NoVisors { get; set; }
 
-    [JsonPropertyName("main_resource")]
+    [JsonPropertyName("c")]
     public SerializedSprite MainResource { get; set; } = null!;
     
-    [JsonPropertyName("preview_resource")]
+    [JsonPropertyName("d")]
     public SerializedSprite PreviewResource { get; set; } = null!;
     
-    [JsonPropertyName("flip_resource")]
+    [JsonPropertyName("e")]
     public SerializedSprite? FlipResource { get; set; }
 
-    [JsonPropertyName("back_resource")]
+    [JsonPropertyName("f")]
     public SerializedSprite? BackResource { get; set; }
     
-    [JsonPropertyName("back_flip_resource")]
+    [JsonPropertyName("g")]
     public SerializedSprite? BackFlipResource { get; set; }
     
-    [JsonPropertyName("climb_resource")]
+    [JsonPropertyName("h")]
     public SerializedSprite? ClimbResource { get; set; }
     
-    [JsonPropertyName("front_animation_frames")]
+    [JsonPropertyName("i")]
     public List<SerializedSprite>? FrontAnimationFrames { get; set; }
     
-    [JsonPropertyName("back_animation_frames")]
+    [JsonPropertyName("j")]
     public List<SerializedSprite>? BackAnimationFrames { get; set; }
 }
