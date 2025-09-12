@@ -9,8 +9,10 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     public static PlayerShieldBehaviour Instance { get; private set; } = null!;
     
     public float Timer { get; set; }
-    private string? FirstKilledPlayer { get; set; } = "seriesgone#6069";
+    private string? FirstKilledPlayer { get; set; }
     public string? ProtectedPlayer { get; private set; }
+    private string? ProtectedPlayerName { get; set; }
+    private int PlayerNameSetTimer { get; set; }
     
     public void RemoveProtection()
     {
@@ -18,11 +20,13 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
         if (player?.Player != null)
         {
-            // Simple suppression de la protection côté BetterVanilla
             player.IsProtected = false;
-            Ls.LogMessage($"Protection retirée pour {player.Player.Data?.PlayerName}");
+            player.Player.RpcSetName(ProtectedPlayerName);
+            Ls.LogInfo($"Removed protection for {ProtectedPlayerName}");
         }
         ProtectedPlayer = null;
+        ProtectedPlayerName = null;
+        PlayerNameSetTimer = 0;
     }
 
     public void SetKilledPlayer(PlayerControl player)
@@ -53,33 +57,65 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if (ProtectedPlayer == null) return;
+        if (ProtectedPlayer == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.IsGameStarted) return;
         Timer -= Time.deltaTime;
+        var playerNameSetTimer = Mathf.FloorToInt(Timer);
+        if (playerNameSetTimer != PlayerNameSetTimer)
+        {
+            PlayerNameSetTimer = playerNameSetTimer;
+            UpdatePlayerName();
+        }
         if (Timer > 0f) return;
         RemoveProtection();
     }
 
+    private void UpdatePlayerName()
+    {
+        if (ProtectedPlayer == null) return;
+        var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
+        if (player != null && player.Player != null)
+        {
+            //player.Player.RpcSetName($"{ProtectedPlayerName}\n<size=50%>Protected ({Mathf.RoundToInt(Timer)}s)</size>");
+            player.Player.RpcSetName(@$"{ProtectedPlayerName} <size=50%>({PlayerNameSetTimer}s)</size>");
+        }
+    }
+
     private void OnGameStarted()
     {
-        if (!HostOptions.Default.ProtectFirstKilledPlayer.Value) return;
-        if (!LocalConditions.AmHost()) return; // Seul l'hôte peut appliquer la protection
+        if (!HostOptions.Default.ProtectFirstKilledPlayer.Value)
+        {
+            Ls.LogInfo($"Protection is disabled by host");
+            return;
+        }
+        if (!LocalConditions.AmHost())
+        {
+            Ls.LogInfo($"Protection is only allowed for host");
+            return;
+        }
         
         if (FirstKilledPlayer != null)
         {
             ProtectedPlayer = FirstKilledPlayer;
         }
         FirstKilledPlayer = null;
-        if (ProtectedPlayer == null) return;
+        if (ProtectedPlayer == null)
+        {
+            Ls.LogInfo($"No player to protect");
+            return;
+        }
         
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player?.Player == null) return;
+        if (player?.Player == null)
+        {
+            Ls.LogInfo($"Unable to find player by friend code: {ProtectedPlayer}");
+            return;
+        }
         
         Timer = HostOptions.Default.ProtectionDuration.Value;
         player.IsProtected = true;
+        ProtectedPlayerName = player.Player.Data.PlayerName;
+        PlayerNameSetTimer = 0;
         
-        // Avec DisableServerAuthority, pas besoin du système Guardian Angel
-        // La protection est gérée directement dans CheckMurderPrefix
-        
-        Ls.LogMessage($"Protection activée pour {player.Player.Data?.PlayerName} pendant {Timer} secondes");
+        Ls.LogInfo($"Protection enabled for {player.Player.Data?.PlayerName} during {Timer}s");
     }
 }

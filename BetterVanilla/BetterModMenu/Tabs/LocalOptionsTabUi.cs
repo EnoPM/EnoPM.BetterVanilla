@@ -8,7 +8,6 @@ public sealed class LocalOptionsTabUi : BaseOptionsTabUi
 {
     private void Start()
     {
-        Ls.LogMessage($"Started");
         InitSerializableOptions(LocalOptions.Default);
         InitSerializableOptions(FeatureOptions.Default);
         ApplyOptionFilters();

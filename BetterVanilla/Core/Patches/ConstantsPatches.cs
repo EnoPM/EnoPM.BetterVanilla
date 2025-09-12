@@ -20,8 +20,9 @@ internal static class ConstantsPatches
     }
 
     [HarmonyPrefix, HarmonyPatch(nameof(Constants.IsVersionModded))]
-    private static void IsVersionModdedPrefix(ref bool __result)
+    private static bool IsVersionModdedPrefix(ref bool __result)
     {
         __result = true;
+        return false;
     }
 }

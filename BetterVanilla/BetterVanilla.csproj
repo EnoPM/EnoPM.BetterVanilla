@@ -6,7 +6,7 @@
         <RootNamespace>BetterVanilla</RootNamespace>
         <PluginName>BetterVanilla</PluginName>
         <PluginGuid>bettervanilla.eno.pm</PluginGuid>
-        <PluginVersion>1.3.3</PluginVersion>
+        <PluginVersion>1.3.4</PluginVersion>
         <Description>Enhanced Among Us Vanilla experience</Description>
     </PropertyGroup>
 

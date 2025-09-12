@@ -128,14 +128,6 @@ public class BetterPlayerControl : MonoBehaviour
                     PlayerTexts.SetHandshakeText(Handshake);
                 }
             }
-            if (IsProtected)
-            {
-                Player.cosmetics.nameText.SetText($"{Player.Data.PlayerName}\n<size=50%>Protected ({Mathf.RoundToInt(PlayerShieldBehaviour.Instance.Timer)}s)</size>");
-            }
-            else
-            {
-                Player.cosmetics.nameText.SetText(Player.Data.PlayerName);
-            }
         }
         if (AmSponsor && Player != null && Player.AmOwner)
         {

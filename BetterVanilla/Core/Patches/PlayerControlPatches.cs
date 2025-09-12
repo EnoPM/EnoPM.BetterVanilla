@@ -53,7 +53,7 @@ internal static class PlayerControlPatches
             return false;
         }
         
-        if (target == null || __instance.Data.IsDead || !__instance.Data.Role.IsImpostor || __instance.Data.Disconnected)
+        if (target == null || __instance.Data == null || __instance.Data.IsDead || !__instance.Data.Role.IsImpostor || __instance.Data.Disconnected)
         {
             __instance.RpcMurderPlayer(target, false);
             return false;
@@ -72,11 +72,16 @@ internal static class PlayerControlPatches
             return false;
         }
         
+        Ls.LogMessage($"Protected player: {PlayerShieldBehaviour.Instance.ProtectedPlayer}");
+        
         // Vérification de protection BetterVanilla
         var betterTarget = target.gameObject.GetComponent<BetterPlayerControl>();
         if (betterTarget != null && betterTarget.IsProtected && PlayerShieldBehaviour.Instance.IsPlayerProtected(target))
         {
-            Ls.LogMessage($"Blocked murder attempt on protected player: {target.Data?.PlayerName}");
+            if (LocalConditions.AmDead())
+            {
+                Ls.LogMessage($"Blocked murder attempt on protected player: {target.Data?.PlayerName}");
+            }
             __instance.RpcMurderPlayer(target, false);
             return false;
         }

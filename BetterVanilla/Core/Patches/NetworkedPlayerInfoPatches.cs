@@ -9,6 +9,14 @@ internal static class NetworkedPlayerInfoPatches
     [HarmonyPostfix, HarmonyPatch(nameof(NetworkedPlayerInfo.Deserialize))]
     private static void DeserializePostfix(NetworkedPlayerInfo __instance)
     {
+        Ls.LogMessage($"Friend code for {__instance.PlayerName} is {__instance.FriendCode}");
+        __instance.RegisterFriendCode();
+    }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(NetworkedPlayerInfo.Init))]
+    private static void InitPostfix(NetworkedPlayerInfo __instance)
+    {
+        Ls.LogMessage($"Friend code for {__instance.PlayerName} is {__instance.FriendCode}");
         __instance.RegisterFriendCode();
     }
 }

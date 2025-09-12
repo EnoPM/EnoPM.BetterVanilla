@@ -41,7 +41,7 @@ public static class MapBehaviourExtensions
         MapMode = opts.Mode;
     }
 
-    private static void DisableAllPlayerIcons(this MapBehaviour mapBehaviour)
+    private static void DisableAllPlayerIcons(this MapBehaviour _)
     {
         foreach (var (_, sr) in AllPlayers)
         {
@@ -84,16 +84,20 @@ public static class MapBehaviourExtensions
         }
     }
 
-    private static bool IsSameNetwork(Vent a, Vent b, HashSet<int> visited = null)
+    private static bool IsSameNetwork(Vent a, Vent b, HashSet<int>? visited = null)
     {
         if (a.Id == b.Id) return true;
 
         if (visited == null)
+        {
             visited = [];
+        }
 
-        if (!visited.Add(a.Id)) // Retourne false si déjà visité
+        if (!visited.Add(a.Id))
+        {
             return false;
-
+        }
+        
         foreach (var nearbyVent in a.NearbyVents)
         {
             if (!nearbyVent) continue;
@@ -143,7 +147,7 @@ public static class MapBehaviourExtensions
             {
                 if (AllVents.ContainsKey(vent.Id))
                 {
-                    Ls.LogMessage($"Trying to create already created vent {vent.Id} in network {i}");
+                    Ls.LogWarning($"Trying to create already created vent {vent.Id} in network {i}");
                     continue;
                 }
                 var sr = AllVents[vent.Id] = Object.Instantiate(mapBehaviour.HerePoint, mapBehaviour.HerePoint.transform.parent);
@@ -161,7 +165,7 @@ public static class MapBehaviourExtensions
         }
     }
 
-    private static void DisableAllVentIcons(this MapBehaviour mapBehaviour)
+    private static void DisableAllVentIcons(this MapBehaviour _)
     {
         foreach (var (_, sr) in AllVents)
         {

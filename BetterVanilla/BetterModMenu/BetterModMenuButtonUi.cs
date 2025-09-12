@@ -1,5 +1,4 @@
-﻿using System;
-using BetterVanilla.BetterModMenu.Core;
+﻿using BetterVanilla.BetterModMenu.Core;
 using BetterVanilla.Components;
 using BetterVanilla.Core;
 using UnityEngine;

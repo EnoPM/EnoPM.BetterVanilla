@@ -21,6 +21,8 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
     
     private Coroutine? AutoTaskCoroutine { get; set; }
     private Vector2? CurrentPosition { get; set; }
+    
+    public bool IsRunning => AutoTaskCoroutine != null;
 
     private void Awake()
     {
@@ -105,7 +107,8 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
         }
         
         progressBar.SetProgress(1f);
-        PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+        task.taskStep = task.MaxStep;
+        task.NextStep();
         yield return new WaitForSeconds(1f);
     }
     
