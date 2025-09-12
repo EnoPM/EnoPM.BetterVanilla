@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.Cosmetics.Api.NamePlates;
@@ -22,6 +23,7 @@ public sealed class CosmeticBundle
     public void AddHat(SerializedHat cosmetic)
     {
         CacheSprite(cosmetic.MainResource);
+        CacheSprite(cosmetic.PreviewResource);
         CacheSprite(cosmetic.FlipResource);
         CacheSprite(cosmetic.BackResource);
         CacheSprite(cosmetic.BackFlipResource);
@@ -35,6 +37,7 @@ public sealed class CosmeticBundle
     public void AddVisor(SerializedVisor cosmetic)
     {
         CacheSprite(cosmetic.MainResource);
+        CacheSprite(cosmetic.PreviewResource);
         CacheSprite(cosmetic.LeftResource);
         CacheSprite(cosmetic.ClimbResource);
         CacheSprite(cosmetic.FloorResource);

@@ -3,7 +3,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace BetterVanilla.CosmeticsCompiler.Core;
 
-public sealed class LoadableSprite( string filePath, string name) : IDisposable
+public sealed class LoadableSprite(string filePath, string name) : IDisposable
 {
     public string Name { get; set; } = name;
     public Image<Rgba32>? Image { get; set; }

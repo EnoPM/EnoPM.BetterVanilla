@@ -14,6 +14,8 @@ public class LoadableHat : IHat<SpriteFile>
 
     public SpriteFile MainResource { get; set; }
     
+    public SpriteFile PreviewResource { get; set; }
+    
     public SpriteFile? FlipResource { get; set; }
 
     public SpriteFile? BackResource { get; set; }
@@ -80,6 +82,8 @@ public class LoadableHat : IHat<SpriteFile>
                 BackAnimationFrames.Add(CreateBackAnimationSpriteFile(backAnimationFrames[i], i));
             }
         }
+        
+        PreviewResource = CreateSpriteFile(nameof(PreviewResource), CosmeticPreviewGenerator.CreatePreviewFrom(BackResource, MainResource));
     }
 
     private SpriteFile CreateSpriteFile(string resourceName, string resourcePath)

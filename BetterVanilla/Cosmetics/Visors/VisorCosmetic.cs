@@ -14,6 +14,7 @@ public sealed class VisorCosmetic : BaseCosmetic<VisorViewData, VisorLayer, Viso
     public override string ProductId => "bv_visor_" + Name.Replace(' ', '_');
     
     public Sprite MainResource { get; set; }
+    public Sprite PreviewResource { get; set; }
     public Sprite? LeftResource { get; set; }
     public Sprite? ClimbResource { get; set; }
     public Sprite? FloorResource { get; set; }
@@ -24,7 +25,7 @@ public sealed class VisorCosmetic : BaseCosmetic<VisorViewData, VisorLayer, Viso
     public int FrontDelay { get; set; } = 10;
     public float FrontTime { get; set; }
 
-    public VisorCosmetic(SerializedVisor visor, SpritesheetCache cache) : this(visor, cache.GetSprite(visor.MainResource))
+    public VisorCosmetic(SerializedVisor visor, SpritesheetCache cache) : this(visor, cache.GetSprite(visor.MainResource), cache.GetSprite(visor.PreviewResource))
     {
         LeftResource = visor.LeftResource == null ? null : cache.GetSprite(visor.LeftResource);
         ClimbResource = visor.ClimbResource == null ? null : cache.GetSprite(visor.ClimbResource);
@@ -32,11 +33,12 @@ public sealed class VisorCosmetic : BaseCosmetic<VisorViewData, VisorLayer, Viso
         FrontAnimationFrames = visor.FrontAnimationFrames?.Select(cache.GetSprite).ToList();
     }
     
-    private VisorCosmetic(SerializedVisor visor, Sprite mainResource) : base(visor.Name, visor.Author)
+    private VisorCosmetic(SerializedVisor visor, Sprite mainResource, Sprite previewResource) : base(visor.Name, visor.Author)
     {
         Adaptive = visor.Adaptive;
         BehindHats = visor.BehindHats;
         MainResource = mainResource;
+        PreviewResource = previewResource;
     }
     
     public override bool IsMyParent(VisorLayer parent)

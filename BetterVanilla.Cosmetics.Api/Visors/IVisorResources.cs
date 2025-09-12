@@ -5,6 +5,7 @@ namespace BetterVanilla.Cosmetics.Api.Visors;
 public interface IVisorResources<TResource>
 {
     public TResource MainResource { get; set; }
+    public TResource PreviewResource { get; set; }
     
     public TResource? LeftResource { get; set; }
     

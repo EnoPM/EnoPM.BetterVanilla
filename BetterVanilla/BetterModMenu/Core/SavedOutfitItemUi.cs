@@ -5,6 +5,7 @@ using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
+using BetterVanilla.Cosmetics;
 using Innersloth.Assets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,7 +47,7 @@ public sealed class SavedOutfitItemUi : MonoBehaviour
         }
         if (Outfit.Hat != string.Empty)
         {
-            yield return this.StartCoroutine(CoLoadCosmeticData(hat, HatManager.Instance.GetHatById(Outfit.Hat)));
+            yield return this.StartCoroutine(CoLoadHat(hat, HatManager.Instance.GetHatById(Outfit.Hat)));
         }
         else
         {
@@ -64,7 +65,7 @@ public sealed class SavedOutfitItemUi : MonoBehaviour
 
         if (Outfit.Visor != string.Empty)
         {
-            this.StartCoroutine(CoLoadCosmeticData(visor, HatManager.Instance.GetVisorById(Outfit.Visor)));
+            this.StartCoroutine(CoLoadVisor(visor, HatManager.Instance.GetVisorById(Outfit.Visor)));
         }
         else
         {
@@ -88,6 +89,26 @@ public sealed class SavedOutfitItemUi : MonoBehaviour
         {
             pet.enabled = false;
         }
+    }
+
+    private static IEnumerator CoLoadHat(Image image, HatData hat)
+    {
+        if (CosmeticsManager.Hats.TryGetCosmetic(hat.ProductId, out var cosmetic))
+        {
+            image.sprite = cosmetic.PreviewResource;
+            yield break;
+        }
+        yield return CoLoadCosmeticData(image, hat);
+    }
+    
+    private static IEnumerator CoLoadVisor(Image image, VisorData visor)
+    {
+        if (CosmeticsManager.Visors.TryGetCosmetic(visor.ProductId, out var cosmetic))
+        {
+            image.sprite = cosmetic.PreviewResource;
+            yield break;
+        }
+        yield return CoLoadCosmeticData(image, visor);
     }
 
     private static IEnumerator CoLoadCosmeticData(Image image, CosmeticData viewData)

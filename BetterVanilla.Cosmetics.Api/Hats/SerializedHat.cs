@@ -16,6 +16,9 @@ public sealed class SerializedHat : SerializedCosmetic, IHat<SerializedSprite>
     [JsonPropertyName("main_resource")]
     public SerializedSprite MainResource { get; set; } = null!;
     
+    [JsonPropertyName("preview_resource")]
+    public SerializedSprite PreviewResource { get; set; } = null!;
+    
     [JsonPropertyName("flip_resource")]
     public SerializedSprite? FlipResource { get; set; }
 

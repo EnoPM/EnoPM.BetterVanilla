@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using BetterVanilla.Core;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.Cosmetics.Core;
@@ -16,21 +17,14 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
     public override string ProductId => "bv_hat_" + Name.Replace(' ', '_');
 
     public bool Bounce { get; set; }
-    
     public bool NoVisors { get; set; }
-
     public Sprite MainResource { get; set; }
-
+    public Sprite PreviewResource { get; set; }
     public Sprite? FlipResource { get; set; }
-
     public Sprite? BackResource { get; set; }
-
     public Sprite? BackFlipResource { get; set; }
-
     public Sprite? ClimbResource { get; set; }
-
     public List<Sprite>? FrontAnimationFrames { get; set; }
-
     public List<Sprite>? BackAnimationFrames { get; set; }
 
     public bool Behind { get; set; }
@@ -47,6 +41,7 @@ public sealed class HatCosmetic : BaseCosmetic<HatViewData, HatParent, HatData>,
 
     public HatCosmetic(SerializedHat hat, SpritesheetCache cache) : this(hat, cache.GetSprite(hat.MainResource))
     {
+        PreviewResource = cache.GetSprite(hat.PreviewResource);
         FlipResource = hat.FlipResource != null ? cache.GetSprite(hat.FlipResource) : null;
         BackResource = hat.BackResource != null ? cache.GetSprite(hat.BackResource) : null;
         BackFlipResource = hat.BackFlipResource != null ? cache.GetSprite(hat.BackFlipResource) : null;

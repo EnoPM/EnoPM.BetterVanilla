@@ -5,6 +5,7 @@ namespace BetterVanilla.Cosmetics.Api.Hats;
 public interface IHatResources<TResource>
 {
     public TResource MainResource { get; set; }
+    public TResource PreviewResource { get; set; }
     public TResource? FlipResource { get; set; }
     public TResource? BackResource { get; set; }
     public TResource? BackFlipResource { get; set; }

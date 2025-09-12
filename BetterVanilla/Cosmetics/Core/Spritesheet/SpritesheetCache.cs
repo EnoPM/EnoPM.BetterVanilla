@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using BetterVanilla.Core;
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using UnityEngine;
 
@@ -16,7 +18,14 @@ public sealed class SpritesheetCache
 
     public Sprite GetSprite(SerializedSprite sprite)
     {
-        return GetSpritesheet(sprite.Path).LoadSprite(sprite);
+        var spritesheet = GetSpritesheet(sprite.Path);
+
+        if (spritesheet == null)
+        {
+            throw new Exception($"Spritesheet not found for {sprite.Path}");
+        }
+        
+        return spritesheet.LoadSprite(sprite);
     }
 
     public BaseSpritesheet GetSpritesheet(string name)

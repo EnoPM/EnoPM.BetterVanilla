@@ -19,6 +19,7 @@ public sealed class HatSpritesheetCreator : BaseSpritesheetCreator<CreateHatSpri
             Bounce = hat.Bounce,
             NoVisors = hat.NoVisors,
             MainResource = Serialize(hat.MainResource),
+            PreviewResource = Serialize(hat.PreviewResource),
             FlipResource = hat.FlipResource == null ? null : Serialize(hat.FlipResource),
             BackResource = hat.BackResource == null ? null : Serialize(hat.BackResource),
             BackFlipResource = hat.BackFlipResource == null ? null : Serialize(hat.BackFlipResource),

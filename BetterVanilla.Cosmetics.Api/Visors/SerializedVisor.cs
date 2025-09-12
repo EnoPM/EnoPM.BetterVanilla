@@ -10,6 +10,9 @@ public sealed class SerializedVisor : SerializedCosmetic, IVisor<SerializedSprit
     [JsonPropertyName("main_resource")]
     public SerializedSprite MainResource { get; set; } = null!;
     
+    [JsonPropertyName("preview_resource")]
+    public SerializedSprite PreviewResource { get; set; } = null!;
+    
     [JsonPropertyName("left_resource")]
     public SerializedSprite? LeftResource { get; set; }
     

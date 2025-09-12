@@ -14,6 +14,8 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
     
     public SpriteFile MainResource { get; set; }
     
+    public SpriteFile PreviewResource { get; set; }
+    
     public SpriteFile? LeftResource { get; set; }
     
     public SpriteFile? ClimbResource { get; set; }
@@ -61,6 +63,8 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
                 FrontAnimationFrames.Add(CreateFrontAnimationSpriteFile(frontAnimationFrames[i], i));
             }
         }
+
+        PreviewResource = CreateSpriteFile(nameof(PreviewResource), CosmeticPreviewGenerator.CreatePreviewFrom(MainResource));
     }
 
     private SpriteFile CreateSpriteFile(string resourceName, string resourcePath)

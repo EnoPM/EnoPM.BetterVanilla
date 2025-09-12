@@ -42,9 +42,9 @@ internal static class VisorsTabPatches
             chip.ProductId = visor.ProductId;
             visorsTab.UpdateMaterials(chip.Inner.FrontLayer, visor);
             var playerColor = visorsTab.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-            if (CosmeticsManager.Visors.TryGetViewData(visor.ProductId, out var asset))
+            if (CosmeticsManager.Visors.TryGetCosmetic(visor.ProductId, out var asset))
             {
-                chip.Inner.FrontLayer.sprite = asset.IdleFrame;
+                chip.Inner.FrontLayer.sprite = asset.PreviewResource;
                 PlayerMaterial.SetColors(playerColor, chip.Inner.FrontLayer);
             }
             else

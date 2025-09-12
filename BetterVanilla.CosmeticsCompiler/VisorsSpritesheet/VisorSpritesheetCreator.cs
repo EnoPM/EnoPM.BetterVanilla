@@ -17,6 +17,7 @@ public sealed class VisorSpritesheetCreator : BaseSpritesheetCreator<CreateVisor
             Author = visor.Author,
             BehindHats = visor.BehindHats,
             MainResource = Serialize(visor.MainResource),
+            PreviewResource = Serialize(visor.PreviewResource),
             LeftResource = visor.LeftResource == null ? null : Serialize(visor.LeftResource),
             ClimbResource = visor.ClimbResource == null ? null : Serialize(visor.ClimbResource),
             FloorResource = visor.FloorResource == null ? null : Serialize(visor.FloorResource),

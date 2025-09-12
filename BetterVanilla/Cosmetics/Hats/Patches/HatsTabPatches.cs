@@ -45,9 +45,9 @@ internal static class HatsTabPatches
             chip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
             hatsTab.UpdateMaterials(chip.Inner.FrontLayer, hat);
             var playerColor = hatsTab.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-            if (CosmeticsManager.Hats.TryGetViewData(hat.ProductId, out var asset))
+            if (CosmeticsManager.Hats.TryGetCosmetic(hat.ProductId, out var asset))
             {
-                chip.Inner.FrontLayer.sprite = asset.MainImage;
+                chip.Inner.FrontLayer.sprite = asset.PreviewResource;
                 PlayerMaterial.SetColors(playerColor, chip.Inner.FrontLayer);
             }
             else
