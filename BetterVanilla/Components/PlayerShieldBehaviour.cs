@@ -10,15 +10,17 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     
     public float Timer { get; set; }
     private string? FirstKilledPlayer { get; set; } = "seriesgone#6069";
-    private string? ProtectedPlayer { get; set; }
+    public string? ProtectedPlayer { get; private set; }
     
     public void RemoveProtection()
     {
         if (ProtectedPlayer == null) return;
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player != null)
+        if (player?.Player != null)
         {
+            // Simple suppression de la protection côté BetterVanilla
             player.IsProtected = false;
+            Ls.LogMessage($"Protection retirée pour {player.Player.Data?.PlayerName}");
         }
         ProtectedPlayer = null;
     }
@@ -31,11 +33,11 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         FirstKilledPlayer = betterPlayer.FriendCode;
     }
 
-    public bool IsProtected(PlayerControl target)
+    public bool IsPlayerProtected(PlayerControl target)
     {
         if (ProtectedPlayer == null || !HostOptions.Default.ProtectFirstKilledPlayer.Value) return false;
         var player = target.gameObject.GetComponent<BetterPlayerControl>();
-        return player != null && player.FriendCode != null && player.FriendCode != ProtectedPlayer;
+        return player != null && player.FriendCode != null && player.FriendCode == ProtectedPlayer;
     }
 
     private void Awake()
@@ -59,15 +61,25 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
 
     private void OnGameStarted()
     {
-        if (HostOptions.Default.ProtectFirstKilledPlayer.Value)
+        if (!HostOptions.Default.ProtectFirstKilledPlayer.Value) return;
+        if (!LocalConditions.AmHost()) return; // Seul l'hôte peut appliquer la protection
+        
+        if (FirstKilledPlayer != null)
         {
             ProtectedPlayer = FirstKilledPlayer;
         }
         FirstKilledPlayer = null;
         if (ProtectedPlayer == null) return;
+        
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player == null) return;
+        if (player?.Player == null) return;
+        
         Timer = HostOptions.Default.ProtectionDuration.Value;
         player.IsProtected = true;
+        
+        // Avec DisableServerAuthority, pas besoin du système Guardian Angel
+        // La protection est gérée directement dans CheckMurderPrefix
+        
+        Ls.LogMessage($"Protection activée pour {player.Player.Data?.PlayerName} pendant {Timer} secondes");
     }
 }

@@ -44,42 +44,44 @@ internal static class PlayerControlPatches
     [HarmonyPrefix, HarmonyPatch(nameof(PlayerControl.CheckMurder))]
     private static bool CheckMurderPrefix(PlayerControl __instance, PlayerControl target)
     {
-        Ls.LogMessage($"CheckMurderPrefix called");
+        // Avec DisableServerAuthority, l'hôte gère les checks côté client
+        Ls.LogMessage($"CheckMurderPrefix called - {__instance.Data?.PlayerName} attempting to kill {target?.Data?.PlayerName}");
+        
         __instance.isKilling = false;
         if (AmongUsClient.Instance.IsGameOver || !AmongUsClient.Instance.AmHost)
         {
             return false;
         }
+        
         if (target == null || __instance.Data.IsDead || !__instance.Data.Role.IsImpostor || __instance.Data.Disconnected)
         {
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
+        
         var data = target.Data;
         if (data == null || data.IsDead || target.inVent || target.MyPhysics.Animations.IsPlayingEnterVentAnimation() || target.MyPhysics.Animations.IsPlayingAnyLadderAnimation() || target.inMovingPlat)
         {
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
+        
         if (MeetingHud.Instance != null)
         {
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
-        if (PlayerShieldBehaviour.Instance.IsProtected(target))
-        {
-            Ls.LogMessage($"Trying to kill a protected player");
-            __instance.RpcMurderPlayer(target, false);
-            return false;
-        }
+        
+        // Vérification de protection BetterVanilla
         var betterTarget = target.gameObject.GetComponent<BetterPlayerControl>();
-        if (betterTarget != null && betterTarget.IsProtected)
+        if (betterTarget != null && betterTarget.IsProtected && PlayerShieldBehaviour.Instance.IsPlayerProtected(target))
         {
-            Ls.LogMessage($"Trying to kill a protected player2");
+            Ls.LogMessage($"Blocked murder attempt on protected player: {target.Data?.PlayerName}");
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
         
+        // Meurtre autorisé
         __instance.isKilling = true;
         __instance.RpcMurderPlayer(target, true);
         return false;
