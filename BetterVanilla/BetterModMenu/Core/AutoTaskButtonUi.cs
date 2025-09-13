@@ -22,7 +22,7 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
     private Coroutine? AutoTaskCoroutine { get; set; }
     private Vector2? CurrentPosition { get; set; }
     
-    public bool IsRunning => AutoTaskCoroutine != null;
+    public bool IsRunning => LocalConditions.AmDead() && AutoTaskCoroutine != null;
 
     private void Awake()
     {
@@ -134,6 +134,7 @@ public sealed class AutoTaskButtonUi : MonoBehaviour
         button.image.color = notStartedColor;
         button.interactable = true;
         progressBar.SetProgress(0f);
+        AutoTaskCoroutine = null;
     }
 
     private void SetRunning()
