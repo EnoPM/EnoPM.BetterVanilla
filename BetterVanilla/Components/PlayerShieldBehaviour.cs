@@ -10,13 +10,13 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
 {
     public static PlayerShieldBehaviour Instance { get; private set; } = null!;
     
-    public float Timer { get; set; }
+    private float Timer { get; set; }
     private string? FirstKilledPlayer { get; set; }
-    public string? ProtectedPlayer { get; private set; }
+    private string? ProtectedPlayer { get; set; }
     private string? ProtectedPlayerName { get; set; }
     private int PlayerNameSetTimer { get; set; }
     
-    public void RemoveProtection(bool rpc = true)
+    private void RemoveProtection(bool rpc = true)
     {
         if (ProtectedPlayer == null) return;
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);

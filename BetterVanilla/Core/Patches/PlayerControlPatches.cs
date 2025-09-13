@@ -70,8 +70,7 @@ internal static class PlayerControlPatches
         }
 
         // Vérification de protection BetterVanilla
-        var betterTarget = target.gameObject.GetComponent<BetterPlayerControl>();
-        if (betterTarget != null && betterTarget.IsProtected && PlayerShieldBehaviour.Instance.IsPlayerProtected(target))
+        if (PlayerShieldBehaviour.Instance.IsPlayerProtected(target))
         {
             if (LocalConditions.AmDead())
             {
