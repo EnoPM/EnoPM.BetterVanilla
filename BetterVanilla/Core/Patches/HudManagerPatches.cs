@@ -11,4 +11,10 @@ internal static class HudManagerPatches
     {
         __instance.gameObject.AddComponent<ZoomBehaviourManager>();
     }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(HudManager.OnGameStart))]
+    private static void OnGameStartPostfix()
+    {
+        GameEventManager.TriggerGameReallyStarted();
+    }
 }

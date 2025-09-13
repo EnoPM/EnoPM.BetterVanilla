@@ -11,12 +11,12 @@ public static class MeetingHudExtensions
     private static readonly List<VoteData> CachedVotes = [];
     private static bool PreviousDisplayColorState { get; set; }
 
-    public static void BetterStart(this MeetingHud meetingHud)
+    public static void BetterStart(this MeetingHud _)
     {
         CachedVotes.Clear();
     }
 
-    public static void BetterCastVote(this MeetingHud meetingHud, byte voterId, byte votedId)
+    public static void BetterCastVote(this MeetingHud _, byte voterId, byte votedId)
     {
         if (!LocalConditions.AmHost() || !HostOptions.Default.AllowDeadVoteDisplay.Value || BetterPlayerControl.LocalPlayer == null) return;
         var voter = BetterVanillaManager.Instance.GetPlayerById(voterId);
@@ -143,5 +143,21 @@ public static class MeetingHudExtensions
     {
         if (!LocalConditions.ShouldRevealVotes() || !LocalConditions.ShouldRevealVoteColors()) return;
         Ls.LogMessage($"{voter.Player?.Data.PlayerName} voted for {(suspect != null ? suspect.Player?.Data.PlayerName : "skip")}");
+    }
+
+    public static void HideDeadPlayerPets(this MeetingHud _)
+    {
+        if (HostOptions.Default.HideDeadPlayerPets.Value && LocalConditions.AmHost())
+        {
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (!player.Data.IsDead) continue;
+                player.RpcHidePet();
+            }
+        }
+        else if (LocalOptions.Default.HideMyPetAfterDeath.Value)
+        {
+            PlayerControl.LocalPlayer.RpcHidePet();
+        }
     }
 }

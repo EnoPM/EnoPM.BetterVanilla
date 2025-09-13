@@ -22,7 +22,6 @@ internal static class MeetingHudPatches
     private static void StartPostfix(MeetingHud __instance)
     {
         __instance.BetterStart();
-        
-        PlayerControl.LocalPlayer.HidePetIfDead();
+        __instance.HideDeadPlayerPets();
     }
 }

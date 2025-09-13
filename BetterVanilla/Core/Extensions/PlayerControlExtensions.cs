@@ -21,8 +21,8 @@ public static class PlayerControlExtensions
         if (client == null || client.HasBeenReported) return;
         AmongUsClient.Instance.ReportPlayer(client.Id, reason);
     }
-    
-    public static ClientData? GetClient(this PlayerControl player)
+
+    private static ClientData? GetClient(this PlayerControl player)
     {
         try
         {
@@ -122,14 +122,11 @@ public static class PlayerControlExtensions
         pc.CustomSpawnHandshake();
     }
 
-    public static void HidePetIfDead(this PlayerControl pc)
+    public static void RpcHidePet(this PlayerControl pc)
     {
-        if (pc == null || pc.Data == null || !pc.AmOwner || !pc.Data.IsDead) return;
-        if (!HostOptions.Default.HideDeadPlayerPets.Value &&
-            !LocalOptions.Default.HideMyPetAfterDeath.Value)
-        {
-            return;
-        }
+        if (pc == null || pc.Data == null) return;
+        var currentPet = pc.cosmetics?.currentPet?.Data?.ProductId;
+        if (currentPet == null || currentPet == PetData.EmptyId) return;
         pc.RpcSetPet(PetData.EmptyId);
     }
 
@@ -142,8 +139,8 @@ public static class PlayerControlExtensions
         source.MyPhysics.enabled = canMove;
         source.NetTransform.Halt();
     }
-    
-    public static void CustomOwnerSpawnHandshake(this PlayerControl pc)
+
+    private static void CustomOwnerSpawnHandshake(this PlayerControl pc)
     {
         var player = pc.gameObject.GetComponent<BetterPlayerControl>();
         if (player == null)
@@ -151,7 +148,7 @@ public static class PlayerControlExtensions
             Ls.LogError($"Unable to start {nameof(CustomOwnerSpawnHandshake)} because it doesn't have a {nameof(BetterPlayerControl)}");
             return;
         }
-        
+
         player.RpcSetHandshake(BetterVanillaHandshake.Local);
         player.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
 
@@ -173,7 +170,7 @@ public static class PlayerControlExtensions
         }
     }
 
-    public static void CustomSpawnHandshake(this PlayerControl pc)
+    private static void CustomSpawnHandshake(this PlayerControl pc)
     {
         if (BetterPlayerControl.LocalPlayer == null) return;
         BetterPlayerControl.LocalPlayer.RpcSetHandshake(BetterVanillaHandshake.Local);

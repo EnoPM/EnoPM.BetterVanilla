@@ -9,7 +9,6 @@ internal static class GameDataPatches
     [HarmonyPostfix, HarmonyPatch(nameof(GameData.AddPlayerInfo))]
     private static void AddPlayerInfoPostfix(NetworkedPlayerInfo info)
     {
-        Ls.LogMessage($"Friend code for {info.PlayerName} is {info.FriendCode}");
         info.RegisterFriendCode();
     }
 }

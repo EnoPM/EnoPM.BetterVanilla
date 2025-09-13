@@ -1,4 +1,6 @@
-﻿using BetterVanilla.Core;
+﻿using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils;
+using BetterVanilla.Core;
 using BetterVanilla.Options;
 using UnityEngine;
 
@@ -14,14 +16,17 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     private string? ProtectedPlayerName { get; set; }
     private int PlayerNameSetTimer { get; set; }
     
-    public void RemoveProtection()
+    public void RemoveProtection(bool rpc = true)
     {
         if (ProtectedPlayer == null) return;
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
         if (player?.Player != null)
         {
             player.IsProtected = false;
-            player.Player.RpcSetName(ProtectedPlayerName);
+            if (rpc)
+            {
+                player.Player.RpcSetName(ProtectedPlayerName);
+            }
             Ls.LogInfo($"Removed protection for {ProtectedPlayerName}");
         }
         ProtectedPlayer = null;
@@ -31,10 +36,39 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
 
     public void SetKilledPlayer(PlayerControl player)
     {
-        if (FirstKilledPlayer != null) return;
+        if (!LocalConditions.AmHost())
+        {
+            Ls.LogInfo($"{nameof(FirstKilledPlayer)} can only be set by the host");
+            return;
+        }
+        if (!string.IsNullOrEmpty(FirstKilledPlayer))
+        {
+            Ls.LogWarning($"{nameof(FirstKilledPlayer)} is already set to {FirstKilledPlayer}");
+            return;
+        }
         var betterPlayer = player.gameObject.GetComponent<BetterPlayerControl>();
-        if (betterPlayer == null) return;
-        FirstKilledPlayer = betterPlayer.FriendCode;
+        if (betterPlayer == null)
+        {
+            Ls.LogMessage($"No {nameof(BetterPlayerControl)} found for player {player.Data.PlayerName}");
+            return;
+        }
+        if (BetterPlayerControl.LocalPlayer == null)
+        {
+            Ls.LogWarning($"No local player found to send the rpc");
+            return;
+        }
+        if (betterPlayer.FriendCode == null)
+        {
+            Ls.LogWarning($"{nameof(BetterPlayerControl)} {betterPlayer.Player?.Data.PlayerName} has no friend code");
+            return;
+        }
+        BetterPlayerControl.LocalPlayer.RpcSetFirstKilledPlayer(betterPlayer.FriendCode);
+    }
+
+    public void SetFirstKilledPlayer(string? friendCode)
+    {
+        Ls.LogMessage($"Set first killed player {friendCode}");
+        FirstKilledPlayer = friendCode;
     }
 
     public bool IsPlayerProtected(PlayerControl target)
@@ -47,17 +81,19 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        GameEventManager.GameStarted += OnGameStarted;
+        GameEventManager.GameReallyStarted += OnGameStarted;
+        GameEventManager.GameEnded += OnGameEnded;
     }
 
     private void OnDestroy()
     {
-        GameEventManager.GameStarted -= OnGameStarted;
+        GameEventManager.GameReallyStarted -= OnGameStarted;
+        GameEventManager.GameEnded -= OnGameEnded;
     }
 
     private void Update()
     {
-        if (ProtectedPlayer == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.IsGameStarted) return;
+        if (ProtectedPlayer == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.IsGameStarted || IntroCutscene.Instance != null) return;
         Timer -= Time.deltaTime;
         var playerNameSetTimer = Mathf.FloorToInt(Timer);
         if (playerNameSetTimer != PlayerNameSetTimer)
@@ -76,46 +112,63 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         if (player != null && player.Player != null)
         {
             //player.Player.RpcSetName($"{ProtectedPlayerName}\n<size=50%>Protected ({Mathf.RoundToInt(Timer)}s)</size>");
-            player.Player.RpcSetName(@$"{ProtectedPlayerName} <size=50%>({PlayerNameSetTimer}s)</size>");
+            player.Player.RpcSetName(@$"{ProtectedPlayerName} - {PlayerNameSetTimer}s");
         }
     }
 
-    private void OnGameStarted()
+    private void OnGameEnded()
+    {
+        RemoveProtection(false);
+        StopAllCoroutines();
+    }
+
+    private IEnumerator CoInitializeProtection()
     {
         if (!HostOptions.Default.ProtectFirstKilledPlayer.Value)
         {
             Ls.LogInfo($"Protection is disabled by host");
-            return;
+            yield break;
         }
         if (!LocalConditions.AmHost())
         {
             Ls.LogInfo($"Protection is only allowed for host");
-            return;
+            yield break;
         }
-        
-        if (FirstKilledPlayer != null)
+
+        var firstKilledPlayer = FirstKilledPlayer;
+        SetFirstKilledPlayer(null);
+
+        yield return new WaitForEndOfFrame();
+
+        if (!string.IsNullOrEmpty(firstKilledPlayer))
         {
-            ProtectedPlayer = FirstKilledPlayer;
+            ProtectedPlayer = firstKilledPlayer;
         }
-        FirstKilledPlayer = null;
-        if (ProtectedPlayer == null)
+
+        if (!string.IsNullOrEmpty(ProtectedPlayer))
         {
-            Ls.LogInfo($"No player to protect");
-            return;
+            var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
+            if (player == null || player.Player == null)
+            {
+                Ls.LogInfo($"Unable to find player by friend code: {ProtectedPlayer}");
+                yield break;
+            }
+            
+            Timer = HostOptions.Default.ProtectionDuration.Value;
+            player.IsProtected = true;
+            ProtectedPlayerName = player.Player.Data.PlayerName;
+            PlayerNameSetTimer = 0;
+            
+            Ls.LogInfo($"Protection enabled for {player.Player.Data.PlayerName} during {Timer}s");
         }
         
-        var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player?.Player == null)
+        yield return new WaitForEndOfFrame();
+
+        if (!string.IsNullOrEmpty(FirstKilledPlayer))
         {
-            Ls.LogInfo($"Unable to find player by friend code: {ProtectedPlayer}");
-            return;
+            FirstKilledPlayer = null;
         }
-        
-        Timer = HostOptions.Default.ProtectionDuration.Value;
-        player.IsProtected = true;
-        ProtectedPlayerName = player.Player.Data.PlayerName;
-        PlayerNameSetTimer = 0;
-        
-        Ls.LogInfo($"Protection enabled for {player.Player.Data?.PlayerName} during {Timer}s");
     }
+
+    private void OnGameStarted() => this.StartCoroutine(CoInitializeProtection());
 }

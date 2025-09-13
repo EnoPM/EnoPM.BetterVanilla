@@ -76,7 +76,7 @@ public class BetterPlayerControl : MonoBehaviour
         Player.cosmetics.add_OnColorChange(new Action<int>(OnBodyColorUpdated));
         RefreshVisorColor();
         
-        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName}");
+        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Player ready: {Player.Data.PlayerName} - {FriendCode}");
     }
 
     private BetterPlayerTexts CreateBetterInfosTexts()
@@ -276,8 +276,9 @@ public class BetterPlayerControl : MonoBehaviour
 
     public void SetFriendCode(string friendCode)
     {
+        if (FriendCode == friendCode || string.IsNullOrEmpty(friendCode)) return;
         FriendCode = friendCode;
-        Ls.LogMessage($"Friend code for player {Player?.Data.PlayerName}: {FriendCode}");
+        Ls.LogMessage($"Setting friend code for player {Player?.Data.PlayerName}: {FriendCode}");
         UpdateSponsorState();
     }
 
@@ -337,6 +338,12 @@ public class BetterPlayerControl : MonoBehaviour
     public void RpcSendPrivateChatMessage(int receiverOwnerId, string message)
     {
         var rpc = new PrivateChatMessageRpc(this, receiverOwnerId, message);
+        rpc.Send();
+    }
+
+    public void RpcSetFirstKilledPlayer(string friendCode)
+    {
+        var rpc = new ShareFirstKilledPlayerRpc(this, friendCode);
         rpc.Send();
     }
 }
