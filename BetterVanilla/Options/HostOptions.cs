@@ -1,6 +1,6 @@
 ﻿using BetterVanilla.Components;
 using BetterVanilla.Core;
-using BetterVanilla.Core.Extensions;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Options.Core;
 using BetterVanilla.Options.Core.Host;
 using BetterVanilla.Options.Core.Serialization;
@@ -18,7 +18,7 @@ public class HostOptions : AbstractSerializableOptionHolder
     public BoolHostOption AllowDeadVoteDisplay { get; set; } = null!;
     
     [BoolOption(true)]
-    [OptionName("Allow team Preferences")]
+    [OptionName("Allow team preferences")]
     public BoolHostOption AllowTeamPreference { get; set; } = null!;
     
     [BoolOption(true)]
@@ -36,8 +36,12 @@ public class HostOptions : AbstractSerializableOptionHolder
     [NumberOption(60f, 15f, 300f, IncrementValue = 1f, ValueSuffix = "s")]
     [OptionName("Protection duration")]
     public NumberHostOption ProtectionDuration { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Common tasks as non-common")]
+    public BoolHostOption DefineCommonTasksAsNonCommon { get; set; } = null!;
 
-    public HostOptions() : base("host")
+    private HostOptions() : base("host")
     {
         MenuCategory = new RulesCategory
         {
@@ -46,7 +50,6 @@ public class HostOptions : AbstractSerializableOptionHolder
         };
         
         PolusReactorCountdown.SetIsLockedFunc(IsNotPolusMap);
-        HideDeadPlayerPets.SetIsLockedFunc(IsNotPolusMap);
         ProtectionDuration.SetIsLockedFunc(IsProtectionDisabled);
 
         foreach (var option in GetOptions())
@@ -64,6 +67,13 @@ public class HostOptions : AbstractSerializableOptionHolder
                 Ls.LogWarning($"Unsupported host option {option.Key}");
             }
         }
+
+        DefineCommonTasksAsNonCommon.ValueChanged += OnDefineCommonTasksAsNonCommonValueChanged;
+    }
+
+    private static void OnDefineCommonTasksAsNonCommonValueChanged()
+    {
+        MapTasks.Current?.RefreshOptions();
     }
 
     private bool IsProtectionDisabled()
@@ -71,7 +81,7 @@ public class HostOptions : AbstractSerializableOptionHolder
         return !ProtectFirstKilledPlayer.Value;
     }
 
-    private bool IsNotPolusMap()
+    private static bool IsNotPolusMap()
     {
         return GameOptionsManager.Instance.CurrentGameOptions.MapId != (byte)MapNames.Polus;
     }

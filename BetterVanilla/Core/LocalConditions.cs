@@ -14,14 +14,12 @@ public static class LocalConditions
         return LocalOptions.Default.AutoPlayAgain.Value;
     }
 
-    public static bool ShouldShowRolesAndTasks()
-    {
-        return LocalOptions.Default.DisplayRolesAndTasksAfterDeath.Value;
-    }
-
     public static bool ShouldShowRolesAndTasks(PlayerControl playerControl)
     {
-        return playerControl != null && ShouldShowRolesAndTasks() && IsGameStarted() && (PlayerControl.LocalPlayer == playerControl || AmDead());
+        return playerControl != null
+               && LocalOptions.Default.DisplayRolesAndTasksAfterDeath.Value
+               && IsGameStarted()
+               && (PlayerControl.LocalPlayer == playerControl || AmDead());
     }
 
     public static bool AmDead()
@@ -112,7 +110,8 @@ public static class LocalConditions
 
     public static bool AmHost()
     {
-        return AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost;
+        return AmongUsClient.Instance != null
+               && AmongUsClient.Instance.AmHost;
     }
 
     public static bool IsBetterVanillaHost()

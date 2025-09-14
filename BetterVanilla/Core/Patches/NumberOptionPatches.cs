@@ -1,6 +1,7 @@
 ﻿using AmongUs.GameOptions;
 using BetterVanilla.Core.Extensions;
 using HarmonyLib;
+using UnityEngine;
 
 namespace BetterVanilla.Core.Patches;
 
@@ -30,6 +31,14 @@ internal static class NumberOptionPatches
     private static bool DecreasePrefix(NumberOption __instance)
     {
         __instance.BetterDecrease();
+        return false;
+    }
+
+    [HarmonyPrefix, HarmonyPatch(nameof(NumberOption.AdjustButtonsActiveState))]
+    private static bool AdjustButtonsActiveStatePrefix(NumberOption __instance)
+    {
+        __instance.MinusBtn.SetInteractable(!Mathf.Approximately(__instance.Value, __instance.ValidRange.min));
+        __instance.PlusBtn.SetInteractable(!Mathf.Approximately(__instance.Value, __instance.ValidRange.max));
         return false;
     }
 }

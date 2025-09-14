@@ -8,6 +8,17 @@ public static class ListExtensions
 {
     private static readonly Random Random = new();
 
+    public static void Shuffle<T>(this List<T> items, int startAt = 0)
+    {
+        for (var i = startAt; i < items.Count; ++i)
+        {
+            var item = items[i];
+            var newIndex = Random.Next(i, items.Count);
+            items[i] = items[newIndex];
+            items[newIndex] = item;
+        }
+    }
+
     public static List<T> PickRandom<T>(this List<T> list, int count = 1)
     {
         var picked = 0;
@@ -73,5 +84,10 @@ public static class ListExtensions
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2Cpp<T>(this List<T> list)
     {
         return list.ToIl2CppList();
+    }
+
+    public static int RandomIdx<T>(this Il2CppSystem.Collections.Generic.List<T> self)
+    {
+        return UnityEngine.Random.Range(0, self.Count);
     }
 }

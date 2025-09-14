@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BetterVanilla.Core.Data;
+using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
 
@@ -15,5 +16,19 @@ internal static class ShipStatusPatches
     private static void OnDestroyPrefix(ShipStatus __instance)
     {
         GameEventManager.TriggerGameEnded();
+    }
+
+    [HarmonyPrefix, HarmonyPatch(nameof(ShipStatus.Begin))]
+    private static bool BeginPrefix(ShipStatus __instance)
+    {
+        var assignation = new CustomTasksAssignation(__instance);
+        
+        TaskMover.Refresh();
+        
+        assignation.Begin();
+
+        PlayerControl.LocalPlayer.cosmetics.SetAsLocalPlayer();
+
+        return false;
     }
 }

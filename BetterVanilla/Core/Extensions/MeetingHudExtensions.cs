@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
 using BetterVanilla.Options;
 using UnityEngine;
@@ -145,18 +147,28 @@ public static class MeetingHudExtensions
         Ls.LogMessage($"{voter.Player?.Data.PlayerName} voted for {(suspect != null ? suspect.Player?.Data.PlayerName : "skip")}");
     }
 
-    public static void HideDeadPlayerPets(this MeetingHud _)
+    public static void HideDeadPlayerPets(this MeetingHud meetingHud)
+    {
+        meetingHud.StartCoroutine(CoHideDeadPlayerPets());
+    }
+
+    private static IEnumerator CoHideDeadPlayerPets()
     {
         if (HostOptions.Default.HideDeadPlayerPets.Value && LocalConditions.AmHost())
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (!player.Data.IsDead) continue;
+                if (player == null || player.Data == null || !player.Data.IsDead) continue;
                 player.RpcHidePet();
+                yield return new WaitForSeconds(1f);
             }
         }
         else if (LocalOptions.Default.HideMyPetAfterDeath.Value)
         {
+            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                yield break;
+            }
             PlayerControl.LocalPlayer.RpcHidePet();
         }
     }

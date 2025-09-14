@@ -19,10 +19,12 @@ public static class EndGameNavigationExtensions
             yield return new WaitForEndOfFrame();
         }
         
-        yield return new WaitForSeconds(3f);
-
         var continueButton = navigation.ContinueButton.GetComponentInChildren<PassiveButton>();
-        if (continueButton && continueButton.enabled)
+        continueButton.enabled = false;
+        
+        yield return new WaitForSeconds(3f);
+        
+        if (continueButton != null)
         {
             continueButton.OnClick.Invoke();
         }
@@ -31,13 +33,15 @@ public static class EndGameNavigationExtensions
         {
             yield return new WaitForEndOfFrame();
         }
+        
+        var playAgainButton = navigation.PlayAgainButton.gameObject.GetComponent<PassiveButton>();
+        playAgainButton.enabled = false;
 
         yield return new WaitForSeconds(3f);
-
-        var rejoinButton = navigation.PlayAgainButton.gameObject.GetComponent<PassiveButton>();
-        if (rejoinButton && rejoinButton.enabled)
+        
+        if (playAgainButton != null)
         {
-            rejoinButton.OnClick.Invoke();
+            playAgainButton.OnClick.Invoke();
         }
     }
 }

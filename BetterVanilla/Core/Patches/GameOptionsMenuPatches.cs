@@ -1,4 +1,5 @@
-﻿using BetterVanilla.Core.Extensions;
+﻿using BetterVanilla.Core.Data;
+using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options;
 using BetterVanilla.Options.Core;
 using HarmonyLib;
@@ -28,5 +29,12 @@ internal static class GameOptionsMenuPatches
         {
             option.UpdateBehaviour();
         }
+    }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(GameOptionsMenu.Initialize))]
+    private static void InitializePostfix(GameOptionsMenu __instance)
+    {
+        var currentMapTasks = MapTasks.Current;
+        currentMapTasks?.RefreshOptions();
     }
 }

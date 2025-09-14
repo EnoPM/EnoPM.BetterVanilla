@@ -4,7 +4,6 @@ using System.Linq;
 using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
-using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
 using InnerNet;
@@ -127,6 +126,7 @@ public static class PlayerControlExtensions
         if (pc == null || pc.Data == null) return;
         var currentPet = pc.cosmetics?.currentPet?.Data?.ProductId;
         if (currentPet == null || currentPet == PetData.EmptyId) return;
+        Ls.LogMessage($"Hiding pet for {pc.Data.PlayerName} : {currentPet}");
         pc.RpcSetPet(PetData.EmptyId);
     }
 
@@ -149,43 +149,12 @@ public static class PlayerControlExtensions
             return;
         }
 
-        player.RpcSetHandshake(BetterVanillaHandshake.Local);
-        player.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
-
-        if (FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
-        {
-            player.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
-        }
-
-        if (LocalConditions.AmHost())
-        {
-            HostOptions.Default.ShareAllOptions();
-        }
-
-        if (player.AmSponsor)
-        {
-            player.RpcSetSponsorText(SponsorOptions.Default.SponsorText.Value);
-            player.RpcSetSponsorTextColor(SponsorOptions.Default.SponsorTextColor.Value);
-            player.RpcSetVisorColor(SponsorOptions.Default.VisorColor.Value);
-        }
+        player.StartCoroutine(player.CoOwnerSpawnHandshake());
     }
 
-    private static void CustomSpawnHandshake(this PlayerControl pc)
+    private static void CustomSpawnHandshake(this PlayerControl _)
     {
         if (BetterPlayerControl.LocalPlayer == null) return;
-        BetterPlayerControl.LocalPlayer.RpcSetHandshake(BetterVanillaHandshake.Local);
-        if (LocalConditions.AmHost())
-        {
-            HostOptions.Default.ShareAllOptions();
-        }
-        BetterPlayerControl.LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
-        if (!pc.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
-        {
-            BetterPlayerControl.LocalPlayer.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
-        }
-        if (!LocalConditions.AmSponsor()) return;
-        SponsorOptions.Default.ShareSponsorText();
-        SponsorOptions.Default.ShareSponsorTextColor();
-        SponsorOptions.Default.ShareVisorColor();
+        BetterPlayerControl.LocalPlayer.StartCoroutine(BetterPlayerControl.CoSpawnHandshake());
     }
 }

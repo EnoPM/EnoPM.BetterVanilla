@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
+using BetterVanilla.Core.Helpers;
 using BetterVanilla.Options;
 using UnityEngine;
 
@@ -14,7 +15,6 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     private string? FirstKilledPlayer { get; set; }
     private string? ProtectedPlayer { get; set; }
     private string? ProtectedPlayerName { get; set; }
-    private int PlayerNameSetTimer { get; set; }
     
     private void RemoveProtection(bool rpc = true)
     {
@@ -22,7 +22,6 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
         if (player?.Player != null)
         {
-            player.IsProtected = false;
             if (rpc)
             {
                 player.Player.RpcSetName(ProtectedPlayerName);
@@ -31,7 +30,6 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         }
         ProtectedPlayer = null;
         ProtectedPlayerName = null;
-        PlayerNameSetTimer = 0;
     }
 
     public void SetKilledPlayer(PlayerControl player)
@@ -93,27 +91,10 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if (ProtectedPlayer == null || AmongUsClient.Instance == null || !AmongUsClient.Instance.IsGameStarted || IntroCutscene.Instance != null) return;
+        if (ProtectedPlayer == null || !LocalConditions.IsGameStarted()) return;
         Timer -= Time.deltaTime;
-        var playerNameSetTimer = Mathf.FloorToInt(Timer);
-        if (playerNameSetTimer != PlayerNameSetTimer)
-        {
-            PlayerNameSetTimer = playerNameSetTimer;
-            UpdatePlayerName();
-        }
         if (Timer > 0f) return;
         RemoveProtection();
-    }
-
-    private void UpdatePlayerName()
-    {
-        if (ProtectedPlayer == null) return;
-        var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player != null && player.Player != null)
-        {
-            //player.Player.RpcSetName($"{ProtectedPlayerName}\n<size=50%>Protected ({Mathf.RoundToInt(Timer)}s)</size>");
-            player.Player.RpcSetName(@$"{ProtectedPlayerName} - {PlayerNameSetTimer}s");
-        }
     }
 
     private void OnGameEnded()
@@ -155,11 +136,10 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
             }
             
             Timer = HostOptions.Default.ProtectionDuration.Value;
-            player.IsProtected = true;
             ProtectedPlayerName = player.Player.Data.PlayerName;
-            PlayerNameSetTimer = 0;
+            player.Player.RpcSetName(ColorUtils.ColoredString(Palette.CrewmateBlue, ProtectedPlayerName));
             
-            Ls.LogInfo($"Protection enabled for {player.Player.Data.PlayerName} during {Timer}s");
+            Ls.LogInfo($"Protection enabled for {ProtectedPlayerName} during {Timer}s");
         }
         
         yield return new WaitForEndOfFrame();

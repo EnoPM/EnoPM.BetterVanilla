@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
@@ -26,7 +27,7 @@ public class BetterPlayerControl : MonoBehaviour
     private string? SponsorText { get; set; }
     private Color? SponsorColor { get; set; }
     public BetterVanillaHandshake? Handshake { get; private set; }
-    public bool IsProtected { get; set; }
+    private string? RoleName { get; set; }
 
     private void Awake()
     {
@@ -189,12 +190,14 @@ public class BetterPlayerControl : MonoBehaviour
 
     public void UpdateSponsorState()
     {
-        Ls.LogMessage($"{nameof(BetterPlayerControl)} - Updating sponsor state");
         if (string.IsNullOrWhiteSpace(FriendCode) || FeatureCodeBehaviour.Instance == null)
         {
             return;
         }
-        AmSponsor = FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(FriendCode);
+        var value = FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(FriendCode);
+        if (value == AmSponsor) return;
+        Ls.LogMessage($"Updating sponsor state for player {FriendCode} ({Player?.Data?.PlayerName}) : {value}");
+        AmSponsor = value;
     }
 
     public void SetSponsorText(string sponsorText)
@@ -261,8 +264,48 @@ public class BetterPlayerControl : MonoBehaviour
         {
             var (done, total) = GetTasksCount();
             var color = ColorUtils.TaskCountColor(done, total);
+            var crewmateRoleName = GetCrewmateRoleName();
+            if (!string.IsNullOrEmpty(crewmateRoleName))
+            {
+                infos.Add(ColorUtils.ColoredString(Palette.CrewmateBlue, crewmateRoleName));
+            }
             infos.Add(ColorUtils.ColoredString(color, $"{done}/{total}"));
         }
+    }
+
+    private string? GetCrewmateRoleName()
+    {
+        if (!LocalConditions.IsGameStarted()) return null;
+        if (!string.IsNullOrEmpty(RoleName)) return RoleName;
+        if (Player == null || Player.Data == null || Player.Data.Role == null || Player.Data.Role.IsImpostor) return null;
+        var role = Player.Data.Role;
+        var roleName = GetCrewmateRoleName(role.Role);
+        var crewmateRoleName = GetCrewmateRoleName(RoleTypes.Crewmate);
+        if (crewmateRoleName == roleName) return roleName;
+        return RoleName = roleName;
+    }
+
+    private static string? GetCrewmateRoleName(RoleTypes role)
+    {
+        switch (role)
+        {
+            case RoleTypes.Detective:
+                return "Det.";
+            case RoleTypes.Scientist:
+                return "Sci.";
+            case RoleTypes.Engineer:
+                return "Eng.";
+            case RoleTypes.GuardianAngel:
+                return "G.A.";
+            case RoleTypes.Noisemaker:
+                return "Nois.";
+            case RoleTypes.Tracker:
+                return "Trac.";
+            case RoleTypes.CrewmateGhost:
+            case RoleTypes.Crewmate:
+                return "Crew.";
+        }
+        return null;
     }
 
     public string GetBetterInfosText()
@@ -285,6 +328,73 @@ public class BetterPlayerControl : MonoBehaviour
     public void SetHandshake(BetterVanillaHandshake handshake)
     {
         Handshake = handshake;
+    }
+
+    public IEnumerator CoOwnerSpawnHandshake()
+    {
+        yield return new WaitForSeconds(0.5f);
+        
+        RpcSetHandshake(BetterVanillaHandshake.Local);
+        yield return new WaitForSeconds(0.1f);
+        
+        RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
+        yield return new WaitForSeconds(0.1f);
+        
+        if (FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
+        {
+            RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        if (LocalConditions.AmHost())
+        {
+            HostOptions.Default.ShareAllOptions();
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        if (!AmSponsor) yield break;
+        
+        RpcSetSponsorText(SponsorOptions.Default.SponsorText.Value);
+        yield return new WaitForSeconds(0.1f);
+            
+        RpcSetSponsorTextColor(SponsorOptions.Default.SponsorTextColor.Value);
+        yield return new WaitForSeconds(0.1f);
+            
+        RpcSetVisorColor(SponsorOptions.Default.VisorColor.Value);
+        yield return new WaitForSeconds(0.1f);
+    }
+
+    public static IEnumerator CoSpawnHandshake()
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (LocalPlayer == null) yield break;
+        
+        LocalPlayer.RpcSetHandshake(BetterVanillaHandshake.Local);
+        yield return new WaitForSeconds(0.1f);
+        
+        if (LocalConditions.AmHost())
+        {
+            HostOptions.Default.ShareAllOptions();
+            yield return new WaitForSeconds(0.1f);
+        }
+        LocalPlayer.RpcSetTeamPreference(LocalOptions.Default.TeamPreference.ParseValue(TeamPreferences.Both));
+        yield return new WaitForSeconds(0.1f);
+        
+        if (LocalPlayer.Player != null && !LocalPlayer.Player.AmOwner && FeatureOptions.Default.ForcedTeamAssignment.IsAllowed())
+        {
+            LocalPlayer.RpcSetForcedTeamAssignment(FeatureOptions.Default.ForcedTeamAssignment.ParseValue(TeamPreferences.Both));
+            yield return new WaitForSeconds(0.1f);
+        }
+        if (!LocalConditions.AmSponsor()) yield break;
+        
+        SponsorOptions.Default.ShareSponsorText();
+        yield return new WaitForSeconds(0.1f);
+        
+        SponsorOptions.Default.ShareSponsorTextColor();
+        yield return new WaitForSeconds(0.1f);
+        
+        SponsorOptions.Default.ShareVisorColor();
+        yield return new WaitForSeconds(0.1f);
     }
 
     public void RpcSetHandshake(BetterVanillaHandshake handshake)

@@ -68,8 +68,15 @@ public sealed class GamePresetsUi : MonoBehaviour
         var count = reader.ReadInt32();
         for (var i = 0; i < count; i++)
         {
-            var preset = new SerializableGamePreset(reader);
-            presets.Add(preset);
+            try
+            {
+                var preset = new SerializableGamePreset(reader);
+                presets.Add(preset);
+            }
+            catch (Exception ex)
+            {
+                Ls.LogWarning($"Old preset version, skipping loading: {ex.Message}");
+            }
         }
         return presets;
     }

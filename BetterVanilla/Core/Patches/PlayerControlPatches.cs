@@ -68,8 +68,7 @@ internal static class PlayerControlPatches
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
-
-        // Vérification de protection BetterVanilla
+        
         if (PlayerShieldBehaviour.Instance.IsPlayerProtected(target))
         {
             if (LocalConditions.AmDead())
@@ -79,8 +78,7 @@ internal static class PlayerControlPatches
             __instance.RpcMurderPlayer(target, false);
             return false;
         }
-
-        // Meurtre autorisé
+        
         __instance.isKilling = true;
         __instance.RpcMurderPlayer(target, true);
         PlayerShieldBehaviour.Instance.SetKilledPlayer(target);
