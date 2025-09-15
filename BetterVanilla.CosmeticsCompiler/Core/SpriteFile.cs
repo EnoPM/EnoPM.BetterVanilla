@@ -1,3 +1,6 @@
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
 namespace BetterVanilla.CosmeticsCompiler.Core;
 
 public class SpriteFile
@@ -9,5 +12,11 @@ public class SpriteFile
     {
         Path = filePath;
         Sprite = new LoadableSprite(filePath, $"{name}");
+    }
+
+    public SpriteFile(string name, Image<Rgba32> image)
+    {
+        Path = name;
+        Sprite = new LoadableSprite(name, image);
     }
 }

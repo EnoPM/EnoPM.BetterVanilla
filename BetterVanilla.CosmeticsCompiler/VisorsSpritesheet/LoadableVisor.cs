@@ -1,6 +1,8 @@
 using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Visors;
 using BetterVanilla.CosmeticsCompiler.Core;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
 
@@ -81,6 +83,14 @@ public sealed class LoadableVisor : IVisor<SpriteFile>
         }
         var name = $"{Name}_{resourceName}";
         var spriteFile = new SpriteFile(resourcePath, name);
+        AllSprites.Add(spriteFile);
+        return spriteFile;
+    }
+    
+    private SpriteFile CreateSpriteFile(string resourceName, Image<Rgba32> resource)
+    {
+        var name = $"{Name}_{resourceName}";
+        var spriteFile = new SpriteFile(name, resource);
         AllSprites.Add(spriteFile);
         return spriteFile;
     }

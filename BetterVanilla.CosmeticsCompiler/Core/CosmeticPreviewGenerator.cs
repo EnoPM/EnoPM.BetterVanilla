@@ -8,6 +8,25 @@ public static class CosmeticPreviewGenerator
 {
     private const int PreviewSize = 180;
     
+    public static Image<Rgba32> CreatePreviewFrom(params SpriteFile?[] files)
+    {
+        var images = new List<Image<Rgba32>>();
+
+        foreach (var file in files)
+        {
+            if (file == null) continue;
+            if (file.Sprite.Image == null)
+            {
+                file.Sprite.Load();
+            }
+            images.Add(file.Sprite.Image!);
+        }
+
+        var preview = CreatePreviewImageFrom(images.ToArray());
+
+        return preview;
+    }
+    
     private static Image<Rgba32> CropToSquareWithContent(Image<Rgba32> source)
     {
         // Trouver les limites du contenu non-transparent
@@ -132,30 +151,5 @@ public static class CosmeticPreviewGenerator
         }
 
         return CropToSquareWithContent(result);
-    }
-
-    public static string CreatePreviewFrom(params SpriteFile?[] files)
-    {
-        var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
-        
-        var images = new List<Image<Rgba32>>();
-
-        foreach (var file in files)
-        {
-            if (file == null) continue;
-            if (file.Sprite.Image == null)
-            {
-                file.Sprite.Load();
-            }
-            images.Add(file.Sprite.Image!);
-        }
-
-        var preview = CreatePreviewImageFrom(images.ToArray());
-        preview.Save(filePath);
-        preview.Dispose();
-        
-        Console.WriteLine($"Created preview image: {filePath}");
-
-        return filePath;
     }
 }
