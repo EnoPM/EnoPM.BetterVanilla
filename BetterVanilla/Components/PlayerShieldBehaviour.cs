@@ -137,6 +137,7 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
             
             Timer = HostOptions.Default.ProtectionDuration.Value;
             ProtectedPlayerName = player.Player.Data.PlayerName;
+            yield return new WaitForSeconds(5f); // Wait 5s before sending RPC
             player.Player.RpcSetName(ColorUtils.ColoredString(Palette.CrewmateBlue, ProtectedPlayerName));
             
             Ls.LogInfo($"Protection enabled for {ProtectedPlayerName} during {Timer}s");

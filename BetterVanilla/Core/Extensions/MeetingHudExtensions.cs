@@ -66,9 +66,10 @@ public static class MeetingHudExtensions
     
     private static void DeleteAllCachedVoteSpreaders()
     {
-        foreach (var vote in CachedVotes.Where(x => x.Renderer != null))
+        foreach (var vote in CachedVotes)
         {
-            vote.Renderer!.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
+            if(vote.Renderer == null) continue;
+            vote.Renderer.transform.parent.GetComponent<VoteSpreader>().Votes.Remove(vote.Renderer);
             Object.Destroy(vote.Renderer);
         }
     }

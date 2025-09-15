@@ -1,5 +1,6 @@
 ﻿using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using HarmonyLib;
 using Hazel;
@@ -45,7 +46,7 @@ internal static class PlayerControlPatches
     private static bool CheckMurderPrefix(PlayerControl __instance, PlayerControl target)
     {
         __instance.isKilling = false;
-        if (AmongUsClient.Instance.IsGameOver || !AmongUsClient.Instance.AmHost)
+        if (AmongUsClient.Instance.IsGameOver || !AmongUsClient.Instance.AmHost || !MurderHistory.CanKill(__instance, target))
         {
             return false;
         }
@@ -82,6 +83,7 @@ internal static class PlayerControlPatches
         __instance.isKilling = true;
         __instance.RpcMurderPlayer(target, true);
         PlayerShieldBehaviour.Instance.SetKilledPlayer(target);
+        MurderHistory.RegisterKill(__instance, target);
         return false;
     }
 }
