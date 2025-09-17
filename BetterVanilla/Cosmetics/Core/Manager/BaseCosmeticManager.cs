@@ -36,6 +36,7 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
             noneCosmetic
         };
         var cache = UnregisteredCosmetics.ToList();
+        cache.Reverse();
         foreach (var cosmetic in cache)
         {
             customCosmetics.Add(cosmetic.ToCosmeticData());

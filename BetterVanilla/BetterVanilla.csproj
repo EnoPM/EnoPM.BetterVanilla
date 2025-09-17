@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="$(SolutionDir)/AmongUsSolutionConfig.props" />
     
     <PropertyGroup>
         <RootNamespace>BetterVanilla</RootNamespace>
@@ -24,21 +22,32 @@
             https://api.nuget.org/v3/index.json;
             https://nuget.bepinex.dev/v3/index.json
         </RestoreAdditionalProjectSources>
-        <Configurations>Debug;Release</Configurations>
+        <Configurations>Debug;Release;Android</Configurations>
         <Platforms>AnyCPU</Platforms>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.9.9" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" />
     </ItemGroup>
+    
+    <ItemGroup Condition="$(Configuration) != 'Android'">
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.9.9" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Assets\game" />
+    <ItemGroup Condition="$(Configuration) == 'Android'">
+        <PackageReference Include="AmongUs.GameLibs.Android" Version="2025.9.9" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(Configuration) != 'Android'">
       <EmbeddedResource Include="Assets\menu.ui" />
       <EmbeddedResource Include="Assets\better.game" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(Configuration) == 'Android'">
+        <EmbeddedResource Include="Assets\menu.ui.android" />
+        <EmbeddedResource Include="Assets\better.game.android" />
     </ItemGroup>
 
     <ItemGroup>

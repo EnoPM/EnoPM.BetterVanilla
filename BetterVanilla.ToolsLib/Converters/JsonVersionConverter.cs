@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
-namespace BetterVanilla.Installer.Converters;
+namespace BetterVanilla.ToolsLib.Converters;
 
 [UsedImplicitly]
 public sealed class JsonVersionConverter : JsonConverter<Version>

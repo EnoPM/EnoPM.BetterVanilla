@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
-namespace BetterVanilla.Installer.Serialization;
+namespace BetterVanilla.ToolsLib.Serialization;
 
 [UsedImplicitly]
 public sealed class Asset

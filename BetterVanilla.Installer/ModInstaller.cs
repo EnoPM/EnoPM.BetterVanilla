@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
-using BetterVanilla.Installer.Serialization;
 using BetterVanilla.Installer.Utils;
+using BetterVanilla.ToolsLib.Serialization;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.Installer;
 
@@ -104,7 +105,7 @@ public sealed class ModInstaller
             );
         }
         
-        DoorstopUtility.UpdateDoorstopConfigFile(Paths, versionDirectory);
+        DoorstopUtility.UpdateDoorstopConfigFile(Paths.DoorstopConfigFilePath, versionDirectory);
     }
 
     private async Task<Release?> GetLatestReleaseAsync()

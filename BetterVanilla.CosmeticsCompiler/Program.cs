@@ -1,56 +1,64 @@
-﻿using System.Text;
-using System.Text.Json;
-using BetterVanilla.Cosmetics.Api.Core.Bundle;
-using BetterVanilla.CosmeticsCompiler.Bundle;
-using BetterVanilla.CosmeticsCompiler.HatsSpritesheet;
-using BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
-using BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
-using CommandLine;
-using Json.More;
-using Json.Schema;
-using Json.Schema.Generation;
+﻿using BetterVanilla.CosmeticsCompiler.Commands;
 
 namespace BetterVanilla.CosmeticsCompiler;
 
-internal static class Program
+public static class Program
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
+    private static int Main(string[] args)
     {
-        WriteIndented = true
-    };
-
-    private static void Main(string[] args)
-    {
+        if (args.Length == 0)
+        {
+            var path = Path.Combine(Environment.CurrentDirectory, "cosmetics-bundle-config.txt");
+            if (File.Exists(path))
+            {
+                RunFromFile(path);
+                return 0;
+            }
+        }
         if (args.Length == 1 && args[0].StartsWith('@'))
         {
             var path = args[0][1..].Trim('"');
-            Console.WriteLine($"Running from file {path}");
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("File not found", path);
-            }
+            RunFromFile(path);
+            return 0;
+        }
+        return Run(args);
+    }
 
-            var lines = File.ReadAllLines(path);
-            var current = new List<string>();
-            foreach (var line in lines)
+    private static void RunFromFile(string path)
+    {
+        Console.WriteLine($"Running from file {path}");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("File not found", path);
+        }
+
+        var lines = File.ReadAllLines(path);
+        var current = new List<string>();
+        foreach (var line in lines)
+        {
+            var trimmedLine = line.Trim();
+            if (trimmedLine.StartsWith('#')) continue;
+
+            if (string.IsNullOrWhiteSpace(trimmedLine))
             {
-                if (line.StartsWith('#')) continue;
-                if (string.IsNullOrWhiteSpace(line))
+                RunIfNotEmpty(current);
+                current.Clear();
+            }
+            else
+            {
+                if (trimmedLine.StartsWith('"') && trimmedLine.EndsWith('"'))
                 {
-                    RunIfNotEmpty(current);
-                    current.Clear();
+                    // Ligne avec guillemets - c'est un argument, enlever les guillemets
+                    current.Add(trimmedLine.Substring(1, trimmedLine.Length - 2));
                 }
                 else
                 {
-                    current.AddRange(SplitCommandLine(line));
+                    // Ligne sans guillemets - c'est probablement une commande ou un flag
+                    current.Add(trimmedLine);
                 }
             }
-            RunIfNotEmpty(current);
         }
-        else
-        {
-            Run(args);
-        }
+        RunIfNotEmpty(current);
     }
     
     private static void RunIfNotEmpty(List<string> args)
@@ -58,102 +66,22 @@ internal static class Program
         if (args.Count <= 0) return;
         Run(args.ToArray());
     }
-    
-    private static IEnumerable<string> SplitCommandLine(string commandLine)
+
+    private static int Run(string[] args)
     {
-        if (string.IsNullOrWhiteSpace(commandLine))
-        {
-            return [];
-        }
-
-        var args = new List<string>();
-        var current = new StringBuilder();
-        var inQuotes = false;
-
-        foreach (var c in commandLine)
-        {
-            if (c == '"')
-            {
-                inQuotes = !inQuotes;
-            }
-            else if (char.IsWhiteSpace(c) && !inQuotes)
-            {
-                if (current.Length <= 0) continue;
-                args.Add(current.ToString());
-                current.Clear();
-            }
-            else
-            {
-                current.Append(c);
-            }
-        }
-
-        if (current.Length > 0)
-        {
-            args.Add(current.ToString());
-        }
-
-        return args;
-    }
-
-    private static void Run(string[] args)
-    {
-        Parser.Default.ParseArguments<GenerateSchemaOptions, CreateHatSpritesheetOptions, CreateVisorSpritesheetOptions, CreateNameplateSpritesheetOptions, BundleOptions>(args)
-            .WithParsed<GenerateSchemaOptions>(GenerateSchema)
-            .WithParsed<CreateHatSpritesheetOptions>(CreateHatSpritesheet)
-            .WithParsed<CreateVisorSpritesheetOptions>(CreateVisorSpritesheet)
-            .WithParsed<CreateNameplateSpritesheetOptions>(CreateNamePlateSpritesheet)
-            .WithParsed<BundleOptions>(Bundle)
-            .WithNotParsed(HandleError);
-    }
-
-    private static void Bundle(BundleOptions options)
-    {
-        var creator = new BundleCreator(options);
-        creator.Process();
+        var root = new Root();
         
-        Console.WriteLine($"Bundle file generated at {options.OutputFilePath}");
-    }
-
-    private static void CreateNamePlateSpritesheet(CreateNameplateSpritesheetOptions options)
-    {
-        using var creator = new NamePlateSpritesheetCreator(options);
-        creator.Process();
-        Console.WriteLine($"NamePlate spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
-        Console.WriteLine($"NamePlate spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
-    }
-
-    private static void CreateHatSpritesheet(CreateHatSpritesheetOptions options)
-    {
-        using var creator = new HatSpritesheetCreator(options);
-        creator.Process();
+        root.AddSubcommand(new BundleCommand());
+        root.AddSubcommand(new CreateHatCommand());
+        root.AddSubcommand(new CreateVisorCommand());
+        root.AddSubcommand(new CreateNameplateCommand());
         
-        Console.WriteLine($"Hat spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
-        Console.WriteLine($"Hat spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
-    }
-    
-    private static void CreateVisorSpritesheet(CreateVisorSpritesheetOptions options)
-    {
-        using var creator = new VisorSpritesheetCreator(options);
-        creator.Process();
-        
-        Console.WriteLine($"Visor spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
-        Console.WriteLine($"Visor spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+        root.Execute(args);
+
+        return 0;
+
+        //var rootCommand = Commands.CreateRootCommand();
+        //return rootCommand.Parse(args).Invoke();
     }
 
-    private static void GenerateSchema(GenerateSchemaOptions options)
-    {
-        var builder = new JsonSchemaBuilder();
-        var schema = builder.FromType<CosmeticBundle>().Build();
-        var jsonDoc = schema.ToJsonDocument();
-        SerializerOptions.WriteIndented = options.PrettyPrint;
-        var jsonString = JsonSerializer.Serialize(jsonDoc, SerializerOptions);
-        File.WriteAllText(options.OutputFilePath, jsonString);
-        
-        Console.WriteLine($"Schema generated at: {options.OutputFilePath}");
-    }
-
-    private static void HandleError(IEnumerable<Error> errs)
-    {
-    }
 }

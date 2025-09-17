@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.BetterModMenu;
 using BetterVanilla.GeneratedRuntime;
@@ -9,8 +8,6 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
-using BetterVanilla.Cosmetics;
-using BetterVanilla.Cosmetics.Api.Core.Bundle;
 using HarmonyLib;
 using UnityEngine;
 
@@ -41,14 +38,10 @@ public sealed class BetterVanillaManager : MonoBehaviour
         Cheaters = new CheatersManager();
         Menu = new ModMenu();
         
-        var gameBundle = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.game");
-        
-        VentSprite = gameBundle.LoadAsset<Sprite>("Assets/Sprites/Vent.png");
-        VentSprite.hideFlags = HideFlags.HideAndDontSave;
-        
-        gameBundle.Unload(false);
-        
         var betterGame = AssetBundleUtils.LoadFromExecutingAssembly("BetterVanilla.Assets.better.game");
+        
+        VentSprite = betterGame.LoadAsset<Sprite>("Assets/Ui/Icons/Vent.png");
+        VentSprite.hideFlags = HideFlags.HideAndDontSave;
         
         PlayerTextsPrefab = Instantiate(betterGame.LoadComponent<BetterPlayerTexts>("Assets/Ui/BetterPlayerTexts.prefab"), transform);
         PlayerTextsPrefab.gameObject.SetActive(false);

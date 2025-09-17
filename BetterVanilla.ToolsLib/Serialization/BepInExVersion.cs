@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using BetterVanilla.Installer.Converters;
+using BetterVanilla.ToolsLib.Converters;
 using JetBrains.Annotations;
 
-namespace BetterVanilla.Installer.Serialization;
+namespace BetterVanilla.ToolsLib.Serialization;
 
 [UsedImplicitly]
 public sealed class BepInExVersion

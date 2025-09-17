@@ -4,7 +4,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using BetterVanilla.Cosmetics.Api.Core.Bundle.Versions;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 
 namespace BetterVanilla.Cosmetics.Api.Core.Bundle;
 
@@ -20,9 +22,9 @@ public static class BundleSerializer
         writer.Write(CurrentVersion);
         writer.Write(options.Compressed);
         
-        writer.WriteSerializedList(bundle.Hats, options.Compressed);
-        writer.WriteSerializedList(bundle.Visors, options.Compressed);
-        writer.WriteSerializedList(bundle.NamePlates, options.Compressed);
+        writer.WriteSerializedList(bundle.Hats, CosmeticsJsonContext.Default.ListSerializedHat, options.Compressed);
+        writer.WriteSerializedList(bundle.Visors, CosmeticsJsonContext.Default.ListSerializedVisor, options.Compressed);
+        writer.WriteSerializedList(bundle.NamePlates, CosmeticsJsonContext.Default.ListSerializedNamePlate, options.Compressed);
         
         writer.WriteAllSpritesheet(bundle.AllSpritesheet, options.Compressed);
     }
@@ -63,21 +65,21 @@ public static class BundleSerializer
         return allSpritesheet;
     }
 
-    private static void WriteSerializedList<T>(this BinaryWriter writer, List<T> list, bool isCompressed)
+    private static void WriteSerializedList<T>(this BinaryWriter writer, List<T> list, JsonTypeInfo<List<T>> jsonTypeInfo, bool isCompressed)
     {
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(list);
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(list, jsonTypeInfo);
         var toWrite = isCompressed ? Compress(bytes) : bytes;
-        
+
         writer.Write(toWrite.Length);
         writer.Write(toWrite);
     }
 
-    internal static List<T> ReadSerializedList<T>(this BinaryReader reader, bool isCompressed)
+    internal static List<T> ReadSerializedList<T>(this BinaryReader reader, JsonTypeInfo<List<T>> jsonTypeInfo, bool isCompressed)
     {
         var size = reader.ReadInt32();
         var bytes = reader.ReadBytes(size);
         var toRead = isCompressed ? Decompress(bytes) : bytes;
-        return JsonSerializer.Deserialize<List<T>>(toRead) ?? [];
+        return JsonSerializer.Deserialize(toRead, jsonTypeInfo) ?? [];
     }
 
     private static IBundleSerializer GetDeserializer(int version)

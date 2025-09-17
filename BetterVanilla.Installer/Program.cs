@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using BetterVanilla.Installer.Utils;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.Installer;
 

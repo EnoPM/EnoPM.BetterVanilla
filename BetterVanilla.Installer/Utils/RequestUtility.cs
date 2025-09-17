@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
-using BetterVanilla.Installer.Serialization;
+using BetterVanilla.ToolsLib.Serialization;
+using BetterVanilla.ToolsLib.Utils;
+using GithubJsonContext = BetterVanilla.ToolsLib.Serialization.GithubJsonContext;
 
 namespace BetterVanilla.Installer.Utils;
 

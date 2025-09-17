@@ -1,4 +1,4 @@
-﻿namespace BetterVanilla.Installer.Utils;
+﻿namespace BetterVanilla.ToolsLib.Utils;
 
 public static class ConsoleUtility
 {
@@ -37,4 +37,6 @@ public static class ConsoleUtility
         Console.WriteLine(message);
         Console.ForegroundColor = previousColor;
     }
+    
+    public static void NewLine() => Console.WriteLine();
 }

@@ -1,8 +1,6 @@
 using System.Text.Json;
 using BetterVanilla.Cosmetics.Api.Core.Bundle;
-using BetterVanilla.Cosmetics.Api.Hats;
-using BetterVanilla.Cosmetics.Api.NamePlates;
-using BetterVanilla.Cosmetics.Api.Visors;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 
 namespace BetterVanilla.CosmeticsCompiler.Bundle;
 
@@ -21,7 +19,7 @@ public sealed class BundleCreator
         
         foreach (var cosmeticPath in Options.HatSpritesheet)
         {
-            var hat = JsonSerializer.Deserialize<SerializedHat>(File.ReadAllText(cosmeticPath));
+            var hat = JsonSerializer.Deserialize(File.ReadAllText(cosmeticPath), CosmeticsJsonContext.Default.SerializedHat);
             if (hat == null)
             {
                 throw new Exception("Unable to deserialize: " + cosmeticPath);
@@ -31,7 +29,7 @@ public sealed class BundleCreator
         
         foreach (var cosmeticPath in Options.VisorSpritesheet)
         {
-            var visor = JsonSerializer.Deserialize<SerializedVisor>(File.ReadAllText(cosmeticPath));
+            var visor = JsonSerializer.Deserialize(File.ReadAllText(cosmeticPath), CosmeticsJsonContext.Default.SerializedVisor);
             if (visor == null)
             {
                 throw new Exception("Unable to deserialize: " + cosmeticPath);
@@ -41,7 +39,7 @@ public sealed class BundleCreator
         
         foreach (var cosmeticPath in Options.NameplateSpritesheet)
         {
-            var namePlate = JsonSerializer.Deserialize<SerializedNamePlate>(File.ReadAllText(cosmeticPath));
+            var namePlate = JsonSerializer.Deserialize(File.ReadAllText(cosmeticPath), CosmeticsJsonContext.Default.SerializedNamePlate);
             if (namePlate == null)
             {
                 throw new Exception("Unable to deserialize: " + cosmeticPath);

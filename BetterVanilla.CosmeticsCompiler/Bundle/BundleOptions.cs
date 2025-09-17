@@ -1,23 +1,10 @@
-using CommandLine;
-using JetBrains.Annotations;
-
 namespace BetterVanilla.CosmeticsCompiler.Bundle;
 
-[Verb("bundle"), UsedImplicitly]
 public sealed class BundleOptions
 {
-    [Option('o', "output", Required = true, HelpText = "Output file path")]
-    public string OutputFilePath { get; [UsedImplicitly] set; } = null!;
-    
-    [Option("compression", Default = false, HelpText = "Compress bundle")]
-    public bool EnableCompression { get; [UsedImplicitly] set; }
-    
-    [Option("hats", HelpText = "Hats spritesheet json files")]
-    public IEnumerable<string> HatSpritesheet { get; [UsedImplicitly] set; } = null!;
-    
-    [Option("visors", HelpText = "Hats spritesheet json files")]
-    public IEnumerable<string> VisorSpritesheet { get; [UsedImplicitly] set; } = null!;
-    
-    [Option("nameplates", HelpText = "Nameplates spritesheet json files")]
-    public IEnumerable<string> NameplateSpritesheet { get; [UsedImplicitly] set; } = null!;
+    public string OutputFilePath { get; set; } = null!;
+    public bool EnableCompression { get; set; }
+    public IEnumerable<string> HatSpritesheet { get; set; } = null!;
+    public IEnumerable<string> VisorSpritesheet { get; set; } = null!;
+    public IEnumerable<string> NameplateSpritesheet { get; set; } = null!;
 }

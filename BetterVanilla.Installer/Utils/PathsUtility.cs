@@ -1,4 +1,5 @@
-﻿using BetterVanilla.Installer.Serialization;
+﻿using BetterVanilla.ToolsLib.Serialization;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.Installer.Utils;
 

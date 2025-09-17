@@ -110,8 +110,7 @@ public static class LocalConditions
 
     public static bool AmHost()
     {
-        return AmongUsClient.Instance != null
-               && AmongUsClient.Instance.AmHost;
+        return AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost;
     }
 
     public static bool IsBetterVanillaHost()

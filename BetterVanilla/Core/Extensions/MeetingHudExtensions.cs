@@ -155,22 +155,43 @@ public static class MeetingHudExtensions
 
     private static IEnumerator CoHideDeadPlayerPets()
     {
-        if (HostOptions.Default.HideDeadPlayerPets.Value && LocalConditions.AmHost())
+        yield return new WaitForSeconds(5f);
+        
+        yield return CoHideMyPet();
+        
+        yield return new WaitForSeconds(2f);
+        
+        if (LocalConditions.AmHost())
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player == null || player.Data == null || !player.Data.IsDead) continue;
-                player.RpcHidePet();
-                yield return new WaitForSeconds(1f);
-            }
+            yield return CoHideNonBetterVanillaPlayerPets();
         }
-        else if (LocalOptions.Default.HideMyPetAfterDeath.Value)
+    }
+
+    private static IEnumerator CoHideNonBetterVanillaPlayerPets()
+    {
+        if (!HostOptions.Default.HideDeadPlayerPets.Value || !LocalConditions.AmHost())
         {
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                yield break;
-            }
-            PlayerControl.LocalPlayer.RpcHidePet();
+            yield break;
         }
+
+        foreach (var player in BetterVanillaManager.Instance.AllPlayers)
+        {
+            if (player.Player == null || player.Handshake != null || !player.Player.Data.IsDead) continue;
+            player.Player.RpcHidePet();
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    private static IEnumerator CoHideMyPet()
+    {
+        if (PlayerControl.LocalPlayer == null || !HostOptions.Default.HideDeadPlayerPets.Value && !LocalOptions.Default.HideMyPetAfterDeath.Value)
+        {
+            yield break;
+        }
+        if (!PlayerControl.LocalPlayer.Data.IsDead)
+        {
+            yield break;
+        }
+        PlayerControl.LocalPlayer.RpcHidePet();
     }
 }

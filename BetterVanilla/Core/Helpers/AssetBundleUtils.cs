@@ -9,6 +9,9 @@ public static class AssetBundleUtils
 {
     public static AssetBundle LoadFromExecutingAssembly(string assetBundleName)
     {
+        #if ANDROID
+        assetBundleName = $"{assetBundleName}.android";
+        #endif
         var assembly = Assembly.GetExecutingAssembly();
         var resourceStream = assembly.GetManifestResourceStream(assetBundleName);
         if (resourceStream == null)

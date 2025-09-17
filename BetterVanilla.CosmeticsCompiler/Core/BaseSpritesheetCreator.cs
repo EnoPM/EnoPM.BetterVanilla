@@ -26,6 +26,7 @@ public abstract class BaseSpritesheetCreator<TOptions, TLoadableCosmetic, TSeria
     }
     
     protected abstract TSerializedCosmetic Serialize(TLoadableCosmetic cosmetic);
+    protected abstract string SerializeToJson(TSerializedCosmetic cosmetic);
     protected abstract List<SpriteFile> GetAllSprites();
     
     public void Process()
@@ -40,7 +41,7 @@ public abstract class BaseSpritesheetCreator<TOptions, TLoadableCosmetic, TSeria
         spritesheet.Save(SpritesheetOutputPath);
         
         var manifest = Serialize(Cosmetic);
-        var serializedManifest = JsonSerializer.Serialize(manifest);
+        var serializedManifest = SerializeToJson(manifest);
         File.WriteAllText(ManifestOutputPath, serializedManifest);
     }
     

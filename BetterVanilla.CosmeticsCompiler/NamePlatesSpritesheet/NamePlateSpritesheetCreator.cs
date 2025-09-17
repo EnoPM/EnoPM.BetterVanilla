@@ -1,3 +1,5 @@
+using System.Text.Json;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.CosmeticsCompiler.Core;
 
@@ -19,6 +21,11 @@ public sealed class NamePlateSpritesheetCreator : BaseSpritesheetCreator<CreateN
             Author = namePlate.Author,
             MainResource = Serialize(namePlate.MainResource)
         };
+    }
+    
+    protected override string SerializeToJson(SerializedNamePlate cosmetic)
+    {
+        return JsonSerializer.Serialize(cosmetic, CosmeticsJsonContext.Default.SerializedNamePlate);
     }
 
     protected override List<SpriteFile> GetAllSprites() => Cosmetic.AllSprites;

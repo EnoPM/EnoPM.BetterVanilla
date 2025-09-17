@@ -1,3 +1,5 @@
+using System.Text.Json;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Visors;
 using BetterVanilla.CosmeticsCompiler.Core;
 namespace BetterVanilla.CosmeticsCompiler.VisorsSpritesheet;
@@ -25,5 +27,10 @@ public sealed class VisorSpritesheetCreator : BaseSpritesheetCreator<CreateVisor
         };
     }
     
+    protected override string SerializeToJson(SerializedVisor cosmetic)
+    {
+        return JsonSerializer.Serialize(cosmetic, CosmeticsJsonContext.Default.SerializedVisor);
+    }
+
     protected override List<SpriteFile> GetAllSprites() => Cosmetic.AllSprites;
 }

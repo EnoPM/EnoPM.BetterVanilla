@@ -16,6 +16,8 @@
         <SelfContained>true</SelfContained>
         <StripSymbols>true</StripSymbols>
         <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <Configurations>Debug;Release;Android</Configurations>
+        <Platforms>AnyCPU</Platforms>
         <!-- <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile> -->
     </PropertyGroup>
 
@@ -25,6 +27,10 @@
 
     <ItemGroup>
       <EmbeddedResource Include="logo.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BetterVanilla.ToolsLib\BetterVanilla.ToolsLib.csproj" />
     </ItemGroup>
 
 </Project>

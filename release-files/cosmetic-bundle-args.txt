@@ -1320,6 +1320,16 @@ create-hat-spritesheet
 --climb-resource
 "C:\Users\EnoPM\OneDrive\Images\TheOtherHats\zuali_adaptive_climb.png"
 
+create-hat-spritesheet
+--name
+"Bee Hat"
+--output
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats"
+--author
+"Litwix"
+--main-resource
+"D:\GameDevelopment\AmongUs\Cosmetics\Hats\Bee_Hat.png"
+
 bundle
 --compression
 --output
@@ -1362,6 +1372,7 @@ bundle
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Sheep.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Shinobi.spritesheet.json"
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Zuali.spritesheet.json"
+"D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Hats\Bee Hat.spritesheet.json"
 --visors
 "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Beer Mustache.spritesheet.json"
 # "D:\GameDevelopment\AmongUs\Cosmetics\BetterVanilla\Visors\Brown Beard.spritesheet.json"

@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics;
 
-namespace BetterVanilla.Installer.Utils;
+namespace BetterVanilla.ToolsLib.Utils;
 
 public static class ProcessUtility
 {
     public static void EnsureGameDirectoryIsValidAsync(string gameDirectoryPath)
     {
         if (File.Exists(GetProcessExecutablePath(gameDirectoryPath))) return;
-        throw new Exception("BetterVanillaInstaller must be executed in Among Us game directory");
+        throw new Exception("This program must be executed in Among Us game directory");
     }
     
     public static void EnsureProcessIsNotRunning(string gameDirectoryPath)
@@ -38,7 +38,7 @@ public static class ProcessUtility
             }
         }
         if (!IsProcessRunning(processPath)) return;
-        throw new Exception("BetterVanillaInstaller must be started when the game is closed");
+        throw new Exception("This program must be started when the game is closed");
         
     }
 

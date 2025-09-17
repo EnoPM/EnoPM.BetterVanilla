@@ -1,4 +1,5 @@
 using System.IO;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.Cosmetics.Api.NamePlates;
 using BetterVanilla.Cosmetics.Api.Visors;
@@ -13,9 +14,9 @@ internal sealed class SerializerV1 : IBundleSerializer
     {
         var compressed = reader.ReadBoolean();
         
-        var hats = reader.ReadSerializedList<SerializedHat>(compressed);
-        var visors = reader.ReadSerializedList<SerializedVisor>(compressed);
-        var namePlates = reader.ReadSerializedList<SerializedNamePlate>(compressed);
+        var hats = reader.ReadSerializedList(CosmeticsJsonContext.Default.ListSerializedHat, compressed);
+        var visors = reader.ReadSerializedList(CosmeticsJsonContext.Default.ListSerializedVisor, compressed);
+        var namePlates = reader.ReadSerializedList(CosmeticsJsonContext.Default.ListSerializedNamePlate, compressed);
         
         var allSpritesheet = reader.ReadAllSpritesheet(compressed);
         

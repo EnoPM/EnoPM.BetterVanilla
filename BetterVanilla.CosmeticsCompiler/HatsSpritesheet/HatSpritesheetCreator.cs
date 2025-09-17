@@ -1,3 +1,5 @@
+using System.Text.Json;
+using BetterVanilla.Cosmetics.Api.Core.Serialization;
 using BetterVanilla.Cosmetics.Api.Hats;
 using BetterVanilla.CosmeticsCompiler.Core;
 
@@ -29,5 +31,10 @@ public sealed class HatSpritesheetCreator : BaseSpritesheetCreator<CreateHatSpri
         };
     }
     
+    protected override string SerializeToJson(SerializedHat cosmetic)
+    {
+        return JsonSerializer.Serialize(cosmetic, CosmeticsJsonContext.Default.SerializedHat);
+    }
+
     protected override List<SpriteFile> GetAllSprites() => Cosmetic.AllSprites;
 }

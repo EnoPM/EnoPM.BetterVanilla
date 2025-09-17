@@ -5,6 +5,8 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <BepInExPluginsDirectory>D:\GameDevelopment\AmongUs\DevFiles\BepInEx\plugins\</BepInExPluginsDirectory>
+        <Configurations>Debug;Release;Android</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(BepInExPluginsDirectory)')">
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExPluginsDirectory)" />

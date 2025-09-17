@@ -124,9 +124,7 @@ public static class PlayerControlExtensions
     public static void RpcHidePet(this PlayerControl pc)
     {
         if (pc == null || pc.Data == null) return;
-        var currentPet = pc.cosmetics?.currentPet?.Data?.ProductId;
-        if (currentPet == null || currentPet == PetData.EmptyId) return;
-        Ls.LogMessage($"Hiding pet for {pc.Data.PlayerName} : {currentPet}");
+        Ls.LogInfo($"Hiding pet for {pc.Data.PlayerName}");
         pc.RpcSetPet(PetData.EmptyId);
     }
 

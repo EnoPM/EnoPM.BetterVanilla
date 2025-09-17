@@ -1,6 +1,4 @@
-﻿using BetterVanilla.Installer.Serialization;
-
-namespace BetterVanilla.Installer.Utils;
+﻿namespace BetterVanilla.ToolsLib.Utils;
 
 public static class DoorstopUtility
 {
@@ -11,9 +9,9 @@ public static class DoorstopUtility
     private const string CoreClrPathEntry = "coreclr_path";
     private const string CorLibDirEntry = "corlib_dir";
 
-    public static void UpdateDoorstopConfigFile(PathsUtility paths, string bepInExDirectory)
+    public static void UpdateDoorstopConfigFile(string doorstopConfigFilePath, string bepInExDirectory)
     {
-        var content = File.ReadAllText(paths.DoorstopConfigFilePath);
+        var content = File.ReadAllText(doorstopConfigFilePath);
         var rows = content.Split('\n');
         for (var i = 0; i < rows.Length; i++)
         {
@@ -32,6 +30,6 @@ public static class DoorstopUtility
                 rows[i] = $"{CorLibDirEntry} = {Path.Combine(bepInExDirectory, "dotnet")}";
             }
         }
-        File.WriteAllText(paths.DoorstopConfigFilePath, string.Join('\n', rows));
+        File.WriteAllText(doorstopConfigFilePath, string.Join('\n', rows));
     }
 }

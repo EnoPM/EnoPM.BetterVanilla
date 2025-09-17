@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using BetterVanilla.Core;
@@ -39,11 +40,24 @@ public class CosmeticsLoader : MonoBehaviour
                 File.Delete(filePath);
             }
         }
-        
+
+        foreach (var filePath in Directory.GetFiles(ModPaths.CosmeticsLocalBundlesDirectory))
+        {
+            try
+            {
+                var bundle = CosmeticBundle.FromFile(filePath);
+                CosmeticsManager.RegisterBundle(bundle);
+            }
+            catch (Exception ex)
+            {
+                Ls.LogError($"Failed to load local cosmetics bundle '{filePath}': {ex.Message}");
+            }
+        }
+
         CosmeticsManager.ProcessUnregisteredCosmetics();
     }
 
-    private IEnumerator CoLoadBundle(CosmeticsBundleVersion version)
+    private static IEnumerator CoLoadBundle(CosmeticsBundleVersion version)
     {
         var bundleFilePath = Path.Combine(ModPaths.CosmeticsBundlesDirectory, version.Hash);
 
@@ -58,16 +72,16 @@ public class CosmeticsLoader : MonoBehaviour
             Ls.LogError($"Unable to download cosmetics bundle: {bundleFilePath} from {version.DownloadUrl}");
             yield break;
         }
-        
+
         Ls.LogInfo($"Deserializing cosmetics bundle {version.Hash}");
         var bundle = CosmeticBundle.FromFile(bundleFilePath);
-        
+
         yield return new WaitForEndOfFrame();
-        
+
         Ls.LogInfo($"Registering cosmetics bundle {version.Hash}");
         CosmeticsManager.RegisterBundle(bundle);
     }
-    
+
     private void Update()
     {
         var accountManager = AccountManager.Instance;

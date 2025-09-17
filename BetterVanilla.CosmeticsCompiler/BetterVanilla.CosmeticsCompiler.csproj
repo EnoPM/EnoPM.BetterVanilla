@@ -5,13 +5,25 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <StripSymbols>true</StripSymbols>
+        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <ApplicationIcon>icons/icon.ico</ApplicationIcon>
+        
+        <Configurations>Debug;Release;Android</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.9.1" />
       <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
       <PackageReference Include="JsonSchema.Net.Generation" Version="5.0.2" />
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+      <PackageReference Include="System.CommandLine" Version="2.0.0-rc.1.25451.107" />
     </ItemGroup>
 
     <ItemGroup>
