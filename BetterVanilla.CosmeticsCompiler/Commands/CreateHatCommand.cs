@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using BetterVanilla.CosmeticsCompiler.HatsSpritesheet;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.CosmeticsCompiler.Commands;
 
@@ -60,10 +61,18 @@ public sealed class CreateHatCommand : BaseSpritesheetCommand<CreateHatSpriteshe
     
     protected override void Execute(CreateHatSpritesheetOptions options)
     {
-        using var creator = new HatSpritesheetCreator(options);
-        creator.Process();
+        try
+        {
+            using var creator = new HatSpritesheetCreator(options);
+            creator.Process();
 
-        Console.WriteLine($"Hat spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
-        Console.WriteLine($"Hat spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+            ConsoleUtility.WriteLine(ConsoleColor.DarkGreen,$"Hat spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
+            ConsoleUtility.WriteLine(ConsoleColor.DarkGreen,$"Hat spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+        }
+        catch (Exception ex)
+        {
+            ConsoleUtility.WriteLine(ConsoleColor.Red,$"Error during hat creation ({options.Name}): {ex.Message}");
+        }
+        ConsoleUtility.NewLine();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using BetterVanilla.CosmeticsCompiler.Bundle;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.CosmeticsCompiler.Commands;
 
@@ -40,9 +41,17 @@ public sealed class BundleCommand : BaseCommand<BundleOptions>
     
     protected override void Execute(BundleOptions options)
     {
-        var creator = new BundleCreator(options);
-        creator.Process();
-
-        Console.WriteLine($"Bundle file generated at {options.OutputFilePath}");
+        try
+        {
+            var creator = new BundleCreator(options);
+            creator.Process();
+            
+            ConsoleUtility.WriteLine(ConsoleColor.Green, $"Bundle file generated at {options.OutputFilePath}");
+        }
+        catch (Exception ex)
+        {
+            ConsoleUtility.WriteLine(ConsoleColor.Red,$"Error during bundle creation: {ex.Message}");
+        }
+        ConsoleUtility.NewLine();
     }
 }

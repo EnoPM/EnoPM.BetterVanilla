@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using BetterVanilla.CosmeticsCompiler.NamePlatesSpritesheet;
+using BetterVanilla.ToolsLib.Utils;
 
 namespace BetterVanilla.CosmeticsCompiler.Commands;
 
@@ -28,9 +29,18 @@ public sealed class CreateNameplateCommand : BaseSpritesheetCommand<CreateNamepl
     
     protected override void Execute(CreateNameplateSpritesheetOptions options)
     {
-        using var creator = new NamePlateSpritesheetCreator(options);
-        creator.Process();
-        Console.WriteLine($"NamePlate spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
-        Console.WriteLine($"NamePlate spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+        try
+        {
+            using var creator = new NamePlateSpritesheetCreator(options);
+            creator.Process();
+            
+            ConsoleUtility.WriteLine(ConsoleColor.DarkGreen, $"NamePlate spritesheet manifest generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.spritesheet.json")}");
+            ConsoleUtility.WriteLine(ConsoleColor.DarkGreen,$"NamePlate spritesheet file generated at {Path.Combine(options.OutputDirectoryPath, $"{options.Name}.png")}");
+        }
+        catch (Exception ex)
+        {
+            ConsoleUtility.WriteLine(ConsoleColor.Red,$"Error during nameplate creation  ({options.Name}): {ex.Message}");
+        }
+        ConsoleUtility.NewLine();
     }
 }
