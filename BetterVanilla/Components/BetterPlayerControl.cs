@@ -225,7 +225,7 @@ public class BetterPlayerControl : MonoBehaviour
         //RefreshCustomizationMenu();
     }
     
-    public Color GetVisorColor() => VisorColor ?? Palette.VisorColor;
+    public Color GetVisorColor() => AmSponsor ? VisorColor ?? Palette.VisorColor : Palette.VisorColor;
 
     public void RefreshHatColor()
     {
