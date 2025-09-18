@@ -58,19 +58,12 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
 
     private bool IsOptionLocked()
     {
-        if (BetterPlayerControl.LocalPlayer == null || BetterPlayerControl.LocalPlayer.FriendCode == null)
+        
+        if (BetterPlayerControl.LocalPlayer == null)
         {
             foreach (var option in GetOptions())
             {
                 option.SetLockedText("Available in lobby");
-            }
-            return true;
-        }
-        if (LocalConditions.IsGameStarted())
-        {
-            foreach (var option in GetOptions())
-            {
-                option.SetLockedText("Not available when the game is started");
             }
             return true;
         }
@@ -79,6 +72,14 @@ public sealed class SponsorOptions : AbstractSerializableOptionHolder
             foreach (var option in GetOptions())
             {
                 option.SetLockedText("Available for sponsors");
+            }
+            return true;
+        }
+        if (LocalConditions.IsGameStarted())
+        {
+            foreach (var option in GetOptions())
+            {
+                option.SetLockedText("Not available when the game is started");
             }
             return true;
         }
