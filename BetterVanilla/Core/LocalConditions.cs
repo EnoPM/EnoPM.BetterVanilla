@@ -29,7 +29,7 @@ public static class LocalConditions
         return true;
     }
 
-    public static bool AmImpostor()
+    private static bool AmImpostor()
     {
         if (FeatureOptions.Default.DisableAmImpostorCheck.IsNotAllowed() || !FeatureOptions.Default.DisableAmImpostorCheck.Value)
         {
@@ -42,11 +42,11 @@ public static class LocalConditions
 
     public static bool AmSponsor()
     {
-        if (FeatureCodeBehaviour.Instance == null || !EOSManager.InstanceExists || string.IsNullOrEmpty(EOSManager.Instance.FriendCode))
+        if (FeatureCodeBehaviour.Instance == null || FeatureCodeBehaviour.Instance.Registry == null || !EOSManager.InstanceExists || string.IsNullOrEmpty(EOSManager.Instance.FriendCode))
         {
             return false;
         }
-        return FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(EOSManager.Instance.FriendCode);
+        return FeatureCodeBehaviour.Instance.Registry.ContributorFriendCodes.Contains(EOSManager.Instance.FriendCode);
     }
 
     public static bool IsGameStarted()
@@ -122,6 +122,7 @@ public static class LocalConditions
 
     public static bool IsAllPlayersUsingBetterVanilla()
     {
+        if (TutorialManager.Instance != null) return true;
         foreach (var player in BetterVanillaManager.Instance.AllPlayers)
         {
             if (player.Handshake == null)
@@ -132,5 +133,5 @@ public static class LocalConditions
         return true;
     }
     
-    public static bool IsBetterPolusEnabled() => IsAllPlayersUsingBetterVanilla() && HostOptions.Default.BetterPolus.Value;
+    public static bool IsBetterPolusEnabled() => HostOptions.Default.BetterPolus.IsAllowed() && HostOptions.Default.BetterPolus.Value;
 }

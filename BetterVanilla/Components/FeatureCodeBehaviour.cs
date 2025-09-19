@@ -8,7 +8,6 @@ using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Helpers;
 using BetterVanilla.Cosmetics.Core;
-using BetterVanilla.Cosmetics.Core.Data;
 using UnityEngine;
 
 namespace BetterVanilla.Components;
@@ -16,12 +15,9 @@ namespace BetterVanilla.Components;
 public sealed class FeatureCodeBehaviour : MonoBehaviour
 {
     public static FeatureCodeBehaviour? Instance { get; private set; }
-
-    public Dictionary<string, List<string>> Codes { get; set; } = new();
-    public Dictionary<string, List<string>> CosmeticCodes { get; set; } = new();
-    public List<CosmeticsBundleVersion>? CosmeticsBundleVersions { get; private set; }
+    
+    public FeaturesRegistry? Registry { get; private set; }
     public HashSet<string> SponsorCosmetics { get; set; } = [];
-    public List<string> SponsorFriendCodes { get; set; } = [];
     private HashSet<string> AvailableHashes { get; } = [];
     private HashSet<string> LocalCodes { get; } = [];
     private HashSet<string> LocalHashes { get; } = [];
@@ -48,7 +44,7 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
         {
             return FeatureCodeResult.Invalid;
         }
-        if (!CanBeUnlocked(hash) && !CosmeticCodes.ContainsKey(hash))
+        if (!CanBeUnlocked(hash) && (Registry == null || !Registry.HashedCosmetics.ContainsKey(hash)))
         {
             return FeatureCodeResult.Unauthorized;
         }
@@ -68,12 +64,12 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
 
     public bool IsCosmeticUnlockable(string productId)
     {
-        return CosmeticCodes.Any(x => x.Value.Contains(productId));
+        return Registry != null && Registry.HashedCosmetics.Any(x => x.Value.Contains(productId));
     }
 
     public bool IsCosmeticUnlocked(string productId)
     {
-        var hash = CosmeticCodes.FirstOrDefault(x => x.Value.Contains(productId)).Key;
+        var hash = Registry?.HashedCosmetics.FirstOrDefault(x => x.Value.Contains(productId)).Key;
         return hash != null && LocalHashes.Contains(hash);
     }
 
@@ -141,7 +137,7 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
         {
             return false;
         }
-        if (!Codes.TryGetValue(hash, out var friendCodes))
+        if (Registry == null || !Registry.FeatureHashPermissions.TryGetValue(hash, out var friendCodes))
         {
             return false;
         }
@@ -156,20 +152,18 @@ public sealed class FeatureCodeBehaviour : MonoBehaviour
             v => registry = v,
             ex => Ls.LogWarning(ex.Message)
         );
+        Ls.LogInfo($"Feature registry loaded");
         if (registry == null)
         {
             RefreshFeatureRegistryCoroutine = null;
             yield break;
         }
 
-        SponsorFriendCodes = registry.ContributorFriendCodes;
-        Codes = registry.FeatureHashPermissions;
-        CosmeticCodes = registry.HashedCosmetics;
+        Registry = registry;
         SponsorCosmetics = registry.SponsorCosmetics.ToHashSet();
-        CosmeticsBundleVersions = registry.CosmeticsBundleVersions;
         
 
-        foreach (var cosmeticHash in CosmeticCodes.Keys)
+        foreach (var cosmeticHash in Registry.HashedCosmetics.Keys)
         {
             RegisterHash(cosmeticHash);
         }

@@ -13,4 +13,5 @@ public enum RpcIds : uint
     ShareSponsorTextColor,
     ShareSponsorVisorColor,
     ShareFirstKilledPlayer,
+    ShareRandomizedMeetingOrder,
 }

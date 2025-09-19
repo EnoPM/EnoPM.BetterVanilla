@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Core;
@@ -190,11 +191,11 @@ public class BetterPlayerControl : MonoBehaviour
 
     public void UpdateSponsorState()
     {
-        if (string.IsNullOrWhiteSpace(FriendCode) || FeatureCodeBehaviour.Instance == null)
+        if (string.IsNullOrWhiteSpace(FriendCode) || FeatureCodeBehaviour.Instance == null || FeatureCodeBehaviour.Instance.Registry == null)
         {
             return;
         }
-        var value = FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(FriendCode);
+        var value = FeatureCodeBehaviour.Instance.Registry.ContributorFriendCodes.Contains(FriendCode);
         if (value == AmSponsor) return;
         Ls.LogMessage($"Updating sponsor state for player {FriendCode} ({Player?.Data?.PlayerName}) : {value}");
         AmSponsor = value;
@@ -454,6 +455,24 @@ public class BetterPlayerControl : MonoBehaviour
     public void RpcSetFirstKilledPlayer(string friendCode)
     {
         var rpc = new ShareFirstKilledPlayerRpc(this, friendCode);
+        rpc.Send();
+    }
+
+    public void RpcShareRandomizedMeetingPositions()
+    {
+        if (!LocalConditions.AmHost()
+            || MeetingHud.Instance == null
+            || HostOptions.Default.RandomizePlayerOrderInMeetings.IsNotAllowed()
+            || !HostOptions.Default.RandomizePlayerOrderInMeetings.Value)
+        {
+            return;
+        }
+        var positions = MeetingHud.Instance.playerStates
+            .Where(x => !x.AmDead && !x.DidReport)
+            .Select(x => x.TargetPlayerId)
+            .ToList();
+        positions.Shuffle();
+        var rpc = new RandomizedMeetingOrderRpc(this, positions.ToArray());
         rpc.Send();
     }
 }

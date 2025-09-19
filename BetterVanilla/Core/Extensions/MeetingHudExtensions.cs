@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterVanilla.Components;
 using BetterVanilla.Options;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace BetterVanilla.Core.Extensions;
 
@@ -16,6 +18,9 @@ public static class MeetingHudExtensions
     public static void BetterStart(this MeetingHud _)
     {
         CachedVotes.Clear();
+        
+        if (BetterPlayerControl.LocalPlayer == null) return;
+        BetterPlayerControl.LocalPlayer.RpcShareRandomizedMeetingPositions();
     }
 
     public static void BetterCastVote(this MeetingHud _, byte voterId, byte votedId)
@@ -62,6 +67,49 @@ public static class MeetingHudExtensions
         {
             meetingHud.UpdateAllCachedVoteSpreaders();
         }
+    }
+
+    public static void RandomizeVoteAreaPositions(this MeetingHud meetingHud, List<byte> ids)
+    {
+        meetingHud.StartCoroutine(meetingHud.CoRandomizeVoteAreaPositions(ids));
+    }
+
+    private static IEnumerator CoRandomizeVoteAreaPositions(this MeetingHud meetingHud, List<byte> ids)
+    {
+        while (meetingHud.MeetingIntro.gameObject.active)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        var aliveVoteAreas = meetingHud.playerStates
+            .Where(x => !x.AmDead)
+            .ToList();
+        
+        var firstVoteArea = aliveVoteAreas.First();
+        aliveVoteAreas.Remove(firstVoteArea);
+        
+        var positions = aliveVoteAreas
+            .OrderBy(x => ids.IndexOf(x.TargetPlayerId))
+            .Select(x => x.transform.localPosition)
+            .ToList();
+
+        var animationData = new List<(PlayerVoteArea voteArea, Vector3 startPosition, Vector3 targetPosition)>();
+
+        for (var i = 0; i < aliveVoteAreas.Count; i++)
+        {
+            var voteArea = aliveVoteAreas[i];
+            var startPosition = voteArea.transform.localPosition;
+            var targetPosition = voteArea.DidReport ? firstVoteArea.transform.localPosition : positions[i];
+            animationData.Add((voteArea, startPosition, targetPosition));
+        }
+
+        yield return Effects.Lerp(1.5f, new Action<float>(t =>
+        {
+            foreach (var (voteArea, startPosition, targetPosition) in animationData)
+            {
+                voteArea.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            }
+        }));
     }
     
     private static void DeleteAllCachedVoteSpreaders()

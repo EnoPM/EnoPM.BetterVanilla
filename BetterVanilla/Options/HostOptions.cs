@@ -52,6 +52,10 @@ public class HostOptions : AbstractSerializableOptionHolder
     [BoolOption(false)]
     [OptionName("Randomize upload task location")]
     public BoolHostOption RandomizeUploadTaskLocation { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Randomize player order in meetings")]
+    public BoolHostOption RandomizePlayerOrderInMeetings { get; set; } = null!;
 
     private HostOptions() : base("host")
     {
@@ -66,20 +70,21 @@ public class HostOptions : AbstractSerializableOptionHolder
         BetterPolus.SetIsLockedFunc(IsBetterPolusNotAllowed);
         RandomizeFixWiringTaskOrder.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
         RandomizeUploadTaskLocation.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
+        RandomizePlayerOrderInMeetings.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
 
         foreach (var option in GetOptions())
         {
-            if (option is BoolHostOption boolOption)
+            switch (option)
             {
-                MenuCategory.AllGameSettings.Add(boolOption.GameSetting);
-            }
-            else if (option is NumberHostOption checkboxOption)
-            {
-                MenuCategory.AllGameSettings.Add(checkboxOption.GameSetting);
-            }
-            else
-            {
-                Ls.LogWarning($"Unsupported host option {option.Key}");
+                case BoolHostOption boolOption:
+                    MenuCategory.AllGameSettings.Add(boolOption.GameSetting);
+                    break;
+                case NumberHostOption checkboxOption:
+                    MenuCategory.AllGameSettings.Add(checkboxOption.GameSetting);
+                    break;
+                default:
+                    Ls.LogWarning($"Unsupported host option type {option.GetType().Name} for '{option.Key}'");
+                    break;
             }
         }
 

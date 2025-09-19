@@ -17,18 +17,23 @@ public class CosmeticsLoader : MonoBehaviour
 
     public IEnumerator CoLoadCosmetics()
     {
-        while (FeatureCodeBehaviour.Instance == null || FeatureCodeBehaviour.Instance.CosmeticsBundleVersions == null)
+        Ls.LogInfo($"Waiting for cosmetics bundle versions");
+        
+        while (FeatureCodeBehaviour.Instance == null || FeatureCodeBehaviour.Instance.Registry == null)
         {
             yield return new WaitForEndOfFrame();
         }
+        
+        Ls.LogInfo($"Cosmetics bundle versions loaded");
 
-        foreach (var version in FeatureCodeBehaviour.Instance.CosmeticsBundleVersions)
+        foreach (var version in FeatureCodeBehaviour.Instance.Registry.CosmeticsBundleVersions)
         {
+            Ls.LogInfo($"Loading cosmetics bundle version: {version.Hash}");
             yield return CoLoadBundle(version);
             yield return new WaitForEndOfFrame();
         }
 
-        var hashes = FeatureCodeBehaviour.Instance.CosmeticsBundleVersions
+        var hashes = FeatureCodeBehaviour.Instance.Registry.CosmeticsBundleVersions
             .Select(x => x.Hash)
             .ToList();
 
