@@ -71,7 +71,11 @@ public sealed class BetterRoleAssignments
     {
         var roleOptions = _currentOptions.RoleOptions;
 
-        foreach (var roleBehaviour in RoleManager.Instance.AllRoles)
+        var allRoles = RoleManager.Instance.AllRoles
+            .ToArray()
+            .Where(x => !RoleManager.IsGhostRole(x.Role));
+
+        foreach (var roleBehaviour in allRoles)
         {
             var teamType = roleBehaviour.TeamType;
             var roleType = roleBehaviour.Role;

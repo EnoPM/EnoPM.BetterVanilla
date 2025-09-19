@@ -37,20 +37,17 @@ public static class BetterPolusUtils
 
     private static void UpdateTasksRoom(NormalPlayerTask task)
     {
-        if (task.TaskType == TaskTypes.RecordTemperature && task.StartAt == SystemTypes.Laboratory)
+        switch (task.TaskType)
         {
-            task.StartAt = SystemTypes.Outside;
-            return;
-        }
-        if (task.TaskType == TaskTypes.RebootWifi && task.StartAt == SystemTypes.Comms)
-        {
-            task.StartAt = SystemTypes.Dropship;
-            return;
-        }
-        if (task.TaskType == TaskTypes.ChartCourse && task.StartAt == SystemTypes.Dropship)
-        {
-            task.StartAt = SystemTypes.Comms;
-            return;
+            case TaskTypes.RecordTemperature when task.StartAt == SystemTypes.Laboratory:
+                task.StartAt = SystemTypes.Outside;
+                return;
+            case TaskTypes.RebootWifi when task.StartAt == SystemTypes.Comms:
+                task.StartAt = SystemTypes.Dropship;
+                return;
+            case TaskTypes.ChartCourse when task.StartAt == SystemTypes.Dropship:
+                task.StartAt = SystemTypes.Comms;
+                return;
         }
     }
 
@@ -102,27 +99,26 @@ public static class BetterPolusUtils
         
         var dvdConsole = Object.Instantiate(baseDvdScreen, officeRoom);
 
-        tempColdConsole.transform.parent = outsideRoom.transform;
+        tempColdConsole.transform.parent.SetParent(outsideRoom);
         tempColdConsole.transform.position = new Vector3(7.772f, -17.103f, -0.017f);
         var coldTempCollider = tempColdConsole.GetComponent<BoxCollider2D>();
         coldTempCollider.isTrigger = false;
         coldTempCollider.size += new Vector2(0f, -0.3f);
         tempColdConsole.Room = SystemTypes.Outside;
         
-        wifiConsole.transform.parent = dropshipRoom.transform;
+        wifiConsole.transform.parent.SetParent(dropshipRoom);
         wifiConsole.transform.position = new Vector3(15.975f, 0.084f, 1f);
         wifiConsole.Room = SystemTypes.Dropship;
         
-        chartCourseConsole.transform.parent = communicationRoom.transform;
+        chartCourseConsole.transform.SetParent(communicationRoom);
         chartCourseConsole.transform.position = new Vector3(11.07f, -15.298f, -0.015f);
         chartCourseConsole.checkWalls = true; // Prevents crewmate being able to do the task from outside
         chartCourseConsole.Room = SystemTypes.Comms;
         
-        vitalsConsole.transform.parent = scienceRoom.transform;
+        vitalsConsole.transform.parent.SetParent(scienceRoom);
         vitalsConsole.transform.position = new Vector3(31.275f, -6.45f, 1f);
         
         dvdConsole.transform.position = new Vector3(26.635f, -15.92f, 1f);
-        var dvdConsoleLocalScale = dvdConsole.transform.localScale;
-        dvdConsole.transform.localScale = new Vector3(0.75f, dvdConsoleLocalScale.y, dvdConsoleLocalScale.z);
+        dvdConsole.transform.localScale = new Vector3(0.75f, dvdConsole.transform.localScale.y, dvdConsole.transform.localScale.z);
     }
 }
