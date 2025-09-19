@@ -33,58 +33,68 @@ public abstract partial class AbstractSerializableOptionHolder
         return Options.Select(x => x.Value).ToArray();
     }
 
-    public void Save() => SaveOptionValuesToFile();
-
-    private void SaveOptionValuesToFile()
+    public byte[] ToBytes()
     {
-        Ls.LogInfo($"Saving options to file: {FilePath}");
-        using var file = File.Create(FilePath);
-        using var writer = new BinaryWriter(file);
+        using var output = ToStream();
+        return output.ToArray();
+    }
 
+    private MemoryStream ToStream()
+    {
+        var output = new MemoryStream();
+        using var writer = new BinaryWriter(output);
+        
         writer.Write(Options.Count);
 
         foreach (var option in Options.Values)
         {
             writer.Write(option.Key);
             writer.Write(option.GetType().Name);
-
+            
             using var ms = new MemoryStream();
             using var tempWriter = new BinaryWriter(ms);
             option.WriteValue(tempWriter);
             var bytes = ms.ToArray();
-
+            
             writer.Write(bytes.Length);
             writer.Write(bytes);
         }
+        
+        output.Position = 0;
+        return output;
     }
 
-    private void LoadOptionValuesFromFile()
+    public void FromBytes(byte[] bytes)
     {
-        if (!File.Exists(FilePath)) return;
-        using var file = File.OpenRead(FilePath);
-        using var reader = new BinaryReader(file);
+        using var stream = new MemoryStream(bytes);
+        FromStream(stream);
+    }
 
-        var optionsCount = reader.ReadInt32();
-        for (var i = 0; i < optionsCount; i++)
+    private void FromStream(Stream stream)
+    {
+        using var reader = new BinaryReader(stream);
+        
+        var count = reader.ReadInt32();
+        for (var i = 0; i < count; i++)
         {
             var key = reader.ReadString();
             var typeName = reader.ReadString();
             var length = reader.ReadInt32();
-
-            var positionBefore = file.Position;
+            
+            var positionBefore = reader.BaseStream.Position;
 
             if (!Options.TryGetValue(key, out var option))
             {
-                Ls.LogWarning($"[OPTIONS] Unknown option '{key}' - skipped");
-                file.Position = positionBefore + length;
+                Ls.LogWarning($"[OPTIONS] Unknown option {key} - skipped");
+                reader.BaseStream.Position = positionBefore + length;
                 continue;
             }
-
+            
             var expectedTypeName = option.GetType().Name;
             if (expectedTypeName != typeName)
             {
                 Ls.LogWarning($"[OPTIONS] Mismatched type for '{key}': expected {expectedTypeName}, found {typeName} - skipped");
-                file.Position = positionBefore + length;
+                reader.BaseStream.Position = positionBefore + length;
                 continue;
             }
 
@@ -95,9 +105,24 @@ public abstract partial class AbstractSerializableOptionHolder
             catch (Exception e)
             {
                 Ls.LogWarning($"[OPTIONS] Failed to read option '{key}': {e.Message} - skipped");
-                file.Position = positionBefore + length;
+                reader.BaseStream.Position = positionBefore + length;
             }
         }
+    }
+
+    public void Save() => SaveOptionValuesToFile();
+
+    private void SaveOptionValuesToFile()
+    {
+        Ls.LogInfo($"Saving options to file: {FilePath}");
+        File.WriteAllBytes(FilePath, ToBytes());
+    }
+
+    private void LoadOptionValuesFromFile()
+    {
+        if (!File.Exists(FilePath)) return;
+        var bytes = File.ReadAllBytes(FilePath);
+        FromBytes(bytes);
     }
 
     private void InitOptionProperties()

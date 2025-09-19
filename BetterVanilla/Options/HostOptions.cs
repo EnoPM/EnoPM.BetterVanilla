@@ -40,6 +40,18 @@ public class HostOptions : AbstractSerializableOptionHolder
     [BoolOption(false)]
     [OptionName("Common tasks as non-common")]
     public BoolHostOption DefineCommonTasksAsNonCommon { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Better Polus")]
+    public BoolHostOption BetterPolus { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Randomize fix wiring task order")]
+    public BoolHostOption RandomizeFixWiringTaskOrder { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Randomize upload task location")]
+    public BoolHostOption RandomizeUploadTaskLocation { get; set; } = null!;
 
     private HostOptions() : base("host")
     {
@@ -51,6 +63,9 @@ public class HostOptions : AbstractSerializableOptionHolder
         
         PolusReactorCountdown.SetIsLockedFunc(IsNotPolusMap);
         ProtectionDuration.SetIsLockedFunc(IsProtectionDisabled);
+        BetterPolus.SetIsLockedFunc(IsBetterPolusNotAllowed);
+        RandomizeFixWiringTaskOrder.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
+        RandomizeUploadTaskLocation.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
 
         foreach (var option in GetOptions())
         {
@@ -80,6 +95,10 @@ public class HostOptions : AbstractSerializableOptionHolder
     {
         return !ProtectFirstKilledPlayer.Value;
     }
+    
+    private static bool IsBetterPolusNotAllowed() => IsNotPolusMap() || IsNotAllBetterVanillaPlayers();
+
+    private static bool IsNotAllBetterVanillaPlayers() => !LocalConditions.IsAllPlayersUsingBetterVanilla();
 
     private static bool IsNotPolusMap()
     {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
-using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options;
@@ -223,11 +222,11 @@ public sealed class BetterRoleAssignments
 #if DEBUG
         DebugPreferences();
 #endif
-        var impostorsCount = Mathf.Max(1, _numImpostors);
-        var impostorTeam = GetTeam(RoleTeamTypes.Impostor, impostorsCount);
+        var impostorCount = Mathf.Max(1, _numImpostors);
+        var impostorTeam = GetTeam(RoleTeamTypes.Impostor, impostorCount);
 
-        var crewmatesCount = _remainingPlayers.Count;
-        var crewmateTeam = GetTeam(RoleTeamTypes.Crewmate, crewmatesCount);
+        var crewmateCount = _remainingPlayers.Count;
+        var crewmateTeam = GetTeam(RoleTeamTypes.Crewmate, crewmateCount);
 
         var playerRoles = new Dictionary<PlayerControl, RoleTypes>();
         playerRoles.AddRange(GetRolesAssignation(impostorTeam, _allImpostorRoles, RoleTypes.Impostor));

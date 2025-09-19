@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BetterVanilla.Components;
 using BetterVanilla.Options;
 using UnityEngine;
@@ -8,7 +7,6 @@ namespace BetterVanilla.Core;
 
 public static class LocalConditions
 {
-
     public static bool ShouldAutoPlayAgain()
     {
         return LocalOptions.Default.AutoPlayAgain.Value;
@@ -121,4 +119,18 @@ public static class LocalConditions
         var player = BetterVanillaManager.Instance.GetPlayerByOwnerId(hostId);
         return player?.Handshake != null;
     }
+
+    public static bool IsAllPlayersUsingBetterVanilla()
+    {
+        foreach (var player in BetterVanillaManager.Instance.AllPlayers)
+        {
+            if (player.Handshake == null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static bool IsBetterPolusEnabled() => IsAllPlayersUsingBetterVanilla() && HostOptions.Default.BetterPolus.Value;
 }
