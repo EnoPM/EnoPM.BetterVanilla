@@ -27,7 +27,6 @@ public sealed class ForcedTeamAssignmentRpc : CustomRpcMessage
     
     protected override void HandleMessage()
     {
-        if (Sender.Player == null) return;
         BetterVanillaManager.Instance.AllForcedTeamAssignments[Sender.Player.OwnerId] = TeamAssignment;
     }
 

@@ -50,7 +50,7 @@ public static class MeetingHudExtensions
 
         if (CachedVotes.Any(x => x.Voter == voter))
         {
-            Ls.LogError($"{voter.Player?.Data.PlayerName} vote is already cached");
+            Ls.LogError($"{voter.Player.Data.PlayerName} vote is already cached");
             return;
         }
 
@@ -150,7 +150,7 @@ public static class MeetingHudExtensions
                 {
                     PlayerMaterial.SetColors(Palette.DisabledGrey, vote.Renderer);
                 }
-                else if (vote.Voter.Player != null)
+                else
                 {
                     PlayerMaterial.SetColors(vote.Voter.Player.Data.DefaultOutfit.ColorId, vote.Renderer);
                 }
@@ -164,7 +164,7 @@ public static class MeetingHudExtensions
 
     private static void CreateBetterVoteIcon(this MeetingHud meetingHud, VoteData vote)
     {
-        var votedPva = vote.Voted != null ? meetingHud.playerStates.FirstOrDefault(x => x && x.TargetPlayerId == vote.Voted.Player?.PlayerId) : null;
+        var votedPva = vote.Voted != null ? meetingHud.playerStates.FirstOrDefault(x => x != null && x.TargetPlayerId == vote.Voted.Player.PlayerId) : null;
         var parent = votedPva != null ? votedPva.transform : meetingHud.SkippedVoting.transform;
         if (!parent)
         {
@@ -193,7 +193,7 @@ public static class MeetingHudExtensions
     private static void LogVote(BetterPlayerControl voter, BetterPlayerControl? suspect)
     {
         if (!LocalConditions.ShouldRevealVotes() || !LocalConditions.ShouldRevealVoteColors()) return;
-        Ls.LogMessage($"{voter.Player?.Data.PlayerName} voted for {(suspect != null ? suspect.Player?.Data.PlayerName : "skip")}");
+        Ls.LogMessage($"{voter.Player.Data.PlayerName} voted for {(suspect != null ? suspect.Player.Data.PlayerName : "skip")}");
     }
 
     public static void HideDeadPlayerPets(this MeetingHud meetingHud)
@@ -224,7 +224,7 @@ public static class MeetingHudExtensions
 
         foreach (var player in BetterVanillaManager.Instance.AllPlayers)
         {
-            if (player.Player == null || player.Handshake != null || !player.Player.Data.IsDead) continue;
+            if (player.Handshake != null || !player.Player.Data.IsDead) continue;
             player.Player.RpcHidePet();
             yield return new WaitForSeconds(1f);
         }

@@ -20,7 +20,7 @@ public class BetterPlayerControl : MonoBehaviour
 {
     public static BetterPlayerControl? LocalPlayer { get; private set; }
 
-    public PlayerControl? Player { get; private set; }
+    public PlayerControl Player { get; private set; } = null!;
     public string? FriendCode { get; private set; }
     public bool AmSponsor { get; private set; }
     private BetterPlayerTexts? PlayerTexts { get; set; }
@@ -34,18 +34,20 @@ public class BetterPlayerControl : MonoBehaviour
     {
         Player = GetComponent<PlayerControl>();
         BetterVanillaManager.Instance.AllPlayers.Add(this);
+        if (GetComponent<DummyBehaviour>() != null)
+        {
+            SetHandshake(BetterVanillaHandshake.Local);
+        }
     }
 
     private void Start()
     {
         this.StartCoroutine(CoStart());
-        if (Player != null && Player.AmOwner)
-        {
-            LocalPlayer = this;
-            Handshake = BetterVanillaHandshake.Local;
-            FriendCode = EOSManager.Instance.FriendCode;
-            UpdateSponsorState();
-        }
+        if (!Player.AmOwner) return;
+        LocalPlayer = this;
+        Handshake = BetterVanillaHandshake.Local;
+        FriendCode = EOSManager.Instance.FriendCode;
+        UpdateSponsorState();
     }
 
     private void OnDestroy()
@@ -59,7 +61,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private IEnumerator CoStart()
     {
-        while (Player == null || Player.Data == null || !Player.cosmetics || !Player.cosmetics.nameText)
+        while (Player.Data == null || !Player.cosmetics || !Player.cosmetics.nameText)
         {
             yield return null;
         }
@@ -83,18 +85,17 @@ public class BetterPlayerControl : MonoBehaviour
 
     private BetterPlayerTexts CreateBetterInfosTexts()
     {
-        return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player!.cosmetics.nameText.transform);
+        return Instantiate(BetterVanillaManager.Instance.PlayerTextsPrefab, Player.cosmetics.nameText.transform);
     }
 
     private void OnBodyColorUpdated(int bodyColor)
     {
-        Ls.LogMessage($"{Player?.Data.PlayerName} - Body color: {bodyColor}");
         RefreshVisorColor();
     }
 
     private void Update()
     {
-        if (Player != null && PlayerTexts != null && Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.IsReady)
+        if (PlayerTexts != null && Player.Data && Player.cosmetics && PlayerTexts && PlayerTexts.IsReady)
         {
             var isActive = !LocalConditions.IsGameStarted() || LocalConditions.AmDead() || Player.AmOwner;
             PlayerTexts.gameObject.SetActive(isActive);
@@ -131,7 +132,7 @@ public class BetterPlayerControl : MonoBehaviour
                 }
             }
         }
-        if (AmSponsor && Player != null && Player.AmOwner)
+        if (AmSponsor && Player.AmOwner)
         {
             if (SponsorOptions.Default.VisorColor.Value != VisorColor)
             {
@@ -162,7 +163,7 @@ public class BetterPlayerControl : MonoBehaviour
     {
         var total = 0;
         var done = 0;
-        if (Player?.Data.Tasks != null)
+        if (Player.Data.Tasks != null)
         {
             foreach (var task in Player.Data.Tasks)
             {
@@ -197,7 +198,7 @@ public class BetterPlayerControl : MonoBehaviour
         }
         var value = FeatureCodeBehaviour.Instance.Registry.ContributorFriendCodes.Contains(FriendCode);
         if (value == AmSponsor) return;
-        Ls.LogMessage($"Updating sponsor state for player {FriendCode} ({Player?.Data?.PlayerName}) : {value}");
+        Ls.LogMessage($"Updating sponsor state for player {FriendCode} ({Player.Data?.PlayerName}) : {value}");
         AmSponsor = value;
     }
 
@@ -219,7 +220,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void RefreshVisorColor()
     {
-        if (!AmSponsor || Player == null || Player.cosmetics == null || !Player.cosmetics.initialized) return;
+        if (!AmSponsor || Player.cosmetics == null || !Player.cosmetics.initialized) return;
         Player.cosmetics.currentBodySprite.BodySprite.SetVisorColor(GetVisorColor());
         RefreshHatColor();
         //RefreshHostPanel();
@@ -230,7 +231,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     public void RefreshHatColor()
     {
-        if (Player == null || Player.cosmetics == null || !Player.cosmetics.initialized || Player.cosmetics.hat == null || Player.cosmetics.hat.Hat == null) return;
+        if (Player.cosmetics == null || !Player.cosmetics.initialized || Player.cosmetics.hat == null || Player.cosmetics.hat.Hat == null) return;
         if (CosmeticsManager.Hats.TryGetViewData(Player.cosmetics.hat.Hat.ProductId, out var viewData) && viewData.MatchPlayerColor)
         {
             Player.cosmetics.hat.FrontLayer.SetVisorColor(GetVisorColor());
@@ -239,7 +240,7 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void SetupHostOrDisconnectedInfoText(ref List<string> infos)
     {
-        if (LobbyBehaviour.Instance != null || Player == null) return;
+        if (LobbyBehaviour.Instance != null) return;
         if (AmongUsClient.Instance && Player.OwnerId == AmongUsClient.Instance.HostId)
         {
             infos.Add(ColorUtils.ColoredString(ColorUtils.HostColor, "Host"));
@@ -252,7 +253,6 @@ public class BetterPlayerControl : MonoBehaviour
 
     private void SetupRoleOrTaskInfoText(ref List<string> infos)
     {
-        if (Player == null) return;
         if (!LocalConditions.ShouldShowRolesAndTasks(Player)) return;
         var role = Player.Data.Role;
         if (role == null) return;
@@ -278,7 +278,7 @@ public class BetterPlayerControl : MonoBehaviour
     {
         if (!LocalConditions.IsGameStarted()) return null;
         if (!string.IsNullOrEmpty(RoleName)) return RoleName;
-        if (Player == null || Player.Data == null || Player.Data.Role == null || Player.Data.Role.IsImpostor) return null;
+        if (Player.Data == null || Player.Data.Role == null || Player.Data.Role.IsImpostor) return null;
         var role = Player.Data.Role;
         var roleName = GetCrewmateRoleName(role.Role);
         var crewmateRoleName = GetCrewmateRoleName(RoleTypes.Crewmate);
@@ -322,7 +322,7 @@ public class BetterPlayerControl : MonoBehaviour
     {
         if (FriendCode == friendCode || string.IsNullOrEmpty(friendCode)) return;
         FriendCode = friendCode;
-        Ls.LogMessage($"Setting friend code for player {Player?.Data.PlayerName}: {FriendCode}");
+        Ls.LogMessage($"Setting friend code for player {Player.Data.PlayerName}: {FriendCode}");
         UpdateSponsorState();
     }
 
@@ -443,6 +443,12 @@ public class BetterPlayerControl : MonoBehaviour
     public void RpcSetHostOptionValue(AbstractSerializableOption option)
     {
         var rpc = new HostOptionRpc(this, option);
+        rpc.Send();
+    }
+
+    public void RpcShareAllHostOptions()
+    {
+        var rpc = new ShareAllHostOptionsRpc(this, HostOptions.Default.ToBytes());
         rpc.Send();
     }
 

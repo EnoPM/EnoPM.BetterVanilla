@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Options;
 using UnityEngine;
 
@@ -122,16 +124,18 @@ public static class LocalConditions
 
     public static bool IsAllPlayersUsingBetterVanilla()
     {
-        if (TutorialManager.Instance != null) return true;
-        foreach (var player in BetterVanillaManager.Instance.AllPlayers)
-        {
-            if (player.Handshake == null)
-            {
-                return false;
-            }
-        }
-        return true;
+        var localVersion = BetterVanillaHandshake.Local.Version;
+        return BetterVanillaManager.Instance.AllPlayers.All(player => player.Handshake != null && player.Handshake.Version == localVersion);
     }
     
     public static bool IsBetterPolusEnabled() => HostOptions.Default.BetterPolus.IsAllowed() && HostOptions.Default.BetterPolus.Value;
+
+    public static bool ShouldAnonymizePlayers()
+    {
+        if (!HostOptions.Default.AnonymizePlayersOnCamerasDuringLights.IsNotAllowed() || !HostOptions.Default.AnonymizePlayersOnCamerasDuringLights.Value)
+        {
+            return false;
+        }
+        return PlayerControl.LocalPlayer != null && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == TaskTypes.FixLights);
+    }
 }

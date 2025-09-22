@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BetterVanilla.Core.Extensions;
 using BetterVanilla.Core.Helpers;
 using HarmonyLib;
 
@@ -56,8 +57,8 @@ internal static class NormalPlayerTaskPatches
     private static void InitializeUploadDataTask(NormalPlayerTask task)
     {
         if (!TaskUtils.ShouldRandomizeUploadTaskLocation) return;
-
-        var uploadDataTask = task.Cast<UploadDataTask>();
+        if (!task.Is<UploadDataTask>(out var uploadDataTask)) return;
+        
         var consoles = TaskUtils.GetAllConsoles(uploadDataTask.TaskType);
         
         for (var i = 0; i < consoles.Count; i++)

@@ -93,10 +93,10 @@ public static class GameOptionsMenuExtensions
         switch (gameSetting.Type)
         {
             case OptionTypes.Float:
-                UpdateFloatSettingConstraints(gameSetting.Cast<FloatGameSetting>());
+                UpdateFloatSettingConstraints(gameSetting.As<FloatGameSetting>());
                 break;
             case OptionTypes.Int:
-                UpdateIntSettingConstraints(gameSetting.Cast<IntGameSetting>());
+                UpdateIntSettingConstraints(gameSetting.As<IntGameSetting>());
                 break;
         }
     }

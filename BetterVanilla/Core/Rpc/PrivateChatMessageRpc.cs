@@ -32,7 +32,7 @@ public sealed class PrivateChatMessageRpc : CustomRpcMessage
     protected override void HandleMessage()
     {
         if (HudManager.Instance == null || HudManager.Instance.Chat == null) return;
-        ChatCommandsManager.HandlePrivateMessageRpc(Sender.Player!, ReceiverOwnerId, Message);
+        ChatCommandsManager.HandlePrivateMessageRpc(Sender.Player, ReceiverOwnerId, Message);
     }
 
     public override void Send(BetterPlayerControl? receiver = null)

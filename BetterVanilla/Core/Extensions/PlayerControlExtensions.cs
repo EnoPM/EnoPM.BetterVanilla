@@ -44,12 +44,12 @@ public static class PlayerControlExtensions
         {
             if (!playerTask) continue;
             if (playerTask.IsComplete) continue;
-            var normalPlayerTask = playerTask.TryCast<NormalPlayerTask>();
-            if (normalPlayerTask != null)
+            if (!playerTask.Is<NormalPlayerTask>(out var normalPlayerTask))
             {
-                if (normalPlayerTask.IsComplete) continue;
-                results.Add(normalPlayerTask);
+                continue;
             }
+            if (normalPlayerTask.IsComplete) continue;
+            results.Add(normalPlayerTask);
         }
         return results;
     }

@@ -81,8 +81,8 @@ public abstract class CustomRpcMessage
             throw new Exception($"{nameof(RpcMessageAttribute)} is required in rpc message type: {GetType().FullName}");
         }
 
-        var targetId = receiver?.Player!.OwnerId ?? -1;
-        var writer = AmongUsClient.Instance.StartRpcImmediately(Sender.Player!.NetId, ReservedRpcCallId, SendOption.Reliable, targetId);
+        var targetId = receiver?.Player.OwnerId ?? -1;
+        var writer = AmongUsClient.Instance.StartRpcImmediately(Sender.Player.NetId, ReservedRpcCallId, SendOption.Reliable, targetId);
         writer.Write((uint)attribute.Id);
         WriteMessage(writer);
         AmongUsClient.Instance.FinishRpcImmediately(writer);

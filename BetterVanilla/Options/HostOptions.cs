@@ -1,4 +1,5 @@
-﻿using BetterVanilla.Components;
+﻿using System.Linq;
+using BetterVanilla.Components;
 using BetterVanilla.Core;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Options.Core;
@@ -56,6 +57,10 @@ public class HostOptions : AbstractSerializableOptionHolder
     [BoolOption(false)]
     [OptionName("Randomize player order in meetings")]
     public BoolHostOption RandomizePlayerOrderInMeetings { get; set; } = null!;
+    
+    [BoolOption(false)]
+    [OptionName("Anonymize players during cameras when lights are off")]
+    public BoolHostOption AnonymizePlayersOnCamerasDuringLights { get; set; } = null!;
 
     private HostOptions() : base("host")
     {
@@ -71,6 +76,7 @@ public class HostOptions : AbstractSerializableOptionHolder
         RandomizeFixWiringTaskOrder.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
         RandomizeUploadTaskLocation.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
         RandomizePlayerOrderInMeetings.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
+        AnonymizePlayersOnCamerasDuringLights.SetIsLockedFunc(IsNotAllBetterVanillaPlayers);
 
         foreach (var option in GetOptions())
         {
@@ -113,35 +119,16 @@ public class HostOptions : AbstractSerializableOptionHolder
     public void ShareAllOptions()
     {
         if (!LocalConditions.AmHost() || BetterPlayerControl.LocalPlayer == null) return;
-        foreach (var option in GetOptions())
-        {
-            BetterPlayerControl.LocalPlayer.RpcSetHostOptionValue(option);
-        }
+        BetterPlayerControl.LocalPlayer.RpcShareAllHostOptions();
     }
 
     public IBaseHostOption? FindOptionByBehaviour(OptionBehaviour behaviour)
     {
-        foreach (var option in GetOptions())
-        {
-            if (option is not IBaseHostOption hostOption) continue;
-            if (hostOption.GetOptionBehaviour() == behaviour)
-            {
-                return hostOption;
-            }
-        }
-        return null;
+        return GetOptions<IBaseHostOption>().FirstOrDefault(x => x.GetOptionBehaviour() == behaviour);
     }
     
     public IBaseHostOption? FindOptionByGameSetting(BaseGameSetting gameSetting)
     {
-        foreach (var option in GetOptions())
-        {
-            if (option is not IBaseHostOption hostOption) continue;
-            if (hostOption.GetGameSetting() == gameSetting)
-            {
-                return hostOption;
-            }
-        }
-        return null;
+        return GetOptions<IBaseHostOption>().FirstOrDefault(x => x.GetGameSetting() == gameSetting);
     }
 }

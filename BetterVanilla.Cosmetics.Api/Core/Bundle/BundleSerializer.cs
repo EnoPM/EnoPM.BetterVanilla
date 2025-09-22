@@ -38,7 +38,7 @@ public static class BundleSerializer
             writer.Write(nameBytes.Length);
             writer.Write(nameBytes);
 
-            var dataToWrite = isCompressed ? Compress(data) : data;
+            var dataToWrite = isCompressed ? ByteCompressor.Compress(data) : data;
 
             writer.Write(dataToWrite.Length);
             writer.Write(dataToWrite);
@@ -57,7 +57,7 @@ public static class BundleSerializer
             var dataLen = reader.ReadInt32();
             var rawData = reader.ReadBytes(dataLen);
 
-            var data = isCompressed ? Decompress(rawData) : rawData;
+            var data = isCompressed ? ByteCompressor.Decompress(rawData) : rawData;
 
             allSpritesheet.Add(fileName, data);
         }
@@ -68,7 +68,7 @@ public static class BundleSerializer
     private static void WriteSerializedList<T>(this BinaryWriter writer, List<T> list, JsonTypeInfo<List<T>> jsonTypeInfo, bool isCompressed)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(list, jsonTypeInfo);
-        var toWrite = isCompressed ? Compress(bytes) : bytes;
+        var toWrite = isCompressed ? ByteCompressor.Compress(bytes) : bytes;
 
         writer.Write(toWrite.Length);
         writer.Write(toWrite);
@@ -78,7 +78,7 @@ public static class BundleSerializer
     {
         var size = reader.ReadInt32();
         var bytes = reader.ReadBytes(size);
-        var toRead = isCompressed ? Decompress(bytes) : bytes;
+        var toRead = isCompressed ? ByteCompressor.Decompress(bytes) : bytes;
         return JsonSerializer.Deserialize(toRead, jsonTypeInfo) ?? [];
     }
 
@@ -110,20 +110,5 @@ public static class BundleSerializer
         return deserializer.Deserialize(reader);
     }
     
-    private static byte[] Compress(byte[] data)
-    {
-        using var ms = new MemoryStream();
-        using (var brotli = new BrotliStream(ms, CompressionLevel.SmallestSize, leaveOpen: true))
-            brotli.Write(data, 0, data.Length);
-        return ms.ToArray();
-    }
-
-    private static byte[] Decompress(byte[] data)
-    {
-        using var input = new MemoryStream(data);
-        using var brotli = new BrotliStream(input, CompressionMode.Decompress);
-        using var output = new MemoryStream();
-        brotli.CopyTo(output);
-        return output.ToArray();
-    }
+    
 }

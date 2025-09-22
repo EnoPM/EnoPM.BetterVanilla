@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using AmongUs.GameOptions;
+using BetterVanilla.Cosmetics.Api.Core;
 using BetterVanilla.Options;
 
 namespace BetterVanilla.Core;
@@ -14,7 +15,7 @@ public sealed class SerializableGamePreset
     public SerializableGamePreset(string name)
     {
         Name = name;
-        RawVanillaOptions = GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.CurrentGameOptions, false);
+        RawVanillaOptions = ByteCompressor.Compress(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.CurrentGameOptions, false));
         RawHostOptions = HostOptions.Default.ToBytes();
     }
 
@@ -40,7 +41,7 @@ public sealed class SerializableGamePreset
 
     public void Apply()
     {
-        GameOptionsManager.Instance.CurrentGameOptions = GameOptionsManager.Instance.gameOptionsFactory.FromBytes(RawVanillaOptions);
+        GameOptionsManager.Instance.CurrentGameOptions = GameOptionsManager.Instance.gameOptionsFactory.FromBytes(ByteCompressor.Decompress(RawVanillaOptions));
         
         GameOptionsManager.Instance.CurrentGameOptions.SetBool(BoolOptionNames.IsDefaults, false);
         GameOptionsManager.Instance.GameHostOptions = GameOptionsManager.Instance.CurrentGameOptions;

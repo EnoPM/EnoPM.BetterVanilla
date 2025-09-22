@@ -6,9 +6,21 @@ namespace BetterVanilla.Core.Patches;
 internal static class LogicGameFlowNormalPatches
 {
     [HarmonyPrefix, HarmonyPatch(nameof(LogicGameFlowNormal.CheckEndCriteria))]
-    [HarmonyPatch(nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-    private static bool ShouldCheckForEndGame()
+    private static bool CheckEndCriteriaPrefix()
     {
         return !LocalConditions.ShouldDisableGameEndRequirement();
+    }
+
+    [HarmonyPrefix, HarmonyPatch(nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
+    private static bool IsGameOverDueToDeathPrefix(ref bool __result)
+    {
+        if (!LocalConditions.ShouldDisableGameEndRequirement())
+        {
+            return true;
+        }
+
+        __result = false;
+        
+        return false;
     }
 }

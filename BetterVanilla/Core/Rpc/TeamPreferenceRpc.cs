@@ -27,7 +27,6 @@ public sealed class TeamPreferenceRpc : CustomRpcMessage
     
     protected override void HandleMessage()
     {
-        if (Sender.Player == null) return;
         BetterVanillaManager.Instance.AllTeamPreferences[Sender.Player.OwnerId] = TeamPreference;
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
+using BetterVanilla.Core.Extensions;
 
 namespace BetterVanilla.Core.Data;
 
@@ -279,7 +280,7 @@ public sealed class MapTasks
         {
             if (optionBehaviour == null || optionBehaviour.Data == null) continue;
             if (optionBehaviour.Data.Type != OptionTypes.Int) continue;
-            var numberOption = optionBehaviour.TryCast<NumberOption>();
+            var numberOption = optionBehaviour.As<NumberOption>();
             if (numberOption == null) continue;
             if (numberOption.intOptionName == Int32OptionNames.NumCommonTasks)
             {
@@ -298,8 +299,10 @@ public sealed class MapTasks
 
     private static void RefreshOptionBehaviour(NumberOption numberOption, int max)
     {
-        var data = numberOption.Data.TryCast<IntGameSetting>();
-        if (data == null) return;
+        if (!numberOption.Is<IntGameSetting>(out var data))
+        {
+            return;
+        }
         data.ValidRange = new IntRange(0, max);
         numberOption.ValidRange = new FloatRange(0, max);
         if (numberOption.GetInt() > max)

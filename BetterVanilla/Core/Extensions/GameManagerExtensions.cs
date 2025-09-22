@@ -7,9 +7,10 @@ public static class GameManagerExtensions
 {
     public static List<RulesCategory> GetAllCategories(this GameManager gameManager)
     {
-        var results = new List<RulesCategory>();
-        
-        results.Add(HostOptions.Default.MenuCategory);
+        var results = new List<RulesCategory>
+        {
+            HostOptions.Default.MenuCategory
+        };
 
         foreach (var category in gameManager.GameSettingsList.AllCategories)
         {

@@ -50,6 +50,11 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
 
     public virtual void AddCosmetic(TCosmetic cosmetic)
     {
+        if (IsAlreadyExisting(cosmetic))
+        {
+            Ls.LogError($"[{GetType().Name}] Unable to add cosmetic {cosmetic.ProductId}: a cosmetic with the same name already exists");
+            return;
+        }
         UnregisteredCosmetics.Add(cosmetic);
     }
 
@@ -127,4 +132,6 @@ public abstract class BaseCosmeticManager<TCosmetic, TViewData, TParent, TCosmet
     public abstract void UpdateMaterialFromViewAsset(TParent parent, TViewData asset);
     
     public abstract void PopulateParentFromAsset(TParent parent, TViewData asset);
+    
+    public bool IsAlreadyExisting(TCosmetic cosmetic) => UnregisteredCosmetics.Any(x => x.ProductId == cosmetic.ProductId) || RegisteredCosmetics.Values.Any(x => x.ProductId == cosmetic.ProductId);
 }

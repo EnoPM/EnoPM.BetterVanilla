@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using BetterVanilla.Components;
 using BetterVanilla.Core;
+using BetterVanilla.Cosmetics.Api.Core;
 using BetterVanilla.Options.Core.Host;
 using BetterVanilla.Options.Core.Local;
 
@@ -25,7 +26,15 @@ public abstract partial class AbstractSerializableOptionHolder
         Debounce.Debounced += Save;
 
         InitOptionProperties();
-        LoadOptionValuesFromFile();
+
+        try
+        {
+            LoadOptionValuesFromFile();
+        }
+        catch (Exception ex)
+        {
+            Ls.LogWarning($"Failed to load option values from {FilePath}: {ex.Message}");
+        }
     }
 
     public AbstractSerializableOption[] GetOptions()
@@ -33,10 +42,24 @@ public abstract partial class AbstractSerializableOptionHolder
         return Options.Select(x => x.Value).ToArray();
     }
 
+    public T[] GetOptions<T>()
+    {
+        var results = new List<T>();
+        foreach (var (_, option) in Options)
+        {
+            if (option is not T returnType)
+            {
+                continue;
+            }
+            results.Add(returnType);
+        }
+        return results.ToArray();
+    }
+
     public byte[] ToBytes()
     {
         using var output = ToStream();
-        return output.ToArray();
+        return ByteCompressor.Compress(output.ToArray());
     }
 
     private MemoryStream ToStream()
@@ -66,7 +89,7 @@ public abstract partial class AbstractSerializableOptionHolder
 
     public void FromBytes(byte[] bytes)
     {
-        using var stream = new MemoryStream(bytes);
+        using var stream = new MemoryStream(ByteCompressor.Decompress(bytes));
         FromStream(stream);
     }
 

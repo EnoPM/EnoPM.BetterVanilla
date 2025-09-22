@@ -20,7 +20,7 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
     {
         if (ProtectedPlayer == null) return;
         var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-        if (player?.Player != null)
+        if (player != null)
         {
             if (rpc)
             {
@@ -57,7 +57,7 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         }
         if (betterPlayer.FriendCode == null)
         {
-            Ls.LogWarning($"{nameof(BetterPlayerControl)} {betterPlayer.Player?.Data.PlayerName} has no friend code");
+            Ls.LogWarning($"{nameof(BetterPlayerControl)} {betterPlayer.Player.Data.PlayerName} has no friend code");
             return;
         }
         BetterPlayerControl.LocalPlayer.RpcSetFirstKilledPlayer(betterPlayer.FriendCode);
@@ -129,7 +129,7 @@ public sealed class PlayerShieldBehaviour : MonoBehaviour
         if (!string.IsNullOrEmpty(ProtectedPlayer))
         {
             var player = BetterVanillaManager.Instance.GetPlayerByFriendCode(ProtectedPlayer);
-            if (player == null || player.Player == null)
+            if (player == null)
             {
                 Ls.LogInfo($"Unable to find player by friend code: {ProtectedPlayer}");
                 yield break;

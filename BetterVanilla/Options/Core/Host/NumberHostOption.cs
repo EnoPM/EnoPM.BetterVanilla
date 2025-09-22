@@ -44,9 +44,10 @@ public sealed class NumberHostOption : NumberSerializableOption, IHostOption<Flo
     public void OnBehaviourCreated(NumberOption behaviour)
     {
         SettingBehaviour = behaviour;
-        behaviour.TitleText.SetText(Title);
-        behaviour.Value = Value;
-        behaviour.AdjustButtonsActiveState();
+        SettingBehaviour.TitleText.SetText(Title);
+        SettingBehaviour.TitleText.color = Color.magenta;
+        SettingBehaviour.Value = Value;
+        SettingBehaviour.AdjustButtonsActiveState();
     }
     
     public void OnViewBehaviourCreated(ViewSettingsInfoPanel viewBehaviour)
@@ -78,6 +79,7 @@ public sealed class NumberHostOption : NumberSerializableOption, IHostOption<Flo
         var allowed = IsAllowed();
         var color = allowed ? Palette.EnabledColor : Palette.DisabledClear;
         viewBehaviour.titleText.SetText(Title);
+        viewBehaviour.titleText.color = Color.magenta;
         viewBehaviour.settingText.SetText(GetValueAsString());
         viewBehaviour.disabledBackground.gameObject.SetActive(false);
         viewBehaviour.background.gameObject.SetActive(true);
