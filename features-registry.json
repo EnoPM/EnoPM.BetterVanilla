@@ -78,16 +78,21 @@
   ],
   "hashed_cosmetics": {
     "F69F4D7EBE6EF0DE745FB51D3717C4645AE3D22021A34114BBC106A8E33C2DC9": [
-      "bv_hat_Bee_Hat"
+      "bv_hat_Bee_Hat",
+      "bv_hat_Beee_Hat"
     ],
     "9BF8148FB5005251E19901FC1E89E87427ED951B623007C06148905E0A5710C2": [
-      "bv_hat_Raven"
+      "bv_hat_Sportswear",
     ]
   },
   "cosmetics_bundle_versions": [
     {
       "hash": "3d8086c9-71f8-4c05-9262-1ff2f193667e",
       "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.8/Cosmetics.bundle"
+    },
+    {
+      "hash": "26592b3c-a764-4084-9e9c-e7dadbe4ca91",
+      "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.8/PackLitwix.bundle"
     }
   ]
 }
