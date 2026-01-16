@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
-using BetterVanilla.Components;
 using BetterVanilla.Core.Data;
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options;
@@ -72,7 +71,11 @@ public sealed class BetterRoleAssignments
     {
         var roleOptions = _currentOptions.RoleOptions;
 
-        foreach (var roleBehaviour in RoleManager.Instance.AllRoles)
+        var allRoles = RoleManager.Instance.AllRoles
+            .ToArray()
+            .Where(x => !RoleManager.IsGhostRole(x.Role));
+
+        foreach (var roleBehaviour in allRoles)
         {
             var teamType = roleBehaviour.TeamType;
             var roleType = roleBehaviour.Role;
@@ -113,7 +116,8 @@ public sealed class BetterRoleAssignments
             var weight = BaseWeight; // Poids de base
 
             // Ajuster le poids en fonction des préférences du joueur
-            if (!ignorePlayerPreferences && playerPreference != TeamPreferences.Both && playerPreference != teamPreference)
+            if (!ignorePlayerPreferences && playerPreference != TeamPreferences.Both &&
+                playerPreference != teamPreference)
             {
                 weight -= PenaltyForNonPreferredTeam; // Réduire le poids si la préférence est pour l'équipe opposée
             }
@@ -127,7 +131,8 @@ public sealed class BetterRoleAssignments
                 }
                 else
                 {
-                    weight = BonusForForcedAssignment; // Si l'assignation forcée est pour cette équipe, donner un poids très élevé
+                    weight =
+                        BonusForForcedAssignment; // Si l'assignation forcée est pour cette équipe, donner un poids très élevé
                 }
             }
 
@@ -166,6 +171,7 @@ public sealed class BetterRoleAssignments
                     selectedPlayerId = playerId;
                     break;
                 }
+
                 randomValue -= remainingWeights[playerId];
             }
 
@@ -185,7 +191,8 @@ public sealed class BetterRoleAssignments
         return result;
     }
 
-    private static Dictionary<PlayerControl, RoleTypes> GetRolesAssignation(List<PlayerControl> players, List<RoleTypes> roles, RoleTypes defaultRole)
+    private static Dictionary<PlayerControl, RoleTypes> GetRolesAssignation(List<PlayerControl> players,
+        List<RoleTypes> roles, RoleTypes defaultRole)
     {
         var result = new Dictionary<PlayerControl, RoleTypes>();
         foreach (var player in players)
@@ -223,11 +230,11 @@ public sealed class BetterRoleAssignments
 #if DEBUG
         DebugPreferences();
 #endif
-        var impostorsCount = Mathf.Max(1, _numImpostors);
-        var impostorTeam = GetTeam(RoleTeamTypes.Impostor, impostorsCount);
+        var impostorCount = Mathf.Max(1, _numImpostors);
+        var impostorTeam = GetTeam(RoleTeamTypes.Impostor, impostorCount);
 
-        var crewmatesCount = _remainingPlayers.Count;
-        var crewmateTeam = GetTeam(RoleTeamTypes.Crewmate, crewmatesCount);
+        var crewmateCount = _remainingPlayers.Count;
+        var crewmateTeam = GetTeam(RoleTeamTypes.Crewmate, crewmateCount);
 
         var playerRoles = new Dictionary<PlayerControl, RoleTypes>();
         playerRoles.AddRange(GetRolesAssignation(impostorTeam, _allImpostorRoles, RoleTypes.Impostor));
@@ -244,14 +251,18 @@ public sealed class BetterRoleAssignments
         }
     }
 
-    private TeamPreferences GetPreferenceForPlayer(PlayerControl player) => _playerPreferences.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
-    private TeamPreferences GetForcedAssignmentForPlayer(PlayerControl player) => _playerForcedAssignments.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
+    private TeamPreferences GetPreferenceForPlayer(PlayerControl player) =>
+        _playerPreferences.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
+
+    private TeamPreferences GetForcedAssignmentForPlayer(PlayerControl player) =>
+        _playerForcedAssignments.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
 
     private static TeamPreferences ConvertRoleTeamTypeToTeamPreference(RoleTeamTypes teamType) => teamType switch
     {
         RoleTeamTypes.Crewmate => TeamPreferences.Crewmate,
         RoleTeamTypes.Impostor => TeamPreferences.Impostor,
-        _ => throw new ArgumentOutOfRangeException(nameof(teamType), $"Unable to find Preference correspondence for {teamType.ToString()}")
+        _ => throw new ArgumentOutOfRangeException(nameof(teamType),
+            $"Unable to find Preference correspondence for {teamType.ToString()}")
     };
 
     private static TeamPreferences? GetOpposite(TeamPreferences preference) => preference switch
