@@ -34,10 +34,12 @@ public class BetterPlayerControl : MonoBehaviour
     {
         Player = GetComponent<PlayerControl>();
         BetterVanillaManager.Instance.AllPlayers.Add(this);
+        /*
         if (GetComponent<DummyBehaviour>() != null)
         {
             SetHandshake(BetterVanillaHandshake.Local);
         }
+        */
     }
 
     private void Start()
