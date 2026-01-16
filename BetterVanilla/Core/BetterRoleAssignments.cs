@@ -115,7 +115,8 @@ public sealed class BetterRoleAssignments
             var weight = BaseWeight; // Poids de base
 
             // Ajuster le poids en fonction des préférences du joueur
-            if (!ignorePlayerPreferences && playerPreference != TeamPreferences.Both && playerPreference != teamPreference)
+            if (!ignorePlayerPreferences && playerPreference != TeamPreferences.Both &&
+                playerPreference != teamPreference)
             {
                 weight -= PenaltyForNonPreferredTeam; // Réduire le poids si la préférence est pour l'équipe opposée
             }
@@ -129,7 +130,8 @@ public sealed class BetterRoleAssignments
                 }
                 else
                 {
-                    weight = BonusForForcedAssignment; // Si l'assignation forcée est pour cette équipe, donner un poids très élevé
+                    weight =
+                        BonusForForcedAssignment; // Si l'assignation forcée est pour cette équipe, donner un poids très élevé
                 }
             }
 
@@ -168,6 +170,7 @@ public sealed class BetterRoleAssignments
                     selectedPlayerId = playerId;
                     break;
                 }
+
                 randomValue -= remainingWeights[playerId];
             }
 
@@ -187,7 +190,8 @@ public sealed class BetterRoleAssignments
         return result;
     }
 
-    private static Dictionary<PlayerControl, RoleTypes> GetRolesAssignation(List<PlayerControl> players, List<RoleTypes> roles, RoleTypes defaultRole)
+    private static Dictionary<PlayerControl, RoleTypes> GetRolesAssignation(List<PlayerControl> players,
+        List<RoleTypes> roles, RoleTypes defaultRole)
     {
         var result = new Dictionary<PlayerControl, RoleTypes>();
         foreach (var player in players)
@@ -246,14 +250,18 @@ public sealed class BetterRoleAssignments
         }
     }
 
-    private TeamPreferences GetPreferenceForPlayer(PlayerControl player) => _playerPreferences.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
-    private TeamPreferences GetForcedAssignmentForPlayer(PlayerControl player) => _playerForcedAssignments.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
+    private TeamPreferences GetPreferenceForPlayer(PlayerControl player) =>
+        _playerPreferences.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
+
+    private TeamPreferences GetForcedAssignmentForPlayer(PlayerControl player) =>
+        _playerForcedAssignments.GetValueOrDefault(player.OwnerId, TeamPreferences.Both);
 
     private static TeamPreferences ConvertRoleTeamTypeToTeamPreference(RoleTeamTypes teamType) => teamType switch
     {
         RoleTeamTypes.Crewmate => TeamPreferences.Crewmate,
         RoleTeamTypes.Impostor => TeamPreferences.Impostor,
-        _ => throw new ArgumentOutOfRangeException(nameof(teamType), $"Unable to find Preference correspondence for {teamType.ToString()}")
+        _ => throw new ArgumentOutOfRangeException(nameof(teamType),
+            $"Unable to find Preference correspondence for {teamType.ToString()}")
     };
 
     private static TeamPreferences? GetOpposite(TeamPreferences preference) => preference switch
