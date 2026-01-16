@@ -23,7 +23,13 @@
     "trickyload#1602",
     "slidecomfy#5564",
     "instantice#6285",
-    "reportnet#4557"
+    "reportnet#4557",
+    "beefhumane#7287",
+    "deepray#9759",
+    "cansecret#9181",
+    "oreother#6358",
+    "carmiddle#5633",
+    "unsoldfile#9437"
   ],
   "features": {
     "A617504DA5A04943DE0CF0C85FF2DA7B7C387C6B6D2950E1DF8CB8D0E4D69FCE": [
@@ -75,16 +81,21 @@
   ],
   "hashed_cosmetics": {
     "F69F4D7EBE6EF0DE745FB51D3717C4645AE3D22021A34114BBC106A8E33C2DC9": [
-      "bv_hat_Bee_Hat"
+      "bv_hat_Bee_Hat",
+      "bv_hat_Beee_Hat"
     ],
     "9BF8148FB5005251E19901FC1E89E87427ED951B623007C06148905E0A5710C2": [
-      "bv_hat_Raven"
+      "bv_hat_Sportswear"
     ]
   },
   "cosmetics_bundle_versions": [
     {
-      "hash": "ee2e8b76-7301-4972-8d53-a62f7f7e0f61",
-      "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.3/Cosmetics.bundle"
+      "hash": "3d8086c9-71f8-4c05-9262-1ff2f193667e",
+      "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.8/Cosmetics.bundle"
+    },
+    {
+      "hash": "26592b3c-a764-4084-9e9c-e7dadbe4ca91",
+      "download_url": "https://github.com/EnoPM/EnoPM.BetterVanilla/releases/download/v1.3.8/PackLitwix.bundle"
     }
   ]
 }
