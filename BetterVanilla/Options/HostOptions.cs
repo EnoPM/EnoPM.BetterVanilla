@@ -107,9 +107,9 @@ public class HostOptions : AbstractSerializableOptionHolder
         return !ProtectFirstKilledPlayer.Value;
     }
     
-    private static bool IsBetterPolusNotAllowed() => IsNotPolusMap() || IsNotAllBetterVanillaPlayers();
+    private static bool IsBetterPolusNotAllowed() => true || IsNotPolusMap() || IsNotAllBetterVanillaPlayers();
 
-    private static bool IsNotAllBetterVanillaPlayers() => !LocalConditions.IsAllPlayersUsingBetterVanilla();
+    private static bool IsNotAllBetterVanillaPlayers() => true || !LocalConditions.IsAllPlayersUsingBetterVanilla();
 
     private static bool IsNotPolusMap()
     {
