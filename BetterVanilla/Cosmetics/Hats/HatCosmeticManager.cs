@@ -34,6 +34,7 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
         {
             return null;
         }
+
         return player.cosmetics.hat;
     }
 
@@ -45,82 +46,69 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
         {
             return;
         }
+
         cosmetic.RefreshAnimatedFrames(parent, playerPhysics.FlipX);
     }
 
     public override void UpdateMaterialFromViewAsset(HatParent parent, HatViewData asset)
     {
+        var maskType = parent.matProperties.MaskType;
+
         if (asset.MatchPlayerColor)
         {
-            parent.FrontLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
-            if (parent.BackLayer)
+            if (maskType == PlayerMaterial.MaskType.ComplexUI || maskType == PlayerMaterial.MaskType.ScrollingUI)
+            {
+                parent.BackLayer.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
+                parent.FrontLayer.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
+            }
+            else
             {
                 parent.BackLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
+                parent.FrontLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
             }
+        }
+        else if (maskType == PlayerMaterial.MaskType.ComplexUI || maskType == PlayerMaterial.MaskType.ScrollingUI)
+        {
+            parent.BackLayer.sharedMaterial = HatManager.Instance.MaskedMaterial;
+            parent.FrontLayer.sharedMaterial = HatManager.Instance.MaskedMaterial;
         }
         else
         {
+            parent.BackLayer.sharedMaterial = HatManager.Instance.DefaultShader;
             parent.FrontLayer.sharedMaterial = HatManager.Instance.DefaultShader;
-            if (parent.BackLayer)
-            {
-                parent.BackLayer.sharedMaterial = HatManager.Instance.DefaultShader;
-            }
         }
-        var colorId = parent.matProperties.ColorId;
-        PlayerMaterial.SetColors(colorId, parent.FrontLayer);
-        if (parent.BackLayer)
-        {
-            PlayerMaterial.SetColors(colorId, parent.BackLayer);
-        }
-        parent.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
-        if (parent.BackLayer)
-        {
-            parent.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
-        }
-        var maskType = parent.matProperties.MaskType;
+
         switch (maskType)
         {
-            case PlayerMaterial.MaskType.ScrollingUI:
-            {
-                if (parent.FrontLayer)
-                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                if (parent.BackLayer)
-                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                break;
-            }
-            case PlayerMaterial.MaskType.Exile:
-            {
-                if (parent.FrontLayer)
-                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-                if (parent.BackLayer)
-                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-                break;
-            }
-            case PlayerMaterial.MaskType.None:
             case PlayerMaterial.MaskType.SimpleUI:
-            case PlayerMaterial.MaskType.ComplexUI:
-            default:
-            {
-                if (parent.FrontLayer)
-                {
-                    parent.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
-                }
-
-                if (parent.BackLayer)
-                {
-                    parent.BackLayer.maskInteraction = SpriteMaskInteraction.None;
-                }
+                parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
                 break;
-            }
+            case PlayerMaterial.MaskType.Exile:
+                parent.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                parent.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                break;
+            default:
+                parent.BackLayer.maskInteraction = SpriteMaskInteraction.None;
+                parent.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
+                break;
         }
-        if (parent.matProperties.MaskLayer > 0) return;
-        PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.FrontLayer, parent.matProperties.IsLocalPlayer);
-        if (parent.BackLayer)
+
+        parent.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
+        parent.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
+
+        if (asset.MatchPlayerColor)
         {
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.BackLayer, parent.matProperties.IsLocalPlayer);
+            PlayerMaterial.SetColors(parent.matProperties.ColorId, parent.BackLayer);
+            PlayerMaterial.SetColors(parent.matProperties.ColorId, parent.FrontLayer);
         }
+
+        if (parent.matProperties.MaskLayer > 0) return;
+
+        PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.BackLayer, parent.matProperties.IsLocalPlayer);
+        PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.FrontLayer, parent.matProperties.IsLocalPlayer);
     }
-    
+
     public override void PopulateParentFromAsset(HatParent parent, HatViewData asset)
     {
         parent.UpdateMaterial();
