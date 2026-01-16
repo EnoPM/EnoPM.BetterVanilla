@@ -19,10 +19,12 @@ public sealed class MurderHistory
     {
         var murderPc = murder.gameObject.GetComponent<BetterPlayerControl>();
         if (murderPc == null) return true;
-        var friendCode = murder.FriendCode;
-        if (friendCode == null) return true;
+        var friendCode = murderPc.FriendCode;
+        if (string.IsNullOrEmpty(friendCode)) return true;
         var allowedTime = DateTime.UtcNow.AddSeconds(-2);
-        return CurrentGame.All(x => x.CreatedAt <= allowedTime);
+        return CurrentGame
+            .Where(x => x.Murder == friendCode)
+            .All(x => x.CreatedAt <= allowedTime);
     }
 
     static MurderHistory()

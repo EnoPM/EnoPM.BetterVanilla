@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Cosmetics.Api
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Installer", "BetterVanilla.Installer\BetterVanilla.Installer.csproj", "{37D3A2ED-3373-418C-8C88-21884D45582D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.Build", "BetterVanilla.Build\BetterVanilla.Build.csproj", "{B513BDFF-555E-4B85-A0AA-832B6E27FE67}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterVanilla.ToolsLib", "BetterVanilla.ToolsLib\BetterVanilla.ToolsLib.csproj", "{B6E572E7-2D97-4929-A39C-3413CC56EA24}"
 EndProject
 Global
@@ -43,12 +41,6 @@ Global
 		{37D3A2ED-3373-418C-8C88-21884D45582D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{37D3A2ED-3373-418C-8C88-21884D45582D}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{37D3A2ED-3373-418C-8C88-21884D45582D}.Android|Any CPU.Build.0 = Android|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Android|Any CPU.ActiveCfg = Debug|Any CPU
-		{B513BDFF-555E-4B85-A0AA-832B6E27FE67}.Android|Any CPU.Build.0 = Debug|Any CPU
 		{B6E572E7-2D97-4929-A39C-3413CC56EA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6E572E7-2D97-4929-A39C-3413CC56EA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6E572E7-2D97-4929-A39C-3413CC56EA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
