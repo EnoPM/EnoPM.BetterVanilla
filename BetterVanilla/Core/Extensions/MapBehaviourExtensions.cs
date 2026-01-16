@@ -120,7 +120,6 @@ public static class MapBehaviourExtensions
                 networks.Add(network);
             } 
             network.Add(vent);
-            Ls.LogMessage($"Vent {vent.Id} added in network {networks.IndexOf(network)}");
         }
 
         return networks;

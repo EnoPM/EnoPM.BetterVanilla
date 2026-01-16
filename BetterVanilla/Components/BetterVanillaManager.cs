@@ -87,12 +87,12 @@ public sealed class BetterVanillaManager : MonoBehaviour
 
     public BetterPlayerControl? GetPlayerById(byte playerId)
     {
-        return AllPlayers.Find(x => x.Player != null && x.Player.PlayerId == playerId);
+        return AllPlayers.Find(x => x.Player.PlayerId == playerId);
     }
     
     public BetterPlayerControl? GetPlayerByOwnerId(int ownerId)
     {
-        return AllPlayers.Find(x => x.Player != null && x.Player.OwnerId == ownerId);
+        return AllPlayers.Find(x => x.Player.OwnerId == ownerId);
     }
 
     public BetterPlayerControl? GetPlayerByFriendCode(string friendCode)

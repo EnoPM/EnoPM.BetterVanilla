@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BetterVanilla.Components;
+using BetterVanilla.Core.Data;
 using BetterVanilla.Options;
 using UnityEngine;
 
@@ -8,7 +9,6 @@ namespace BetterVanilla.Core;
 
 public static class LocalConditions
 {
-
     public static bool ShouldAutoPlayAgain()
     {
         return LocalOptions.Default.AutoPlayAgain.Value;
@@ -31,7 +31,7 @@ public static class LocalConditions
         return true;
     }
 
-    public static bool AmImpostor()
+    private static bool AmImpostor()
     {
         if (FeatureOptions.Default.DisableAmImpostorCheck.IsNotAllowed() || !FeatureOptions.Default.DisableAmImpostorCheck.Value)
         {
@@ -44,11 +44,11 @@ public static class LocalConditions
 
     public static bool AmSponsor()
     {
-        if (FeatureCodeBehaviour.Instance == null || !EOSManager.InstanceExists || string.IsNullOrEmpty(EOSManager.Instance.FriendCode))
+        if (FeatureCodeBehaviour.Instance == null || FeatureCodeBehaviour.Instance.Registry == null || !EOSManager.InstanceExists || string.IsNullOrEmpty(EOSManager.Instance.FriendCode))
         {
             return false;
         }
-        return FeatureCodeBehaviour.Instance.SponsorFriendCodes.Contains(EOSManager.Instance.FriendCode);
+        return FeatureCodeBehaviour.Instance.Registry.ContributorFriendCodes.Contains(EOSManager.Instance.FriendCode);
     }
 
     public static bool IsGameStarted()
@@ -120,5 +120,22 @@ public static class LocalConditions
         var hostId = AmongUsClient.Instance.HostId;
         var player = BetterVanillaManager.Instance.GetPlayerByOwnerId(hostId);
         return player?.Handshake != null;
+    }
+
+    public static bool IsAllPlayersUsingBetterVanilla()
+    {
+        var localVersion = BetterVanillaHandshake.Local.Version;
+        return BetterVanillaManager.Instance.AllPlayers.All(player => player.Handshake != null && player.Handshake.Version == localVersion);
+    }
+    
+    public static bool IsBetterPolusEnabled() => HostOptions.Default.BetterPolus.IsAllowed() && HostOptions.Default.BetterPolus.Value;
+
+    public static bool ShouldAnonymizePlayers()
+    {
+        if (!HostOptions.Default.AnonymizePlayersOnCamerasDuringLights.IsNotAllowed() || !HostOptions.Default.AnonymizePlayersOnCamerasDuringLights.Value)
+        {
+            return false;
+        }
+        return PlayerControl.LocalPlayer != null && !PlayerControl.LocalPlayer.Data.Role.IsImpostor && PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == TaskTypes.FixLights);
     }
 }

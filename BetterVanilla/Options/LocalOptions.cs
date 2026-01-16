@@ -91,6 +91,7 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
         TeamPreference.SetLockedText("Not authorized by host");
         return !HostOptions.Default.AllowTeamPreference.Value;
     }
+    
     private bool IsDisplayVotesLocked()
     {
         if (!LocalConditions.IsBetterVanillaHost())
@@ -103,8 +104,9 @@ public sealed class LocalOptions : AbstractSerializableOptionHolder
         DisplayVoteColorsAfterDeath.SetLockedText("Not authorized by host");
         return !HostOptions.Default.AllowDeadVoteDisplay.Value;
     }
+    
     private static bool IsHidePetAfterDeathForced()
     {
-        return HostOptions.Default.HideDeadPlayerPets.Value;
+        return LocalConditions.IsBetterVanillaHost() && HostOptions.Default.HideDeadPlayerPets.Value;
     }
 }

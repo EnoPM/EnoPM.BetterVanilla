@@ -1,4 +1,5 @@
 ﻿using BetterVanilla.Components;
+using BetterVanilla.Core.Extensions;
 using HarmonyLib;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ internal static class ConsolePatches
         var pc1 = pc.Object;
         var truePosition = pc1.GetTruePosition();
         var position = __instance.transform.position;
-        var usable = __instance.TryCast<IUsable>()!;
+        var usable = __instance.As<IUsable>()!;
         var task = __instance.FindTask(pc1);
 
         couldUse = (!pc.IsDead || GameManager.Instance.LogicOptions.GetGhostsDoTasks() && !__instance.GhostsIgnored)
@@ -23,14 +24,14 @@ internal static class ConsolePatches
                    && (!__instance.onlySameRoom || __instance.InRoom(truePosition))
                    && (!__instance.onlyFromBelow || truePosition.y < position.y)
                    && task != null
-                   && (task.TryCast<NormalPlayerTask>() == null || !BetterVanillaManager.Instance.Menu.ButtonUi.autoTaskButton.IsRunning);
+                   && (!task.Is<NormalPlayerTask>() || !BetterVanillaManager.Instance.Menu.ButtonUi.autoTaskButton.IsRunning);
         canUse = couldUse;
         if (canUse)
         {
             num = Vector2.Distance(truePosition, __instance.transform.position);
             canUse &= num <= __instance.UsableDistance;
             if (__instance.checkWalls)
-                canUse &= !PhysicsHelpers.AnythingBetween(truePosition, (Vector2)position, Constants.ShadowMask, false);
+                canUse &= !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShadowMask, false);
         }
         __result = num;
         return false;

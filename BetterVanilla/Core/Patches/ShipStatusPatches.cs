@@ -1,4 +1,5 @@
 ﻿using BetterVanilla.Core.Data;
+using BetterVanilla.Core.Helpers;
 using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;
@@ -30,5 +31,11 @@ internal static class ShipStatusPatches
         PlayerControl.LocalPlayer.cosmetics.SetAsLocalPlayer();
 
         return false;
+    }
+
+    [HarmonyPostfix, HarmonyPatch(nameof(ShipStatus.Awake))]
+    private static void AwakePostfix(ShipStatus __instance)
+    {
+        BetterPolusUtils.AdjustPolusMap(__instance);
     }
 }

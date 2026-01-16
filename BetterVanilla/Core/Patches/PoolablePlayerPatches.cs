@@ -1,6 +1,5 @@
 ﻿using BetterVanilla.Components;
 using BetterVanilla.Core.Extensions;
-using BetterVanilla.Options;
 using HarmonyLib;
 
 namespace BetterVanilla.Core.Patches;

@@ -34,7 +34,6 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
         {
             return null;
         }
-
         return player.cosmetics.hat;
     }
 
@@ -46,7 +45,6 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
         {
             return;
         }
-
         cosmetic.RefreshAnimatedFrames(parent, playerPhysics.FlipX);
     }
 
@@ -66,7 +64,7 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
                 parent.BackLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
                 parent.FrontLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
             }
-        }
+        } 
         else if (maskType == PlayerMaterial.MaskType.ComplexUI || maskType == PlayerMaterial.MaskType.ScrollingUI)
         {
             parent.BackLayer.sharedMaterial = HatManager.Instance.MaskedMaterial;
@@ -93,7 +91,7 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
                 parent.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
                 break;
         }
-
+        
         parent.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
         parent.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
 
@@ -102,9 +100,9 @@ public sealed class HatCosmeticManager : BaseCosmeticManager<HatCosmetic, HatVie
             PlayerMaterial.SetColors(parent.matProperties.ColorId, parent.BackLayer);
             PlayerMaterial.SetColors(parent.matProperties.ColorId, parent.FrontLayer);
         }
-
+        
         if (parent.matProperties.MaskLayer > 0) return;
-
+        
         PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.BackLayer, parent.matProperties.IsLocalPlayer);
         PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.FrontLayer, parent.matProperties.IsLocalPlayer);
     }

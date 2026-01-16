@@ -39,6 +39,7 @@ public sealed class BoolHostOption : BoolSerializableOption, IHostOption<Checkbo
     {
         SettingBehaviour = behaviour;
         SettingBehaviour.TitleText.SetText(Title);
+        SettingBehaviour.TitleText.color = Color.magenta;
         SettingBehaviour.CheckMark.enabled = Value;
     }
 
@@ -70,6 +71,7 @@ public sealed class BoolHostOption : BoolSerializableOption, IHostOption<Checkbo
         var allowed = IsAllowed();
         var color = allowed ? Palette.EnabledColor : Palette.DisabledClear;
         viewBehaviour.titleText.SetText(Title);
+        viewBehaviour.titleText.color = Color.magenta;
         viewBehaviour.settingText.SetText(string.Empty);
         viewBehaviour.checkMarkOff.gameObject.SetActive(!Value);
         viewBehaviour.background.gameObject.SetActive(true);
