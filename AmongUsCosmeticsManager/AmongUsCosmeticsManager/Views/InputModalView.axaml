@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
+             x:Class="AmongUsCosmeticsManager.Views.InputModalView"
+             x:DataType="vm:MainViewModel">
+    <Border IsVisible="{Binding IsModalOpen}" Background="#AA000000" ZIndex="100">
+        <Border Background="#2a2a3e" CornerRadius="8"
+                MaxWidth="400" MaxHeight="200" Padding="24,20"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                BorderBrush="#3a3a52" BorderThickness="1" BoxShadow="0 8 32 0 #80000000">
+            <StackPanel Spacing="16">
+                <TextBlock Text="{Binding ModalTitle}" FontSize="16" FontWeight="SemiBold"/>
+                <TextBox x:Name="ModalInputBox" Text="{Binding ModalInput}" Watermark="Nom..." FontSize="13"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button Content="Annuler" Padding="16,6" Command="{Binding CancelModalCommand}"
+                            Background="Transparent" BorderBrush="#555570" BorderThickness="1" Foreground="#8888a8"/>
+                    <Button Content="{Binding ModalConfirmText}" Padding="16,6" Command="{Binding ConfirmModalCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Border>
+</UserControl>

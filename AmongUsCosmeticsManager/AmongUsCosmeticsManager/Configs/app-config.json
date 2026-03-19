@@ -1,0 +1,13 @@
+{
+  "appName": "Cosmetics Bundle Manager",
+  "version": "2.0",
+  "subtitle": "for BetterVanilla",
+  "compileButtonLabel": "Compiler",
+  "newBundleLabel": "Nouveau Bundle",
+  "addItemLabel": "+ Ajouter",
+  "deleteItemLabel": "Supprimer ce cosmetic",
+  "noBundleSelectedText": "Selectionnez un bundle",
+  "noItemSelectedText": "Selectionnez un element",
+  "noFileText": "Aucun fichier",
+  "noPreviewText": "Aucun apercu"
+}

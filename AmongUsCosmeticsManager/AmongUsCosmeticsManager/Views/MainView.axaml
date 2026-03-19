@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
+             xmlns:models="using:AmongUsCosmeticsManager.Models"
+             xmlns:views="using:AmongUsCosmeticsManager.Views"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800"
+             x:Class="AmongUsCosmeticsManager.Views.MainView"
+             x:DataType="vm:MainViewModel">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Panel>
+        <DockPanel>
+            <views:ToolbarView DockPanel.Dock="Top"/>
+
+            <!-- Status bar -->
+            <Border DockPanel.Dock="Bottom" Classes="statusbar">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding WorkspacePath}"
+                               FontSize="11" Foreground="#6a6a80" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
+                    <ItemsControl Grid.Column="1"
+                                  ItemsSource="{Binding SelectedBundle.Sections}"
+                                  IsVisible="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="10"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:CosmeticSection">
+                                <TextBlock FontSize="11" Foreground="#6a6a80" VerticalAlignment="Center">
+                                    <Run Text="{Binding Items.Count}"/>
+                                    <Run Text=" "/>
+                                    <Run Text="{Binding TypeDefinition.PluralLabel}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+
+            <!-- Main area -->
+            <Grid ColumnDefinitions="260,*,240">
+                <views:BundleSidebarView Grid.Column="0"/>
+                <views:CosmeticPreviewView Grid.Column="1"/>
+                <views:PropertiesPanelView Grid.Column="2"/>
+            </Grid>
+        </DockPanel>
+
+        <views:InputModalView/>
+    </Panel>
+</UserControl>

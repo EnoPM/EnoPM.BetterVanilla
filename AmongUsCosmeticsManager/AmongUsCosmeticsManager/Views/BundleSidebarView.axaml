@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
+             xmlns:models="using:AmongUsCosmeticsManager.Models"
+             xmlns:conv="using:AmongUsCosmeticsManager.Converters"
+             xmlns:views="using:AmongUsCosmeticsManager.Views"
+             x:Class="AmongUsCosmeticsManager.Views.BundleSidebarView"
+             x:DataType="vm:MainViewModel">
+
+    <UserControl.Resources>
+        <conv:BytesToBitmapConverter x:Key="BytesToBitmap"/>
+    </UserControl.Resources>
+
+    <Border Classes="sidebar-panel">
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="BUNDLES"
+                       FontSize="11" FontWeight="Bold" Foreground="#6a6a80"
+                       Margin="12,10,12,6" LetterSpacing="1"/>
+            <ListBox DockPanel.Dock="Top" Classes="sidebar-list" MaxHeight="140"
+                     ItemsSource="{Binding Bundles}"
+                     SelectedItem="{Binding SelectedBundle}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:CosmeticBundle">
+                        <TextBlock Text="{Binding Name}" FontSize="13"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="RenameBundleMenuItem" Header="Renommer"/>
+                        <Separator/>
+                        <MenuItem x:Name="DeleteBundleMenuItem" Header="Supprimer"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <TabControl ItemsSource="{Binding SelectedBundle.Sections}" Padding="0"
+                        IsVisible="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:CosmeticSection">
+                        <TextBlock Text="{Binding TypeDefinition.PluralLabel}" FontSize="11"/>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate x:DataType="models:CosmeticSection">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Top" Padding="6,4" FontSize="11" Margin="0,4,0,4"
+                                    HorizontalAlignment="Left"
+                                    Background="Transparent" BorderThickness="0" Foreground="#8888a8"
+                                    Content="{Binding $parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).AppConfig.AddItemLabel}"
+                                    Tag="{Binding}" Click="OnAddCosmeticClick" Cursor="Hand"/>
+                            <ListBox Classes="item-list"
+                                     ItemsSource="{Binding Items}"
+                                     SelectedItem="{Binding $parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).SelectedItem}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CosmeticItem">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border Width="28" Height="28" CornerRadius="4"
+                                                    Background="#2a2a3e" ClipToBounds="True">
+                                                <Panel>
+                                                    <Image Stretch="Uniform">
+                                                        <Image.Source>
+                                                            <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
+                                                                <Binding Path="MainResource.Data"/>
+                                                                <Binding Path="IsAdaptive"/>
+                                                                <Binding Path="$parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).SelectedPlayerColor"/>
+                                                            </MultiBinding>
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <PathIcon Data="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+                                                              Width="12" Height="12" Foreground="#3a3a52"
+                                                              IsVisible="{Binding MainResource.HasData, Converter={x:Static BoolConverters.Not}}"/>
+                                                </Panel>
+                                            </Border>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="12"/>
+                                                <TextBlock Text="{Binding Author}" FontSize="10" Foreground="#6a6a80"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </DockPanel>
+    </Border>
+</UserControl>

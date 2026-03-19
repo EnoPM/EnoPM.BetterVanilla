@@ -1,0 +1,83 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Subtle sidebar background -->
+    <Style Selector="Border.sidebar-panel">
+        <Setter Property="Background" Value="#1e1e2e"/>
+        <Setter Property="BorderBrush" Value="#313145"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <!-- Sidebar ListBox: transparent, no selection chrome -->
+    <Style Selector="ListBox.sidebar-list">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
+    </Style>
+    <Style Selector="ListBox.sidebar-list ListBoxItem">
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="Margin" Value="2,1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <!-- Cosmetic item row in the section lists -->
+    <Style Selector="ListBox.item-list">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="ListBox.item-list ListBoxItem">
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="Margin" Value="0,1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <!-- Section header style -->
+    <Style Selector="TextBlock.section-header">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#8888a8"/>
+        <Setter Property="Margin" Value="0,16,0,6"/>
+    </Style>
+
+    <!-- Property label -->
+    <Style Selector="TextBlock.prop-label">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#9999b0"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <!-- Resource slot (file path display) -->
+    <Style Selector="Border.resource-slot">
+        <Setter Property="Background" Value="#2a2a3e"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="BorderBrush" Value="#3a3a52"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <!-- Toolbar area -->
+    <Style Selector="Border.toolbar">
+        <Setter Property="Background" Value="#1a1a2a"/>
+        <Setter Property="BorderBrush" Value="#313145"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="8,6"/>
+    </Style>
+
+    <!-- Status bar -->
+    <Style Selector="Border.statusbar">
+        <Setter Property="Background" Value="#1a1a2a"/>
+        <Setter Property="BorderBrush" Value="#313145"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        <Setter Property="Padding" Value="10,4"/>
+    </Style>
+
+    <!-- Detail panel background -->
+    <Style Selector="Border.detail-panel">
+        <Setter Property="Background" Value="#252538"/>
+        <Setter Property="BorderBrush" Value="#313145"/>
+        <Setter Property="BorderThickness" Value="1,0,0,0"/>
+        <Setter Property="Padding" Value="16"/>
+    </Style>
+
+</Styles>

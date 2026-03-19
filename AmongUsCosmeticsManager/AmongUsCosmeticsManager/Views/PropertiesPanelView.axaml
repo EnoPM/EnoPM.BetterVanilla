@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
+             xmlns:models="using:AmongUsCosmeticsManager.Models"
+             xmlns:views="using:AmongUsCosmeticsManager.Views"
+             x:Class="AmongUsCosmeticsManager.Views.PropertiesPanelView"
+             x:DataType="vm:MainViewModel">
+
+    <Panel>
+        <!-- Item selected -->
+        <Border Classes="detail-panel"
+                IsVisible="{Binding SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="10" Margin="4"
+                            DataContext="{Binding SelectedItem}"
+                            x:DataType="models:CosmeticItem">
+                    <Border CornerRadius="3" Padding="6,2" Background="#2a2a3e" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding TypeLabel}" FontSize="10" Foreground="#8888a8"/>
+                    </Border>
+
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Nom" Classes="prop-label"/>
+                        <TextBox Text="{Binding Name}" FontSize="13"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Auteur" Classes="prop-label"/>
+                        <TextBox Text="{Binding Author}" FontSize="13"/>
+                    </StackPanel>
+
+                    <Separator Background="#313145"/>
+
+                    <ItemsControl ItemsSource="{Binding Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:PropertyValue">
+                                <CheckBox Content="{Binding Definition.Label}"
+                                          IsChecked="{Binding BoolValue, Mode=TwoWay}"
+                                          Margin="0,2"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Separator Background="#313145"/>
+
+                    <Button x:Name="DeleteItemButton" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" Padding="0,8" Foreground="#cc4444">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                                      Width="12" Height="12" Foreground="#cc4444"/>
+                            <TextBlock Text="{Binding $parent[views:PropertiesPanelView].((vm:MainViewModel)DataContext).AppConfig.DeleteItemLabel}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- No item selected -->
+        <Border Background="#252538" BorderBrush="#313145" BorderThickness="1,0,0,0"
+                IsVisible="{Binding SelectedItem, Converter={x:Static ObjectConverters.IsNull}}">
+            <TextBlock Text="{Binding AppConfig.NoItemSelectedText}" HorizontalAlignment="Center"
+                       VerticalAlignment="Center" Foreground="#555570" FontSize="12"/>
+        </Border>
+    </Panel>
+</UserControl>
