@@ -3,15 +3,17 @@
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <PublishAot>true</PublishAot>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" Exclude="Assets\player-template.png"/>
+        <AvaloniaResource Include="Assets\**" Exclude="Assets\player-template.png;Assets\player-template-climb.png"/>
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Include="Assets\player-template.png"/>
+        <EmbeddedResource Include="Assets\player-template-climb.png"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +37,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\BetterVanilla.Cosmetics.Serialization\BetterVanilla.Cosmetics.Serialization.csproj" />
         <ProjectReference Include="..\..\BSerializer\BSerializer.csproj"/>
+        <ProjectReference Include="..\..\BSerializer.Generator\BSerializer.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 </Project>

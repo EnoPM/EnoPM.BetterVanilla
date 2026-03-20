@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
+             xmlns:models="using:AmongUsCosmeticsManager.Models"
+             xmlns:views="using:AmongUsCosmeticsManager.Views"
+             xmlns:app="using:AmongUsCosmeticsManager"
+             x:Class="AmongUsCosmeticsManager.Views.AnimationEditorView"
+             x:DataType="vm:MainViewModel">
+
+    <DockPanel>
+        <!-- Header: back button + label -->
+        <Border DockPanel.Dock="Top" Background="#252538" Padding="8,6" Margin="0,0,0,8">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Padding="6,3" FontSize="11" Background="#2a2a3e" Foreground="#aaaacc"
+                        BorderThickness="0" CornerRadius="3" Cursor="Hand"
+                        Command="{Binding CloseAnimationEditorCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <PathIcon Data="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+                                  Width="12" Height="12" Foreground="#aaaacc"/>
+                        <TextBlock Text="Retour" FontSize="11"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock Grid.Column="1" Text="{Binding EditingResourceGroup.Label}"
+                           FontSize="13" FontWeight="Bold" Foreground="#aabbdd"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Compact preview + playback controls -->
+        <Border DockPanel.Dock="Top" Padding="8,0,8,8">
+            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                <views:CharacterPreviewPanel DataContext="{Binding SelectedItem}"
+                                              Height="160"/>
+                <!-- Playback controls -->
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                    <Button Command="{Binding ToggleAnimationCommand}"
+                            Padding="8,6" Background="#2a2a3e" CornerRadius="4"
+                            BorderThickness="0" Cursor="Hand">
+                        <Panel>
+                            <PathIcon Data="M8 5v14l11-7z" Width="12" Height="12" Foreground="#aaaacc"
+                                      IsVisible="{Binding IsAnimationPlaying, Converter={x:Static BoolConverters.Not}}"/>
+                            <PathIcon Data="M6 19h4V5H6v14zm8-14v14h4V5h-4z" Width="12" Height="12" Foreground="#aaaacc"
+                                      IsVisible="{Binding IsAnimationPlaying}"/>
+                        </Panel>
+                    </Button>
+                    <TextBlock Text="FPS" VerticalAlignment="Center" FontSize="10" Foreground="#6a6a80"/>
+                    <Slider Value="{Binding EditingResourceGroup.Animation.DefaultFps}"
+                            Minimum="1" Maximum="60"
+                            TickFrequency="1" IsSnapToTickEnabled="True"
+                            Width="80" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding EditingResourceGroup.Animation.DefaultFps}" VerticalAlignment="Center"
+                               FontSize="11" Foreground="#aaaacc" MinWidth="16"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Timeline editor (fills remaining space) -->
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Border Background="#1a1a2e" CornerRadius="4" Padding="6" Margin="8,0,8,8">
+                <views:AnimationTimelinePanel DataContext="{Binding EditingResourceGroup.Animation}"/>
+            </Border>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

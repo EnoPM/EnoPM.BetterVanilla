@@ -3,7 +3,7 @@
              xmlns:vm="using:AmongUsCosmeticsManager.ViewModels"
              xmlns:models="using:AmongUsCosmeticsManager.Models"
              xmlns:conv="using:AmongUsCosmeticsManager.Converters"
-             xmlns:views="using:AmongUsCosmeticsManager.Views"
+             xmlns:app="using:AmongUsCosmeticsManager"
              x:Class="AmongUsCosmeticsManager.Views.BundleSidebarView"
              x:DataType="vm:MainViewModel">
 
@@ -19,6 +19,7 @@
             <ListBox DockPanel.Dock="Top" Classes="sidebar-list" MaxHeight="140"
                      ItemsSource="{Binding Bundles}"
                      SelectedItem="{Binding SelectedBundle}"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="models:CosmeticBundle">
@@ -47,11 +48,11 @@
                             <Button DockPanel.Dock="Top" Padding="6,4" FontSize="11" Margin="0,4,0,4"
                                     HorizontalAlignment="Left"
                                     Background="Transparent" BorderThickness="0" Foreground="#8888a8"
-                                    Content="{Binding $parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).AppConfig.AddItemLabel}"
+                                    Content="{Binding AppConfig.AddItemLabel, Source={x:Static app:App.MainVM}}"
                                     Tag="{Binding}" Click="OnAddCosmeticClick" Cursor="Hand"/>
                             <ListBox Classes="item-list"
                                      ItemsSource="{Binding Items}"
-                                     SelectedItem="{Binding $parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).SelectedItem}"
+                                     SelectedItem="{Binding SelectedItem, Source={x:Static app:App.MainVM}}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate x:DataType="models:CosmeticItem">
@@ -64,7 +65,7 @@
                                                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
                                                                 <Binding Path="MainResource.Data"/>
                                                                 <Binding Path="IsAdaptive"/>
-                                                                <Binding Path="$parent[views:BundleSidebarView].((vm:MainViewModel)DataContext).SelectedPlayerColor"/>
+                                                                <Binding Path="SelectedPlayerColor" Source="{x:Static app:App.MainVM}"/>
                                                             </MultiBinding>
                                                         </Image.Source>
                                                     </Image>

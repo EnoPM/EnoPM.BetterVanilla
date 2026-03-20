@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using AmongUsCosmeticsManager.Models;
+using AmongUsCosmeticsManager.Models.Animation;
 using AmongUsCosmeticsManager.Models.Config;
 using SkiaSharp;
 
@@ -13,20 +14,25 @@ namespace AmongUsCosmeticsManager.Services.BundleImport;
 
 public static class BundleImporter
 {
-    public static CosmeticBundle Import(string filePath)
+    public static CosmeticBundle Import(string filePath, IProgress<string>? progress = null)
     {
+        progress?.Report("Lecture du fichier...");
+
         using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         using var reader = new BinaryReader(stream, Encoding.UTF8, leaveOpen: false);
 
         var version = reader.ReadInt32();
         if (version != 1)
-            throw new NotSupportedException($"Bundle version {version} is not supported.");
+            throw new NotSupportedException($"Bundle version {version} is not supported. Expected version 1 (legacy format). File may be corrupted or in a different format.");
 
         var compressed = reader.ReadBoolean();
 
+        progress?.Report("Décompression des données...");
         var hats = ReadList(reader, ImportJsonContext.Default.ListImportHat, compressed);
         var visors = ReadList(reader, ImportJsonContext.Default.ListImportVisor, compressed);
         var namePlates = ReadList(reader, ImportJsonContext.Default.ListImportNamePlate, compressed);
+
+        progress?.Report("Chargement des spritesheets...");
         var spritesheets = ReadSpritesheets(reader, compressed);
 
         var bundle = new CosmeticBundle(CosmeticTypeDefinition.All)
@@ -37,8 +43,10 @@ public static class BundleImporter
         var hatSection = bundle.GetSection("hat");
         if (hatSection != null)
         {
-            foreach (var hat in hats)
+            for (var hi = 0; hi < hats.Count; hi++)
             {
+                var hat = hats[hi];
+                progress?.Report($"Import hat {hi + 1}/{hats.Count}: {hat.Name}");
                 var item = new CosmeticItem(hatSection.TypeDefinition)
                 {
                     Name = hat.Name,
@@ -50,7 +58,7 @@ public static class BundleImporter
                 SetBool(item, "bounce", hat.Bounce);
                 SetBool(item, "noVisors", hat.NoVisors);
 
-                SetResource(item, "main", hat.MainResource, spritesheets);
+                SetResource(item, "front", hat.MainResource, spritesheets);
                 SetResource(item, "flip", hat.FlipResource, spritesheets);
                 SetResource(item, "back", hat.BackResource, spritesheets);
                 SetResource(item, "climb", hat.ClimbResource, spritesheets);
@@ -65,8 +73,10 @@ public static class BundleImporter
         var visorSection = bundle.GetSection("visor");
         if (visorSection != null)
         {
-            foreach (var visor in visors)
+            for (var vi = 0; vi < visors.Count; vi++)
             {
+                var visor = visors[vi];
+                progress?.Report($"Import visor {vi + 1}/{visors.Count}: {visor.Name}");
                 var item = new CosmeticItem(visorSection.TypeDefinition)
                 {
                     Name = visor.Name,
@@ -77,8 +87,8 @@ public static class BundleImporter
                 SetBool(item, "adaptive", visor.Adaptive);
                 SetBool(item, "behindHats", visor.BehindHats);
 
-                SetResource(item, "main", visor.MainResource, spritesheets);
-                SetResource(item, "climb", visor.ClimbResource, spritesheets);
+                SetResource(item, "front", visor.MainResource, spritesheets);
+                SetResource(item, "left", visor.ClimbResource, spritesheets);
                 SetResource(item, "floor", visor.FloorResource, spritesheets);
 
                 SetFrames(item, "frontAnimation", visor.FrontAnimationFrames, spritesheets);
@@ -90,8 +100,10 @@ public static class BundleImporter
         var npSection = bundle.GetSection("nameplate");
         if (npSection != null)
         {
-            foreach (var np in namePlates)
+            for (var ni = 0; ni < namePlates.Count; ni++)
             {
+                var np = namePlates[ni];
+                progress?.Report($"Import nameplate {ni + 1}/{namePlates.Count}: {np.Name}");
                 var item = new CosmeticItem(npSection.TypeDefinition)
                 {
                     Name = np.Name,
@@ -100,7 +112,7 @@ public static class BundleImporter
                 };
 
                 SetBool(item, "adaptive", np.Adaptive);
-                SetResource(item, "main", np.MainResource, spritesheets);
+                SetResource(item, "resource", np.MainResource, spritesheets);
 
                 npSection.Items.Add(item);
             }
@@ -129,22 +141,56 @@ public static class BundleImporter
         }
     }
 
+    private const int DefaultImportFps = 10;
+
     private static void SetFrames(CosmeticItem item, string frameListId, List<ImportSprite>? sprites, Dictionary<string, byte[]> spritesheets)
     {
         if (sprites == null || sprites.Count == 0) return;
-        var fl = item.FrameLists[0]; // find by id
+        var fl = item.FrameLists[0];
         foreach (var f in item.FrameLists)
         {
             if (f.Definition.Id == frameListId) { fl = f; break; }
         }
 
+        var baseDuration = 1000 / DefaultImportFps;
+
+        // Crop all sprites, caching by (path, x, y, w, h) to avoid re-cropping duplicates
+        var cropCache = new Dictionary<(string, int, int, int, int), byte[]?>();
+        var cropped = new List<(ImportSprite Sprite, byte[]? Data)>();
         foreach (var sprite in sprites)
         {
-            var data = CropSprite(sprite, spritesheets);
-            if (data != null)
-                fl.Frames.Add(data);
+            var key = (sprite.Path, sprite.X, sprite.Y, sprite.Width, sprite.Height);
+            if (!cropCache.TryGetValue(key, out var data))
+            {
+                data = CropSprite(sprite, spritesheets);
+                cropCache[key] = data;
+            }
+            cropped.Add((sprite, data));
+        }
+
+        // Group consecutive identical sprites into single FrameNodes with duration
+        var i = 0;
+        while (i < cropped.Count)
+        {
+            var (sprite, data) = cropped[i];
+            if (data == null) { i++; continue; }
+
+            // Count consecutive identical sprites
+            var runLength = 1;
+            while (i + runLength < cropped.Count && IsSameSprite(sprite, cropped[i + runLength].Sprite))
+                runLength++;
+
+            var node = new FrameNode { Data = data };
+            if (runLength > 1)
+                node.DurationMs = runLength * baseDuration;
+
+            fl.Nodes.Add(node);
+            i += runLength;
         }
     }
+
+    private static bool IsSameSprite(ImportSprite a, ImportSprite b)
+        => a.Path == b.Path && a.X == b.X && a.Y == b.Y && a.Width == b.Width && a.Height == b.Height;
 
     private static byte[]? CropSprite(ImportSprite sprite, Dictionary<string, byte[]> spritesheets)
     {

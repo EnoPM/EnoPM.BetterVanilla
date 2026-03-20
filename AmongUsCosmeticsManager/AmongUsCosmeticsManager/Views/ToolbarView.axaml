@@ -24,9 +24,14 @@
                         <TextBlock Text="Enregistrer" VerticalAlignment="Center" FontSize="12"/>
                     </StackPanel>
                 </Button>
-                <Button ToolTip.Tip="Importer un .bundle"
-                        Padding="8,4" Background="Transparent" BorderThickness="0"
-                        Click="OnImportBundleClick">
+                <!-- Import menu -->
+                <Button Padding="8,4" Background="Transparent" BorderThickness="0">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Bundle Legacy (.bundle)" Click="OnImportLegacyBundleClick"/>
+                            <MenuItem Header="Cosmetics Bundle (.bvcb)" Click="OnImportCosmeticsBundleClick"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <PathIcon Data="M5 20h14v-2H5v2zm7-18L5.33 9h3.34v4h6.66V9h3.34L12 2z"
                                   Width="14" Height="14"/>
@@ -51,12 +56,19 @@
                 <TextBlock Text="{Binding AppConfig.Version, StringFormat='v{0}'}" FontSize="10" Foreground="#555570"/>
             </StackPanel>
 
-            <Button Grid.Column="2" Command="{Binding CompileBundleCommand}"
-                    Padding="10,4" VerticalAlignment="Center"
+            <!-- Export menu -->
+            <Button Grid.Column="2" Padding="10,4" VerticalAlignment="Center"
                     IsEnabled="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <Button.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="Cosmetics Bundle (.bvcb)" Click="OnExportCosmeticsBundleClick"/>
+                        <MenuItem Header="Bundle Legacy (.bundle)" Click="OnExportLegacyBundleClick"/>
+                    </MenuFlyout>
+                </Button.Flyout>
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <PathIcon Data="M8 5v14l11-7z" Width="12" Height="12" Foreground="LimeGreen"/>
-                    <TextBlock Text="{Binding AppConfig.CompileButtonLabel}" VerticalAlignment="Center" FontSize="12"/>
+                    <PathIcon Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                              Width="12" Height="12" Foreground="LimeGreen"/>
+                    <TextBlock Text="Exporter" VerticalAlignment="Center" FontSize="12"/>
                 </StackPanel>
             </Button>
         </Grid>

@@ -26,15 +26,21 @@ public class CosmeticTypeDefinition
             ],
             ResourceSlots =
             [
-                new() { Id = "main", Label = "Main", Required = true },
-                new() { Id = "flip", Label = "Flip" },
-                new() { Id = "back", Label = "Back" },
-                new() { Id = "climb", Label = "Climb" }
+                new() { Id = "preview", Label = "Preview", AnimationId = "previewAnimation" },
+                new() { Id = "front", Label = "Front", Required = true, AnimationId = "frontAnimation" },
+                new() { Id = "flip", Label = "Flip", AnimationId = "flipAnimation" },
+                new() { Id = "back", Label = "Back", AnimationId = "backAnimation" },
+                new() { Id = "backFlip", Label = "Back Flip", AnimationId = "backFlipAnimation" },
+                new() { Id = "climb", Label = "Climb", AnimationId = "climbAnimation" }
             ],
             FrameLists =
             [
-                new() { Id = "frontAnimation", Label = "Front Animation Frames" },
-                new() { Id = "backAnimation", Label = "Back Animation Frames" }
+                new() { Id = "previewAnimation", Label = "Preview Animation" },
+                new() { Id = "frontAnimation", Label = "Front Animation" },
+                new() { Id = "flipAnimation", Label = "Flip Animation" },
+                new() { Id = "backAnimation", Label = "Back Animation" },
+                new() { Id = "backFlipAnimation", Label = "Back Flip Animation" },
+                new() { Id = "climbAnimation", Label = "Climb Animation" }
             ]
         },
         new()
@@ -49,13 +55,17 @@ public class CosmeticTypeDefinition
             ],
             ResourceSlots =
             [
-                new() { Id = "main", Label = "Main", Required = true },
-                new() { Id = "climb", Label = "Climb" },
-                new() { Id = "floor", Label = "Floor" }
+                new() { Id = "preview", Label = "Preview", AnimationId = "previewAnimation" },
+                new() { Id = "front", Label = "Front", Required = true, AnimationId = "frontAnimation" },
+                new() { Id = "left", Label = "Left", AnimationId = "leftAnimation" },
+                new() { Id = "floor", Label = "Floor", AnimationId = "floorAnimation" }
             ],
             FrameLists =
             [
-                new() { Id = "frontAnimation", Label = "Front Animation Frames" }
+                new() { Id = "previewAnimation", Label = "Preview Animation" },
+                new() { Id = "frontAnimation", Label = "Front Animation" },
+                new() { Id = "leftAnimation", Label = "Left Animation" },
+                new() { Id = "floorAnimation", Label = "Floor Animation" }
             ]
         },
         new()
@@ -69,9 +79,14 @@ public class CosmeticTypeDefinition
             ],
             ResourceSlots =
             [
-                new() { Id = "main", Label = "Main", Required = true }
+                new() { Id = "preview", Label = "Preview", AnimationId = "previewAnimation" },
+                new() { Id = "resource", Label = "Resource", Required = true, AnimationId = "resourceAnimation" }
             ],
-            FrameLists = []
+            FrameLists =
+            [
+                new() { Id = "previewAnimation", Label = "Preview Animation" },
+                new() { Id = "resourceAnimation", Label = "Resource Animation" }
+            ]
         }
     ];
 }

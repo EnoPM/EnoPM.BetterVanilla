@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AmongUsCosmeticsManager.Models;
@@ -19,6 +21,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private CosmeticItem? _selectedItem;
+
+    [ObservableProperty]
+    private ResourceGroup? _editingResourceGroup;
 
     [ObservableProperty]
     private string _workspacePath = string.Empty;
@@ -45,6 +50,27 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private byte[]? _recoloredPlayerTemplate;
 
+    [ObservableProperty]
+    private byte[]? _recoloredPlayerTemplateFlip;
+
+    [ObservableProperty]
+    private byte[]? _recoloredPlayerTemplateClimb;
+
+    // Animation playback
+    private DispatcherTimer? _animationTimer;
+    private Dictionary<string, List<PlaybackStep>>? _playbackPlans;
+    private int _currentStepIndex;
+    private bool _needsPlanRebuild;
+
+    [ObservableProperty]
+    private bool _isAnimationPlaying;
+
+    [ObservableProperty]
+    private byte[]? _currentFrontFrameData;
+
+    [ObservableProperty]
+    private byte[]? _currentBackFrameData;
+
     public AppConfig AppConfig { get; }
     public ObservableCollection<CosmeticBundle> Bundles { get; } = [];
     public bool HasProjectFile => _projectService.HasProject;
@@ -53,40 +79,53 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel() : this(new ConfigService(), new ProjectService()) { }
 
     private byte[]? _playerTemplateRaw;
+    private byte[]? _playerTemplateClimbRaw;
+
+    private static readonly SkiaSharp.SKColor VisorColor = new(149, 202, 220);
 
     public MainViewModel(ConfigService configService, ProjectService projectService)
     {
         _projectService = projectService;
         configService.Load();
         AppConfig = configService.AppConfig;
-        LoadPlayerTemplate();
-        UpdateRecoloredTemplate();
+        LoadPlayerTemplates();
+        UpdateRecoloredTemplates();
     }
 
-    private void LoadPlayerTemplate()
+    private void LoadPlayerTemplates()
+    {
+        _playerTemplateRaw = LoadEmbeddedResource("AmongUsCosmeticsManager.Assets.player-template.png");
+        _playerTemplateClimbRaw = LoadEmbeddedResource("AmongUsCosmeticsManager.Assets.player-template-climb.png");
+    }
+
+    private static byte[]? LoadEmbeddedResource(string name)
     {
         var assembly = typeof(MainViewModel).Assembly;
-        using var stream = assembly.GetManifestResourceStream("AmongUsCosmeticsManager.Assets.player-template.png");
-        if (stream == null) return;
+        using var stream = assembly.GetManifestResourceStream(name);
+        if (stream == null) return null;
         using var ms = new System.IO.MemoryStream();
         stream.CopyTo(ms);
-        _playerTemplateRaw = ms.ToArray();
+        return ms.ToArray();
     }
 
-    private void UpdateRecoloredTemplate()
+    private void UpdateRecoloredTemplates()
     {
-        if (_playerTemplateRaw == null) return;
-        // Red zone = body front, Blue zone = body back (shadow), Green zone = visor (keep default teal)
-        RecoloredPlayerTemplate = RecolorService.Recolor(
-            _playerTemplateRaw,
-            SelectedPlayerColor.Body,
-            new SkiaSharp.SKColor(149, 202, 220), // VisorColor from Palette.cs
-            SelectedPlayerColor.Shadow);
+        var body = SelectedPlayerColor.Body;
+        var shadow = SelectedPlayerColor.Shadow;
+
+        if (_playerTemplateRaw != null)
+        {
+            RecoloredPlayerTemplate = RecolorService.Recolor(_playerTemplateRaw, body, VisorColor, shadow);
+            RecoloredPlayerTemplateFlip = RecolorService.Recolor(_playerTemplateRaw, body, VisorColor, shadow);
+        }
+
+        if (_playerTemplateClimbRaw != null)
+            RecoloredPlayerTemplateClimb = RecolorService.Recolor(_playerTemplateClimbRaw, body, VisorColor, shadow);
     }
 
     partial void OnSelectedPlayerColorChanged(PlayerColor value)
     {
-        UpdateRecoloredTemplate();
+        UpdateRecoloredTemplates();
     }
 
     public void OpenProject(string filePath)
@@ -118,11 +157,53 @@ public partial class MainViewModel : ViewModelBase
         _projectService.Save(Bundles);
     }
 
-    public void ImportBundle(string filePath)
+    [ObservableProperty]
+    private string? _lastError;
+
+    [ObservableProperty]
+    private bool _isImporting;
+
+    [ObservableProperty]
+    private string _importStatus = string.Empty;
+
+    public async void ImportLegacyBundle(string filePath)
     {
-        var bundle = BundleImporter.Import(filePath);
-        Bundles.Add(bundle);
-        SelectedBundle = bundle;
+        await ImportAsync(progress => BundleImporter.Import(filePath, progress));
+    }
+
+    public async void ImportCosmeticsBundle(string filePath)
+    {
+        await ImportAsync(progress => CosmeticsBundleImporter.Import(filePath, progress));
+    }
+
+    private async System.Threading.Tasks.Task ImportAsync(Func<IProgress<string>, CosmeticBundle> importFunc)
+    {
+        if (IsImporting) return;
+
+        IsImporting = true;
+        ImportStatus = "Démarrage...";
+        LastError = null;
+
+        var progress = new Progress<string>(status =>
+        {
+            ImportStatus = status;
+        });
+
+        try
+        {
+            var bundle = await System.Threading.Tasks.Task.Run(() => importFunc(progress));
+            Bundles.Add(bundle);
+            SelectedBundle = bundle;
+        }
+        catch (Exception ex)
+        {
+            LastError = $"Import failed: {ex.Message}";
+        }
+        finally
+        {
+            IsImporting = false;
+            ImportStatus = string.Empty;
+        }
     }
 
     // === Modal ===
@@ -203,16 +284,241 @@ public partial class MainViewModel : ViewModelBase
         if (SelectedItem == item) SelectedItem = null;
     }
 
-    [RelayCommand]
-    private void CompileBundle()
+    [ObservableProperty]
+    private string? _lastCompilePath;
+
+    [ObservableProperty]
+    private bool _isCompiling;
+
+    public async void ExportCosmeticsBundle(string outputPath)
     {
-        if (SelectedBundle == null) return;
-        SelectedBundle.IsCompiled = true;
-        SelectedBundle.CompiledDate = DateTime.Now;
+        await ExportAsync(outputPath, bundle => BundleCompileService.Compile(bundle));
+    }
+
+    public async void ExportLegacyBundle(string outputPath)
+    {
+        await ExportAsync(outputPath, bundle => LegacyBundleExporter.Export(bundle));
+    }
+
+    private async System.Threading.Tasks.Task ExportAsync(string outputPath, Func<CosmeticBundle, byte[]> exportFunc)
+    {
+        if (SelectedBundle == null || IsCompiling) return;
+
+        IsCompiling = true;
+        LastError = null;
+
+        try
+        {
+            var bundle = SelectedBundle;
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                var data = exportFunc(bundle);
+                System.IO.File.WriteAllBytes(outputPath, data);
+            });
+
+            bundle.IsCompiled = true;
+            bundle.CompiledDate = DateTime.Now;
+            LastCompilePath = outputPath;
+        }
+        catch (Exception ex)
+        {
+            LastError = $"Export failed: {ex.Message}";
+        }
+        finally
+        {
+            IsCompiling = false;
+        }
     }
 
     partial void OnSelectedBundleChanged(CosmeticBundle? value)
     {
         SelectedItem = null;
     }
+
+    partial void OnSelectedItemChanged(CosmeticItem? value)
+    {
+        StopAnimation();
+        EditingResourceGroup = null;
+    }
+
+    [RelayCommand]
+    private void EditResourceGroup(ResourceGroup group) => EditingResourceGroup = group;
+
+    [RelayCommand]
+    private void CloseAnimationEditor() => EditingResourceGroup = null;
+
+    // === Animation ===
+
+    [RelayCommand]
+    private void ToggleAnimation()
+    {
+        if (IsAnimationPlaying) StopAnimation();
+        else StartAnimation();
+    }
+
+    private void StartAnimation()
+    {
+        if (SelectedItem == null) return;
+        if (!SelectedItem.FrameLists.Any(fl => fl.Nodes.Count > 0)) return;
+
+        RebuildPlaybackPlans();
+        if (_playbackPlans == null || _playbackPlans.Count == 0) return;
+
+        _currentStepIndex = 0;
+        IsAnimationPlaying = true;
+
+        // Subscribe to node changes for live rebuild
+        foreach (var fl in SelectedItem.FrameLists)
+            SubscribeToAllNodes(fl);
+
+        ApplyCurrentStep();
+
+        _animationTimer = new DispatcherTimer();
+        _animationTimer.Tick += OnAnimationTick;
+        ScheduleNextTick();
+        _animationTimer.Start();
+    }
+
+    public void StopAnimation()
+    {
+        _animationTimer?.Stop();
+        _animationTimer = null;
+        _playbackPlans = null;
+        IsAnimationPlaying = false;
+        CurrentFrontFrameData = null;
+        CurrentBackFrameData = null;
+
+        if (SelectedItem != null)
+        {
+            foreach (var fl in SelectedItem.FrameLists)
+            {
+                fl.PlayheadNode = null;
+                UnsubscribeFromAllNodes(fl);
+            }
+        }
+    }
+
+    private void OnNodesCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+            foreach (Models.Animation.AnimationNode node in e.OldItems)
+                node.PropertyChanged -= OnNodePropertyChanged;
+
+        if (e.NewItems != null)
+            foreach (Models.Animation.AnimationNode node in e.NewItems)
+                node.PropertyChanged += OnNodePropertyChanged;
+
+        _needsPlanRebuild = true;
+    }
+
+    private void OnNodePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        _needsPlanRebuild = true;
+    }
+
+    private void SubscribeToAllNodes(Models.FrameListValue fl)
+    {
+        fl.PropertyChanged += OnNodePropertyChanged;
+        fl.Nodes.CollectionChanged += OnNodesCollectionChanged;
+        foreach (var node in fl.Nodes)
+            node.PropertyChanged += OnNodePropertyChanged;
+    }
+
+    private void UnsubscribeFromAllNodes(Models.FrameListValue fl)
+    {
+        fl.PropertyChanged -= OnNodePropertyChanged;
+        fl.Nodes.CollectionChanged -= OnNodesCollectionChanged;
+        foreach (var node in fl.Nodes)
+            node.PropertyChanged -= OnNodePropertyChanged;
+    }
+
+    private void RebuildPlaybackPlans()
+    {
+        if (SelectedItem == null) return;
+
+        _playbackPlans = new Dictionary<string, List<PlaybackStep>>();
+        foreach (var fl in SelectedItem.FrameLists)
+        {
+            var plan = AnimationPlaybackEngine.BuildPlan(fl.Nodes, fl.DefaultFps);
+            if (plan.Count > 0)
+                _playbackPlans[fl.Definition.Id] = plan;
+        }
+        _needsPlanRebuild = false;
+    }
+
+    private void OnAnimationTick(object? sender, EventArgs e)
+    {
+        if (_needsPlanRebuild)
+        {
+            RebuildPlaybackPlans();
+            if (_playbackPlans == null || _playbackPlans.Count == 0) { StopAnimation(); return; }
+            _currentStepIndex = Math.Min(_currentStepIndex, _playbackPlans.Values.Max(p => p.Count) - 1);
+        }
+
+        _currentStepIndex++;
+
+        var maxLen = _playbackPlans?.Values.Max(p => p.Count) ?? 0;
+        if (maxLen == 0) { StopAnimation(); return; }
+
+        if (_currentStepIndex >= maxLen)
+            _currentStepIndex = 0;
+
+        ApplyCurrentStep();
+        ScheduleNextTick();
+    }
+
+    private void ApplyCurrentStep()
+    {
+        if (_playbackPlans == null || SelectedItem == null) return;
+
+        CurrentFrontFrameData = GetStepFrame("frontAnimation");
+        CurrentBackFrameData = GetStepFrame("backAnimation");
+
+        foreach (var fl in SelectedItem.FrameLists)
+        {
+            if (_playbackPlans.TryGetValue(fl.Definition.Id, out var plan) && plan.Count > 0)
+            {
+                var step = plan[_currentStepIndex % plan.Count];
+                fl.PlayheadNode = step.SourceNode;
+            }
+            else
+            {
+                fl.PlayheadNode = null;
+            }
+        }
+    }
+
+    private byte[]? GetStepFrame(string frameListId)
+    {
+        if (_playbackPlans == null || !_playbackPlans.TryGetValue(frameListId, out var plan) || plan.Count == 0)
+            return null;
+
+        var step = plan[_currentStepIndex % plan.Count];
+        // For delay steps (null frame), keep showing the last frame
+        if (step.FrameData != null) return step.FrameData;
+
+        // Walk backward to find the last non-null frame
+        for (var i = _currentStepIndex % plan.Count - 1; i >= 0; i--)
+        {
+            if (plan[i].FrameData != null) return plan[i].FrameData;
+        }
+        return null;
+    }
+
+    private void ScheduleNextTick()
+    {
+        if (_animationTimer == null || _playbackPlans == null) return;
+
+        // Use the shortest step duration across all active plans
+        var duration = int.MaxValue;
+        foreach (var plan in _playbackPlans.Values)
+        {
+            if (plan.Count == 0) continue;
+            var step = plan[_currentStepIndex % plan.Count];
+            duration = Math.Min(duration, step.DurationMs);
+        }
+
+        _animationTimer.Interval = TimeSpan.FromMilliseconds(Math.Max(1, duration == int.MaxValue ? 100 : duration));
+    }
+
 }

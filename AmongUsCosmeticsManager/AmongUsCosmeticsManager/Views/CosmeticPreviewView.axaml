@@ -4,141 +4,133 @@
              xmlns:models="using:AmongUsCosmeticsManager.Models"
              xmlns:conv="using:AmongUsCosmeticsManager.Converters"
              xmlns:views="using:AmongUsCosmeticsManager.Views"
+             xmlns:app="using:AmongUsCosmeticsManager"
              x:Class="AmongUsCosmeticsManager.Views.CosmeticPreviewView"
              x:DataType="vm:MainViewModel">
 
-    <UserControl.Resources>
-        <conv:BytesToBitmapConverter x:Key="BytesToBitmap"/>
-    </UserControl.Resources>
-
     <Panel>
-        <!-- Item selected -->
-        <Border Background="#1e1e2e" Padding="16"
-                IsVisible="{Binding SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel Spacing="12"
-                            DataContext="{Binding SelectedItem}"
-                            x:DataType="models:CosmeticItem">
-
-                    <!-- Color picker -->
-                    <ComboBox ItemsSource="{Binding $parent[views:CosmeticPreviewView].((vm:MainViewModel)DataContext).PlayerColors}"
-                              SelectedItem="{Binding $parent[views:CosmeticPreviewView].((vm:MainViewModel)DataContext).SelectedPlayerColor}"
-                              HorizontalAlignment="Left" FontSize="12" MinWidth="160">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="models:PlayerColor">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Border Width="14" Height="14" CornerRadius="7">
-                                        <Border.Background>
-                                            <SolidColorBrush Color="{Binding Body, Converter={x:Static conv:SkColorToColorConverter.Instance}}"/>
-                                        </Border.Background>
-                                    </Border>
-                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                    <!-- Character preview -->
-                    <Border Background="#2a2a3e" CornerRadius="6" Height="260"
-                            ClipToBounds="True" HorizontalAlignment="Center">
-                        <Viewbox Stretch="Uniform" StretchDirection="Both" MaxHeight="250">
-                            <Panel Width="150" Height="188">
-                                <Image Source="{Binding $parent[views:CosmeticPreviewView].((vm:MainViewModel)DataContext).RecoloredPlayerTemplate, Converter={StaticResource BytesToBitmap}}"
-                                       Width="150" Height="188" Stretch="UniformToFill"/>
-                                <Image Width="150" Height="150" Stretch="UniformToFill"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       IsVisible="{Binding MainResource.HasData}">
-                                    <Image.Source>
-                                        <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
-                                            <Binding Path="MainResource.Data"/>
-                                            <Binding Path="IsAdaptive"/>
-                                            <Binding Path="$parent[views:CosmeticPreviewView].((vm:MainViewModel)DataContext).SelectedPlayerColor"/>
-                                        </MultiBinding>
-                                    </Image.Source>
-                                </Image>
-                                <TextBlock Text="{Binding $parent[views:CosmeticPreviewView].((vm:MainViewModel)DataContext).AppConfig.NoPreviewText}"
-                                           FontSize="11" Foreground="#555570"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           IsVisible="{Binding MainResource.HasData, Converter={x:Static BoolConverters.Not}}"/>
-                            </Panel>
-                        </Viewbox>
-                    </Border>
-
-                    <Separator Background="#313145"/>
-
-                    <!-- Resource slots as image thumbnails -->
-                    <TextBlock Text="RESSOURCES" FontSize="11" FontWeight="Bold" Foreground="#6a6a80" LetterSpacing="1"/>
-                    <ItemsControl ItemsSource="{Binding Resources}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:ResourceValue">
-                                <StackPanel Margin="0,0,8,8" Width="90">
-                                    <Button Padding="0" Background="Transparent" BorderThickness="0"
-                                            Tag="{Binding}" Click="OnBrowseResourceClick" Cursor="Hand">
-                                        <Border Width="90" Height="90" CornerRadius="6"
-                                                Background="#2a2a3e" ClipToBounds="True"
-                                                BorderBrush="#3a3a52" BorderThickness="1">
-                                            <Panel>
-                                                <Image Source="{Binding Data, Converter={StaticResource BytesToBitmap}}"
-                                                       Stretch="Uniform" Margin="4"
-                                                       IsVisible="{Binding HasData}"/>
-                                                <PathIcon Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
-                                                          Width="20" Height="20" Foreground="#3a3a52"
-                                                          IsVisible="{Binding HasData, Converter={x:Static BoolConverters.Not}}"/>
-                                            </Panel>
-                                        </Border>
-                                    </Button>
-                                    <TextBlock Text="{Binding Definition.Label}" FontSize="10"
-                                               Foreground="#6a6a80" HorizontalAlignment="Center" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- Frame lists -->
-                    <ItemsControl ItemsSource="{Binding FrameLists}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="models:FrameListValue">
-                                <StackPanel Spacing="4" Margin="0,0,0,8"
-                                            IsVisible="{Binding Definition, Converter={x:Static ObjectConverters.IsNotNull}}">
-                                    <TextBlock Text="{Binding Definition.Label}" FontSize="11" FontWeight="Bold"
-                                               Foreground="#6a6a80" LetterSpacing="1"/>
-                                    <ItemsControl ItemsSource="{Binding Frames}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Width="48" Height="48" CornerRadius="4"
-                                                        Background="#2a2a3e" ClipToBounds="True" Margin="0,0,4,4">
-                                                    <Image Source="{Binding Converter={StaticResource BytesToBitmap}}"
-                                                           Stretch="Uniform" Margin="2"/>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <Button Content="+ Ajouter" Padding="6,2" FontSize="11"
-                                            Background="Transparent" BorderThickness="0" Foreground="#8888a8"
-                                            Tag="{Binding}" Click="OnAddFrameClick" Cursor="Hand"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
-
         <!-- No item selected -->
         <Border Background="#1e1e2e"
                 IsVisible="{Binding SelectedItem, Converter={x:Static ObjectConverters.IsNull}}">
             <TextBlock Text="{Binding AppConfig.NoItemSelectedText}" HorizontalAlignment="Center"
                        VerticalAlignment="Center" Foreground="#555570" FontSize="14"/>
+        </Border>
+
+        <!-- Overview mode (item selected, not editing animation) -->
+        <Border Background="#1e1e2e" Padding="16"
+                IsVisible="{Binding SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Panel>
+                <DockPanel IsVisible="{Binding EditingResourceGroup, Source={x:Static app:App.MainVM}, Converter={x:Static ObjectConverters.IsNull}}"
+                           DataContext="{Binding SelectedItem, Source={x:Static app:App.MainVM}}"
+                           x:DataType="models:CosmeticItem">
+
+                    <!-- Fixed top: preview + controls -->
+                    <StackPanel DockPanel.Dock="Top" Spacing="12" Margin="0,0,0,8">
+                        <!-- Color picker -->
+                        <ComboBox ItemsSource="{Binding PlayerColors, Source={x:Static app:App.MainVM}}"
+                                  SelectedItem="{Binding SelectedPlayerColor, Source={x:Static app:App.MainVM}}"
+                                  HorizontalAlignment="Left" FontSize="12" MinWidth="160">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:PlayerColor">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Width="14" Height="14" CornerRadius="7">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding Body, Converter={x:Static conv:SkColorToColorConverter.Instance}}"/>
+                                            </Border.Background>
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- Character preview -->
+                        <views:CharacterPreviewPanel Height="260"/>
+
+                        <!-- Play/pause button -->
+                        <Button Command="{Binding ToggleAnimationCommand, Source={x:Static app:App.MainVM}}"
+                                Padding="8,6" Background="#2a2a3e" CornerRadius="4" BorderThickness="0"
+                                Cursor="Hand" HorizontalAlignment="Center">
+                            <Panel>
+                                <PathIcon Data="M8 5v14l11-7z" Width="14" Height="14" Foreground="#aaaacc"
+                                          IsVisible="{Binding IsAnimationPlaying, Source={x:Static app:App.MainVM}, Converter={x:Static BoolConverters.Not}}"/>
+                                <PathIcon Data="M6 19h4V5H6v14zm8-14v14h4V5h-4z" Width="14" Height="14" Foreground="#aaaacc"
+                                          IsVisible="{Binding IsAnimationPlaying, Source={x:Static app:App.MainVM}}"/>
+                            </Panel>
+                        </Button>
+
+                        <Separator Background="#313145"/>
+                    </StackPanel>
+
+                    <!-- Scrollable: resource groups only -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ResourceGroups}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:ResourceGroup">
+                                    <StackPanel Spacing="4" Margin="0,0,0,10">
+                                        <TextBlock Text="{Binding Label}" FontSize="11" FontWeight="Bold"
+                                                   Foreground="#6a6a80" LetterSpacing="1"/>
+
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <!-- Resource thumbnail -->
+                                            <Panel>
+                                                <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="{Binding Resource}" Click="OnBrowseResourceClick" Cursor="Hand">
+                                                    <Border Width="90" Height="90" CornerRadius="6"
+                                                            Background="#2a2a3e" ClipToBounds="True"
+                                                            BorderBrush="#3a3a52" BorderThickness="1">
+                                                        <Panel>
+                                                            <Image Stretch="Uniform" Margin="4"
+                                                                   IsVisible="{Binding HasDisplayData}">
+                                                                <Image.Source>
+                                                                    <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
+                                                                        <Binding Path="DisplayData"/>
+                                                                        <Binding Path="SelectedItem.IsAdaptive" Source="{x:Static app:App.MainVM}"/>
+                                                                        <Binding Path="SelectedPlayerColor" Source="{x:Static app:App.MainVM}"/>
+                                                                    </MultiBinding>
+                                                                </Image.Source>
+                                                            </Image>
+                                                            <PathIcon Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+                                                                      Width="20" Height="20" Foreground="#3a3a52"
+                                                                      IsVisible="{Binding HasDisplayData, Converter={x:Static BoolConverters.Not}}"/>
+                                                        </Panel>
+                                                    </Border>
+                                                </Button>
+                                                <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                        Padding="3" Margin="2"
+                                                        Background="#80000000" CornerRadius="3"
+                                                        BorderThickness="0" MinWidth="0" MinHeight="0"
+                                                        Cursor="Hand" Tag="{Binding Resource}" Click="OnClearResourceClick"
+                                                        IsVisible="{Binding Resource.HasData}">
+                                                    <PathIcon Data="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                                                              Width="8" Height="8" Foreground="#cc4444"/>
+                                                </Button>
+                                            </Panel>
+
+                                            <!-- Edit animation button -->
+                                            <Button Padding="8,6" Background="#2a2a3e" CornerRadius="4"
+                                                    BorderThickness="0" Cursor="Hand" VerticalAlignment="Center"
+                                                    IsVisible="{Binding HasAnimation}"
+                                                    Command="{Binding EditResourceGroupCommand, Source={x:Static app:App.MainVM}}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <PathIcon Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                                                              Width="12" Height="12" Foreground="#8888a8"/>
+                                                    <TextBlock Text="Animation" FontSize="11" Foreground="#8888a8"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+
+                <!-- Animation editor mode -->
+                <views:AnimationEditorView
+                    IsVisible="{Binding EditingResourceGroup, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+            </Panel>
         </Border>
     </Panel>
 </UserControl>

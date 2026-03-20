@@ -37,25 +37,10 @@ public partial class CosmeticPreviewView : UserControl
         }
     }
 
-    private async void OnAddFrameClick(object? sender, RoutedEventArgs e)
+    private void OnClearResourceClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button { Tag: FrameListValue frameList }) return;
-
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel == null) return;
-
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = frameList.Definition.Label,
-            AllowMultiple = true,
-            FileTypeFilter = new List<FilePickerFileType>
-            {
-                new("Images") { Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp" } },
-                FilePickerFileTypes.All
-            }
-        });
-
-        foreach (var file in files)
-            frameList.Frames.Add(File.ReadAllBytes(file.Path.LocalPath));
+        if (sender is not Button { Tag: ResourceValue resource }) return;
+        resource.FileName = string.Empty;
+        resource.Data = null;
     }
 }

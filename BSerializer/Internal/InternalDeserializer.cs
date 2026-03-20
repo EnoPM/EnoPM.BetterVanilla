@@ -1,8 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace BSerializer.Internal;
@@ -107,7 +103,7 @@ internal sealed class InternalDeserializer
         return obj;
     }
 
-    private object ReadElement(BinaryReader reader, Type type)
+    private object? ReadElement(BinaryReader reader, Type type)
     {
         if (type.IsValueType)
         {

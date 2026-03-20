@@ -72,6 +72,17 @@
         <Setter Property="Padding" Value="10,4"/>
     </Style>
 
+    <!-- Always show full-width scrollbars (disable Fluent thin/expand behavior) -->
+    <Style Selector="ScrollViewer">
+        <Setter Property="AllowAutoHide" Value="False"/>
+    </Style>
+    <Style Selector="ListBox /template/ ScrollViewer">
+        <Setter Property="AllowAutoHide" Value="False"/>
+    </Style>
+    <Style Selector="TabControl /template/ ScrollViewer">
+        <Setter Property="AllowAutoHide" Value="False"/>
+    </Style>
+
     <!-- Detail panel background -->
     <Style Selector="Border.detail-panel">
         <Setter Property="Background" Value="#252538"/>

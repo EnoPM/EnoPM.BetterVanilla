@@ -15,6 +15,7 @@ namespace AmongUsCosmeticsManager;
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
+    public static MainViewModel MainVM { get; private set; } = null!;
 
     public override void Initialize()
     {
@@ -27,19 +28,21 @@ public partial class App : Application
         ConfigureServices(services);
         Services = services.BuildServiceProvider();
 
+        MainVM = Services.GetRequiredService<MainViewModel>();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = Services.GetRequiredService<MainViewModel>()
+                DataContext = MainVM
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = Services.GetRequiredService<MainViewModel>()
+                DataContext = MainVM
             };
         }
 
@@ -50,7 +53,7 @@ public partial class App : Application
     {
         services.AddSingleton<ConfigService>();
         services.AddSingleton<ProjectService>();
-        services.AddTransient<MainViewModel>();
+        services.AddSingleton<MainViewModel>();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

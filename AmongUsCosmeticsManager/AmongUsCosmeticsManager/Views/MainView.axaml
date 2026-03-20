@@ -20,9 +20,22 @@
             <!-- Status bar -->
             <Border DockPanel.Dock="Bottom" Classes="statusbar">
                 <Grid ColumnDefinitions="*,Auto">
-                    <TextBlock Grid.Column="0" Text="{Binding WorkspacePath}"
-                               FontSize="11" Foreground="#6a6a80" VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"/>
+                    <Panel Grid.Column="0">
+                        <TextBlock Text="Import en cours..."
+                                   FontSize="11" Foreground="#ddaa44" VerticalAlignment="Center"
+                                   IsVisible="{Binding IsImporting}"/>
+                        <TextBlock Text="Compilation en cours..."
+                                   FontSize="11" Foreground="#ddaa44" VerticalAlignment="Center"
+                                   IsVisible="{Binding IsCompiling}"/>
+                        <TextBlock Text="{Binding WorkspacePath}"
+                                   FontSize="11" Foreground="#6a6a80" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   IsVisible="{Binding LastError, Converter={x:Static ObjectConverters.IsNull}}"/>
+                        <TextBlock Text="{Binding LastError}"
+                                   FontSize="11" Foreground="#cc4444" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   IsVisible="{Binding LastError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    </Panel>
                     <ItemsControl Grid.Column="1"
                                   ItemsSource="{Binding SelectedBundle.Sections}"
                                   IsVisible="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -53,5 +66,22 @@
         </DockPanel>
 
         <views:InputModalView/>
+
+        <!-- Import progress overlay -->
+        <Border Background="#CC000000" IsVisible="{Binding IsImporting}"
+                IsHitTestVisible="{Binding IsImporting}">
+            <Border Background="#1e1e2e" CornerRadius="8" Padding="24"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    MinWidth="320" BorderBrush="#313145" BorderThickness="1">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="Import en cours" FontSize="16" FontWeight="Bold"
+                               Foreground="#aabbdd" HorizontalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True" Width="260"/>
+                    <TextBlock Text="{Binding ImportStatus}" FontSize="12"
+                               Foreground="#8888a8" HorizontalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" MaxWidth="280"/>
+                </StackPanel>
+            </Border>
+        </Border>
     </Panel>
 </UserControl>
