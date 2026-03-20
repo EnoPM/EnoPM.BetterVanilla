@@ -23,17 +23,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia"/>
-        <PackageReference Include="Avalonia.Themes.Fluent"/>
-        <PackageReference Include="Avalonia.Fonts.Inter"/>
+        <PackageReference Include="Avalonia" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia.Diagnostics">
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
-        <PackageReference Include="SkiaSharp"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5"/>
+        <PackageReference Include="SkiaSharp" Version="3.119.2"/>
     </ItemGroup>
 
     <ItemGroup>

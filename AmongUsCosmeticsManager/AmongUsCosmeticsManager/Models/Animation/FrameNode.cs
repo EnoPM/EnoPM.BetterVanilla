@@ -11,36 +11,55 @@ public partial class FrameNode : AnimationNode
     private int? _durationMs;
 
     [ObservableProperty]
-    private int _effectiveDurationMs = 100;
+    private int _fpsDefaultDurationMs = 100;
 
-    private bool _internalUpdate;
+    /// <summary>
+    /// The effective duration used by the playback engine.
+    /// </summary>
+    public int EffectiveDurationMs => DurationMs ?? FpsDefaultDurationMs;
 
-    partial void OnDurationMsChanged(int? value)
+    /// <summary>
+    /// True when DurationMs is null (using FPS-calculated default).
+    /// </summary>
+    public bool IsUsingFpsDefault => !DurationMs.HasValue;
+
+    /// <summary>
+    /// String property for TextBox binding.
+    /// Always shows the effective value. Clearing the field removes the custom override.
+    /// </summary>
+    public string DurationDisplay
     {
-        if (!_internalUpdate && value.HasValue)
+        get => EffectiveDurationMs.ToString();
+        set
         {
-            _internalUpdate = true;
-            EffectiveDurationMs = value.Value;
-            _internalUpdate = false;
+            if (string.IsNullOrWhiteSpace(value))
+                DurationMs = null;
+            else if (int.TryParse(value, out var ms) && ms > 0)
+                DurationMs = ms;
         }
     }
 
-    partial void OnEffectiveDurationMsChanged(int value)
+    partial void OnDurationMsChanged(int? value)
     {
-        // Only store as custom override when edited by the user (not from FPS update)
-        if (!_internalUpdate)
-            DurationMs = value;
+        OnPropertyChanged(nameof(EffectiveDurationMs));
+        OnPropertyChanged(nameof(DurationDisplay));
+        OnPropertyChanged(nameof(IsUsingFpsDefault));
+    }
+
+    partial void OnFpsDefaultDurationMsChanged(int value)
+    {
+        if (!DurationMs.HasValue)
+        {
+            OnPropertyChanged(nameof(EffectiveDurationMs));
+            OnPropertyChanged(nameof(DurationDisplay));
+        }
     }
 
     /// <summary>
-    /// Called by FrameListValue when DefaultFps changes. Updates display without creating an override.
+    /// Called by FrameListValue when DefaultFps changes.
     /// </summary>
     internal void SetEffectiveFromFps(int durationMs)
     {
-        if (DurationMs.HasValue) return; // has custom override, don't touch
-
-        _internalUpdate = true;
-        EffectiveDurationMs = durationMs;
-        _internalUpdate = false;
+        FpsDefaultDurationMs = durationMs;
     }
 }

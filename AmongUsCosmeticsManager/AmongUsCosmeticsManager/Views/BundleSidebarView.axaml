@@ -20,6 +20,8 @@
                      ItemsSource="{Binding Bundles}"
                      SelectedItem="{Binding SelectedBundle}"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     ScrollViewer.AllowAutoHide="False"
+                     ScrollViewer.HorizontalSnapPointsType="Mandatory"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="models:CosmeticBundle">
@@ -63,7 +65,7 @@
                                                     <Image Stretch="Uniform">
                                                         <Image.Source>
                                                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
-                                                                <Binding Path="MainResource.Data"/>
+                                                                <Binding Path="ThumbnailData"/>
                                                                 <Binding Path="IsAdaptive"/>
                                                                 <Binding Path="SelectedPlayerColor" Source="{x:Static app:App.MainVM}"/>
                                                             </MultiBinding>
@@ -71,7 +73,7 @@
                                                     </Image>
                                                     <PathIcon Data="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
                                                               Width="12" Height="12" Foreground="#3a3a52"
-                                                              IsVisible="{Binding MainResource.HasData, Converter={x:Static BoolConverters.Not}}"/>
+                                                              IsVisible="{Binding ThumbnailData, Converter={x:Static ObjectConverters.IsNull}}"/>
                                                 </Panel>
                                             </Border>
                                             <StackPanel VerticalAlignment="Center">

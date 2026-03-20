@@ -9,6 +9,7 @@ public partial class ResourceGroup : ObservableObject
 
     public string Label => Resource.Definition.Label;
     public bool HasAnimation => Animation != null;
+    public bool IsPreviewSlot => Resource.Definition.Id == "preview";
 
     public byte[]? DisplayData => Resource.HasData
         ? Resource.Data

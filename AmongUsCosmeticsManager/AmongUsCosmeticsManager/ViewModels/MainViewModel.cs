@@ -290,31 +290,36 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isCompiling;
 
+    [ObservableProperty]
+    private string _compileStatus = string.Empty;
+
     public async void ExportCosmeticsBundle(string outputPath)
     {
-        await ExportAsync(outputPath, bundle => BundleCompileService.Compile(bundle));
+        await ExportAsync(outputPath, "Cosmetics Bundle", bundle => BundleCompileService.Compile(bundle));
     }
 
     public async void ExportLegacyBundle(string outputPath)
     {
-        await ExportAsync(outputPath, bundle => LegacyBundleExporter.Export(bundle));
+        await ExportAsync(outputPath, "Bundle Legacy", bundle => LegacyBundleExporter.Export(bundle));
     }
 
-    private async System.Threading.Tasks.Task ExportAsync(string outputPath, Func<CosmeticBundle, byte[]> exportFunc)
+    private async System.Threading.Tasks.Task ExportAsync(string outputPath, string formatName, Func<CosmeticBundle, byte[]> exportFunc)
     {
         if (SelectedBundle == null || IsCompiling) return;
 
         IsCompiling = true;
+        CompileStatus = "Démarrage...";
         LastError = null;
 
         try
         {
             var bundle = SelectedBundle;
-            await System.Threading.Tasks.Task.Run(() =>
-            {
-                var data = exportFunc(bundle);
-                System.IO.File.WriteAllBytes(outputPath, data);
-            });
+            CompileStatus = $"Compilation du bundle \"{bundle.Name}\" ({formatName})...";
+
+            var data = await System.Threading.Tasks.Task.Run(() => exportFunc(bundle));
+
+            CompileStatus = "Écriture du fichier...";
+            await System.Threading.Tasks.Task.Run(() => System.IO.File.WriteAllBytes(outputPath, data));
 
             bundle.IsCompiled = true;
             bundle.CompiledDate = DateTime.Now;
@@ -327,6 +332,7 @@ public partial class MainViewModel : ViewModelBase
         finally
         {
             IsCompiling = false;
+            CompileStatus = string.Empty;
         }
     }
 

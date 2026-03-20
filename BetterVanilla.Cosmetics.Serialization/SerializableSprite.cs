@@ -8,9 +8,4 @@ public sealed class SerializableSprite
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-
-    /// <summary>
-    /// Per-frame duration in milliseconds. If null, uses the animation's default FPS.
-    /// </summary>
-    public int? DurationMs { get; set; }
 }

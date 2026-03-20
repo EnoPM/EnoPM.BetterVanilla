@@ -33,11 +33,20 @@ public partial class CosmeticItem : ObservableObject
 
     public ResourceValue? BackResource => GetResource("back");
 
+    /// <summary>Preview data: uses preview resource if available, otherwise falls back to main resource.</summary>
+    public byte[]? ThumbnailData => GetResource("preview")?.Data ?? FrontDisplayData;
+
+    /// <summary>Front display data: static resource or first animation frame.</summary>
+    public byte[]? FrontDisplayData => GetResourceGroupDisplayData("front") ?? GetResourceGroupDisplayData("resource");
+
+    /// <summary>Back display data: static resource or first animation frame.</summary>
+    public byte[]? BackDisplayData => GetResourceGroupDisplayData("back");
+
     /// <summary>Flip resource data, or front data as fallback for the flip preview.</summary>
-    public byte[]? FlipDisplayData => GetResource("flip")?.Data ?? MainResource?.Data;
+    public byte[]? FlipDisplayData => GetResource("flip")?.Data ?? FrontDisplayData;
 
     /// <summary>Back flip resource data, or back data as fallback.</summary>
-    public byte[]? BackFlipDisplayData => GetResource("backFlip")?.Data ?? GetResource("back")?.Data;
+    public byte[]? BackFlipDisplayData => GetResource("backFlip")?.Data ?? BackDisplayData;
 
     /// <summary>Climb resource data for the climb preview.</summary>
     public byte[]? ClimbDisplayData => GetResource("climb")?.Data;
@@ -81,8 +90,16 @@ public partial class CosmeticItem : ObservableObject
     public PropertyValue? GetProperty(string id) => Properties.FirstOrDefault(p => p.Definition.Id == id);
     public ResourceValue? GetResource(string id) => Resources.FirstOrDefault(r => r.Definition.Id == id);
 
+    private byte[]? GetResourceGroupDisplayData(string slotId)
+    {
+        return ResourceGroups.FirstOrDefault(g => g.Resource.Definition.Id == slotId)?.DisplayData;
+    }
+
     private void NotifyPreviewProperties()
     {
+        OnPropertyChanged(nameof(FrontDisplayData));
+        OnPropertyChanged(nameof(BackDisplayData));
+        OnPropertyChanged(nameof(ThumbnailData));
         OnPropertyChanged(nameof(FlipDisplayData));
         OnPropertyChanged(nameof(BackFlipDisplayData));
         OnPropertyChanged(nameof(ClimbDisplayData));

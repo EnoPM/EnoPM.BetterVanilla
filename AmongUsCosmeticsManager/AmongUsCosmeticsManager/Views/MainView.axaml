@@ -83,5 +83,22 @@
                 </StackPanel>
             </Border>
         </Border>
+
+        <!-- Export/compile progress overlay -->
+        <Border Background="#CC000000" IsVisible="{Binding IsCompiling}"
+                IsHitTestVisible="{Binding IsCompiling}">
+            <Border Background="#1e1e2e" CornerRadius="8" Padding="24"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    MinWidth="320" BorderBrush="#313145" BorderThickness="1">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="Export en cours" FontSize="16" FontWeight="Bold"
+                               Foreground="#aabbdd" HorizontalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True" Width="260"/>
+                    <TextBlock Text="{Binding CompileStatus}" FontSize="12"
+                               Foreground="#8888a8" HorizontalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" MaxWidth="280"/>
+                </StackPanel>
+            </Border>
+        </Border>
     </Panel>
 </UserControl>

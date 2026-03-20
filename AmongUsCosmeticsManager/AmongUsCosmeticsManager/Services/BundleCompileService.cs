@@ -153,19 +153,18 @@ public static class BundleCompileService
         var fl = item.FrameLists.FirstOrDefault(f => f.Definition.Id == frameListId);
         if (fl == null || fl.Nodes.Count == 0) return null;
 
-        var defaultDuration = 1000 / Math.Max(1, fl.DefaultFps);
-        var sprites = new List<SerializableSprite>();
-        FlattenNodes(fl.Nodes, sprites, defaultDuration);
-        if (sprites.Count == 0) return null;
+        var steps = new List<SerializableAnimationStep>();
+        FlattenNodes(fl.Nodes, steps);
+        if (steps.Count == 0) return null;
 
         return new SerializableFrameAnimation
         {
             Fps = fl.DefaultFps,
-            Frames = sprites.ToArray()
+            Steps = steps.ToArray()
         };
     }
 
-    private static void FlattenNodes(IEnumerable<AnimationNode> nodes, List<SerializableSprite> output, int defaultDuration)
+    private static void FlattenNodes(IEnumerable<AnimationNode> nodes, List<SerializableAnimationStep> output)
     {
         foreach (var node in nodes)
         {
@@ -173,24 +172,28 @@ public static class BundleCompileService
             {
                 case FrameNode frame when frame.Data.Length > 0:
                     var (w, h) = GetImageDimensions(frame.Data);
-                    output.Add(new SerializableSprite
+                    output.Add(new SerializableAnimationStep
                     {
-                        Data = frame.Data, X = 0, Y = 0, Width = w, Height = h,
-                        DurationMs = frame.DurationMs ?? defaultDuration
+                        Type = 0, // Frame
+                        DurationMs = frame.DurationMs,
+                        Sprite = new SerializableSprite
+                        {
+                            Data = frame.Data, X = 0, Y = 0, Width = w, Height = h
+                        }
                     });
                     break;
                 case DelayNode delay:
-                    // Emit a null-data sprite with the delay duration
-                    output.Add(new SerializableSprite
+                    output.Add(new SerializableAnimationStep
                     {
+                        Type = 1, // Delay
                         DurationMs = delay.DurationMs
                     });
                     break;
                 case LoopNode loop:
-                    var loopSprites = new List<SerializableSprite>();
-                    FlattenNodes(loop.Children, loopSprites, defaultDuration);
+                    var loopSteps = new List<SerializableAnimationStep>();
+                    FlattenNodes(loop.Children, loopSteps);
                     for (var i = 0; i < Math.Max(1, loop.Count); i++)
-                        output.AddRange(loopSprites);
+                        output.AddRange(loopSteps);
                     break;
             }
         }

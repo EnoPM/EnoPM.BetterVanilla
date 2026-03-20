@@ -60,9 +60,9 @@ public sealed class SerializableBundle
     private void CacheSprite(SerializableFrameAnimation? animation)
     {
         if (animation == null) return;
-        foreach (var sprite in animation.Frames)
+        foreach (var step in animation.Steps)
         {
-            CacheSprite(sprite);
+            CacheSprite(step.Sprite);
         }
     }
 

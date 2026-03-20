@@ -8,6 +8,16 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <Color x:Key="SystemAccentColor">#0078D4</Color>
+        <Color x:Key="SystemAccentColorDark1">#429CE3</Color>
+        <Color x:Key="SystemAccentColorDark2">#5EB7EF</Color>
+        <Color x:Key="SystemAccentColorDark3">#7ECBF5</Color>
+        <Color x:Key="SystemAccentColorLight1">#005A9E</Color>
+        <Color x:Key="SystemAccentColorLight2">#004578</Color>
+        <Color x:Key="SystemAccentColorLight3">#003153</Color>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="/Styles/AppStyles.axaml" />

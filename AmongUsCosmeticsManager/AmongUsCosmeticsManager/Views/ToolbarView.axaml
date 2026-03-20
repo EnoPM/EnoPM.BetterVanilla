@@ -4,7 +4,7 @@
              x:Class="AmongUsCosmeticsManager.Views.ToolbarView"
              x:DataType="vm:MainViewModel">
     <Border Classes="toolbar">
-        <Grid ColumnDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="Auto,*">
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
                 <Button ToolTip.Tip="Ouvrir un projet"
                         Padding="8,4" Background="Transparent" BorderThickness="0"
@@ -38,6 +38,21 @@
                         <TextBlock Text="Importer" VerticalAlignment="Center" FontSize="12"/>
                     </StackPanel>
                 </Button>
+                <!-- Export menu -->
+                <Button Padding="8,4" Background="Transparent" BorderThickness="0"
+                        IsEnabled="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Cosmetics Bundle (.bvcb)" Click="OnExportCosmeticsBundleClick"/>
+                            <MenuItem Header="Bundle Legacy (.bundle)" Click="OnExportLegacyBundleClick"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <PathIcon Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                  Width="14" Height="14"/>
+                        <TextBlock Text="Exporter" VerticalAlignment="Center" FontSize="12"/>
+                    </StackPanel>
+                </Button>
                 <Rectangle Width="1" Fill="#313145" Margin="4,2"/>
                 <Button Command="{Binding ShowAddBundleModalCommand}"
                         ToolTip.Tip="{Binding AppConfig.NewBundleLabel}"
@@ -56,21 +71,6 @@
                 <TextBlock Text="{Binding AppConfig.Version, StringFormat='v{0}'}" FontSize="10" Foreground="#555570"/>
             </StackPanel>
 
-            <!-- Export menu -->
-            <Button Grid.Column="2" Padding="10,4" VerticalAlignment="Center"
-                    IsEnabled="{Binding SelectedBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
-                <Button.Flyout>
-                    <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuItem Header="Cosmetics Bundle (.bvcb)" Click="OnExportCosmeticsBundleClick"/>
-                        <MenuItem Header="Bundle Legacy (.bundle)" Click="OnExportLegacyBundleClick"/>
-                    </MenuFlyout>
-                </Button.Flyout>
-                <StackPanel Orientation="Horizontal" Spacing="6">
-                    <PathIcon Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                              Width="12" Height="12" Foreground="LimeGreen"/>
-                    <TextBlock Text="Exporter" VerticalAlignment="Center" FontSize="12"/>
-                </StackPanel>
-            </Button>
         </Grid>
     </Border>
 </UserControl>

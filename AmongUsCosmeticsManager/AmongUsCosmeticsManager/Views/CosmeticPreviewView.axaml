@@ -107,18 +107,31 @@
                                                 </Button>
                                             </Panel>
 
-                                            <!-- Edit animation button -->
-                                            <Button Padding="8,6" Background="#2a2a3e" CornerRadius="4"
-                                                    BorderThickness="0" Cursor="Hand" VerticalAlignment="Center"
-                                                    IsVisible="{Binding HasAnimation}"
-                                                    Command="{Binding EditResourceGroupCommand, Source={x:Static app:App.MainVM}}"
-                                                    CommandParameter="{Binding}">
-                                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                                    <PathIcon Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                                                              Width="12" Height="12" Foreground="#8888a8"/>
-                                                    <TextBlock Text="Animation" FontSize="11" Foreground="#8888a8"/>
-                                                </StackPanel>
-                                            </Button>
+                                            <StackPanel Spacing="4" VerticalAlignment="Center">
+                                                <!-- Edit animation button -->
+                                                <Button Padding="8,6" Background="#2a2a3e" CornerRadius="4"
+                                                        BorderThickness="0" Cursor="Hand"
+                                                        IsVisible="{Binding HasAnimation}"
+                                                        Command="{Binding EditResourceGroupCommand, Source={x:Static app:App.MainVM}}"
+                                                        CommandParameter="{Binding}">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <PathIcon Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                                                                  Width="12" Height="12" Foreground="#8888a8"/>
+                                                        <TextBlock Text="Animation" FontSize="11" Foreground="#8888a8"/>
+                                                    </StackPanel>
+                                                </Button>
+                                                <!-- Generate preview button (only for preview slots) -->
+                                                <Button Padding="8,6" Background="#2a3a2e" CornerRadius="4"
+                                                        BorderThickness="0" Cursor="Hand"
+                                                        IsVisible="{Binding IsPreviewSlot}"
+                                                        Tag="{Binding}" Click="OnGeneratePreviewClick">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <PathIcon Data="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+                                                                  Width="12" Height="12" Foreground="#44dd66"/>
+                                                        <TextBlock Text="Générer" FontSize="11" Foreground="#44dd66"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>

@@ -2,8 +2,8 @@
 
 namespace BetterVanilla.Cosmetics.Serialization;
 
-public class SerializableFrameAnimation : IFrameAnimation<SerializableSprite>
+public class SerializableFrameAnimation : IFrameAnimation<SerializableAnimationStep>
 {
     public int Fps { get; set; }
-    public SerializableSprite[] Frames { get; set; } = [];
+    public SerializableAnimationStep[] Steps { get; set; } = [];
 }

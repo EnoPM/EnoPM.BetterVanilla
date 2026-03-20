@@ -9,8 +9,34 @@
              x:DataType="models:FrameListValue">
 
     <UserControl.Styles>
-        <Style Selector="Border.playhead">
+        <!-- Frame node default -->
+        <Style Selector="Border.frame-node">
+            <Setter Property="Background" Value="#2d3a5c"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        <!-- Frame node active during playback -->
+        <Style Selector="Border.frame-node.playhead">
             <Setter Property="BorderBrush" Value="#ee5533"/>
+            <Setter Property="Background" Value="#4d5a9c"/>
+        </Style>
+        <!-- Delay node default -->
+        <Style Selector="Border.delay-node">
+            <Setter Property="Background" Value="#5c4a2d"/>
+            <Setter Property="BorderBrush" Value="#706030"/>
+        </Style>
+        <!-- Delay node active during playback -->
+        <Style Selector="Border.delay-node.playhead">
+            <Setter Property="BorderBrush" Value="#ee5533"/>
+            <Setter Property="Background" Value="#8c7a4d"/>
+        </Style>
+        <!-- Custom duration override: bright text -->
+        <Style Selector="TextBox">
+            <Setter Property="Foreground" Value="#8899bb"/>
+        </Style>
+        <!-- FPS-calculated default: dimmed text -->
+        <Style Selector="TextBox.fpsDefault">
+            <Setter Property="Foreground" Value="#556677"/>
+            <Setter Property="FontStyle" Value="Italic"/>
         </Style>
     </UserControl.Styles>
 
@@ -25,8 +51,8 @@
                 <!-- FrameNode: compact tile with duration -->
                 <DataTemplate DataType="anim:FrameNode">
                     <Border Width="104" CornerRadius="4" Margin="2"
-                            Background="#2d3a5c" ClipToBounds="True" Cursor="Hand"
-                            BorderBrush="Transparent" BorderThickness="2"
+                            Classes="frame-node" ClipToBounds="True" Cursor="Hand"
+                            BorderThickness="2"
                             DragDrop.AllowDrop="True"
                             PointerPressed="OnNodePointerPressed"
                             PointerMoved="OnNodePointerMoved"
@@ -51,9 +77,10 @@
                                               Width="6" Height="6" Foreground="#cc4444"/>
                                 </Button>
                             </Panel>
-                            <TextBox Text="{Binding EffectiveDurationMs}" FontSize="9"
-                                     Padding="2,1" Background="#1e2844" Foreground="#8899bb"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"/>
+                            <TextBox Text="{Binding DurationDisplay}" FontSize="9"
+                                     Padding="2,1" Background="#1e2844"
+                                     BorderThickness="0" HorizontalContentAlignment="Center"
+                                     Classes.fpsDefault="{Binding IsUsingFpsDefault}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
@@ -61,11 +88,12 @@
                 <!-- DelayNode: full-width block -->
                 <DataTemplate DataType="anim:DelayNode">
                     <Border CornerRadius="4" Padding="6,4" Margin="2"
-                            Background="#5c4a2d" BorderBrush="#706030" BorderThickness="1"
+                            Classes="delay-node" BorderThickness="1"
                             Width="{Binding $parent[ItemsControl].Bounds.Width}"
                             DragDrop.AllowDrop="True"
                             PointerPressed="OnNodePointerPressed"
-                            PointerMoved="OnNodePointerMoved">
+                            PointerMoved="OnNodePointerMoved"
+                            Classes.playhead="{Binding IsPlayheadHere}">
                         <Grid ColumnDefinitions="Auto,Auto,Auto,*">
                             <PathIcon Data="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
                                       Width="12" Height="12" Foreground="#ddaa44"/>

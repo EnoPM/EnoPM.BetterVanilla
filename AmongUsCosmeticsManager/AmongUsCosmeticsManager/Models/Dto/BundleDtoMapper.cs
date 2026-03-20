@@ -164,7 +164,7 @@ public static class BundleDtoMapper
     {
         "delay" => new DelayNode { DurationMs = dto.DurationMs ?? 500 },
         "loop" => CreateLoopNode(dto),
-        _ => new FrameNode { Data = dto.Data ?? [], DurationMs = dto.DurationMs }
+        _ => new FrameNode { Data = dto.Data ?? [], DurationMs = dto.DurationMs is null or 0 ? null : dto.DurationMs }
     };
 
     private static LoopNode CreateLoopNode(AnimationNodeDto dto)

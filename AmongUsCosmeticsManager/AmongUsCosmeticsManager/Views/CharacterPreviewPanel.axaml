@@ -16,13 +16,13 @@
         <Border Background="#2a2a3e" CornerRadius="6" ClipToBounds="True">
             <Viewbox Stretch="Uniform" StretchDirection="Both">
                 <Panel Width="150" Height="188">
-                    <!-- Back resource -->
+                    <!-- Back resource (or first back animation frame) — hidden when animation plays -->
                     <Image Width="150" Height="150" Stretch="UniformToFill"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
-                           IsVisible="{Binding BackResource.HasData, FallbackValue=False}">
+                           IsVisible="{Binding CurrentBackFrameData, Source={x:Static app:App.MainVM}, Converter={x:Static ObjectConverters.IsNull}}">
                         <Image.Source>
                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
-                                <Binding Path="BackResource.Data"/>
+                                <Binding Path="BackDisplayData"/>
                                 <Binding Path="IsAdaptive"/>
                                 <Binding Path="SelectedPlayerColor" Source="{x:Static app:App.MainVM}"/>
                             </MultiBinding>
@@ -43,13 +43,13 @@
                     <!-- Player template -->
                     <Image Source="{Binding RecoloredPlayerTemplate, Source={x:Static app:App.MainVM}, Converter={StaticResource BytesToBitmap}}"
                            Width="150" Height="188" Stretch="UniformToFill"/>
-                    <!-- Front resource -->
+                    <!-- Front resource (or first front animation frame) — hidden when animation plays -->
                     <Image Width="150" Height="150" Stretch="UniformToFill"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
-                           IsVisible="{Binding MainResource.HasData}">
+                           IsVisible="{Binding CurrentFrontFrameData, Source={x:Static app:App.MainVM}, Converter={x:Static ObjectConverters.IsNull}}">
                         <Image.Source>
                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
-                                <Binding Path="MainResource.Data"/>
+                                <Binding Path="FrontDisplayData"/>
                                 <Binding Path="IsAdaptive"/>
                                 <Binding Path="SelectedPlayerColor" Source="{x:Static app:App.MainVM}"/>
                             </MultiBinding>
@@ -79,9 +79,10 @@
                     <Panel.RenderTransform>
                         <ScaleTransform ScaleX="-1"/>
                     </Panel.RenderTransform>
-                    <!-- Back flip resource (behind player) -->
+                    <!-- Back flip resource — hidden when animation plays -->
                     <Image Width="150" Height="150" Stretch="UniformToFill"
-                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           IsVisible="{Binding CurrentBackFrameData, Source={x:Static app:App.MainVM}, Converter={x:Static ObjectConverters.IsNull}}">
                         <Image.Source>
                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
                                 <Binding Path="BackFlipDisplayData"/>
@@ -105,9 +106,10 @@
                     <!-- Player template -->
                     <Image Source="{Binding RecoloredPlayerTemplateFlip, Source={x:Static app:App.MainVM}, Converter={StaticResource BytesToBitmap}}"
                            Width="150" Height="188" Stretch="UniformToFill"/>
-                    <!-- Flip resource (or front as fallback) -->
+                    <!-- Flip resource (or front as fallback) — hidden when animation plays -->
                     <Image Width="150" Height="150" Stretch="UniformToFill"
-                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           IsVisible="{Binding CurrentFrontFrameData, Source={x:Static app:App.MainVM}, Converter={x:Static ObjectConverters.IsNull}}">
                         <Image.Source>
                             <MultiBinding Converter="{x:Static conv:AdaptiveCosmeticConverter.Instance}">
                                 <Binding Path="FlipDisplayData"/>

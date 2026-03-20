@@ -132,26 +132,31 @@ public static class CosmeticsBundleImporter
 
     private static void SetAnimation(CosmeticItem item, string frameListId, SerializableFrameAnimation? animation, SerializableBundle sb)
     {
-        if (animation == null || animation.Frames.Length == 0) return;
+        if (animation == null || animation.Steps.Length == 0) return;
         var fl = item.FrameLists.FirstOrDefault(f => f.Definition.Id == frameListId);
         if (fl == null) return;
 
         if (animation.Fps > 0) fl.DefaultFps = animation.Fps;
 
-        foreach (var sprite in animation.Frames)
+        foreach (var step in animation.Steps)
         {
-            var data = ResolveSpriteData(sprite, sb);
-            if (data != null)
+            switch (step.Type)
             {
-                var node = new FrameNode { Data = data };
-                if (sprite.DurationMs.HasValue)
-                    node.DurationMs = sprite.DurationMs.Value;
-                fl.Nodes.Add(node);
-            }
-            else if (sprite.DurationMs.HasValue && sprite.Data == null && string.IsNullOrEmpty(sprite.Path))
-            {
-                // Delay sprite (no image data, just duration)
-                fl.Nodes.Add(new DelayNode { DurationMs = sprite.DurationMs.Value });
+                case 0: // Frame
+                    if (step.Sprite == null) continue;
+                    var data = ResolveSpriteData(step.Sprite, sb);
+                    if (data != null)
+                    {
+                        var node = new FrameNode { Data = data };
+                        if (step.DurationMs is > 0)
+                            node.DurationMs = step.DurationMs.Value;
+                        fl.Nodes.Add(node);
+                    }
+                    break;
+                case 1: // Delay
+                    if (step.DurationMs.HasValue)
+                        fl.Nodes.Add(new DelayNode { DurationMs = step.DurationMs.Value });
+                    break;
             }
         }
     }
