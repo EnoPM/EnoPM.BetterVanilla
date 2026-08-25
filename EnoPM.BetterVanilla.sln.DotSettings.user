@@ -330,7 +330,7 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AWifiGame_002Ecs_002Fl_003AC_0021_003FUsers_003FEnoPM_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F9c0f9eb89a6c413cb1f56477965a73b52d3200_003Fdc_003F169676cb_003FWifiGame_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AZiplineBehaviour_002Ecs_002Fl_003AC_0021_003FUsers_003FEnoPM_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F0047e72d444840918fcc60070d852cb52c4a00_003F32_003F39dc086a_003FZiplineBehaviour_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
-  &lt;Assembly Path="C:\Users\pc-pr\Downloads\Assembly-CSharp-2026-3-17.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\EnoPM\Downloads\Assembly-CSharp-2026.8.18.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	
 	

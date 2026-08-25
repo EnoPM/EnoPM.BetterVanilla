@@ -13,7 +13,7 @@ internal static class PlayerVoteAreaPatches
         {
             return;
         }
-        Ls.LogMessage($"Adding BetterPlayerVoteArea for player id : {__instance.TargetPlayerId}");
+        Ls.LogMessage($"Adding BetterPlayerVoteArea for player id : {__instance.VotedForId}");
         __instance.gameObject.AddComponent<BetterPlayerVoteArea>();
     }
 }

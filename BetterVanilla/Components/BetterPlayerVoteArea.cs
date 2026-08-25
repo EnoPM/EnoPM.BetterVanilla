@@ -42,13 +42,13 @@ public sealed class BetterPlayerVoteArea : MonoBehaviour
     private void Update()
     {
         if (VoteArea == null || InfosText == null || !MeetingHud.Instance || !InfosText.IsReady) return;
-        if (MeetingHud.Instance.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
+        if (MeetingHud.Instance.state is MeetingHud.MeetingStates.Animating or MeetingHud.MeetingStates.Proceeding or MeetingHud.MeetingStates.Results)
         {
             InfosText.gameObject.SetActive(false);
             return;
             
         }
-        var player = BetterVanillaManager.Instance.GetPlayerById(VoteArea.TargetPlayerId);
+        var player = BetterVanillaManager.Instance.GetPlayerById(VoteArea.VotedForId);
         if (player == null)
         {
             InfosText.gameObject.SetActive(false);

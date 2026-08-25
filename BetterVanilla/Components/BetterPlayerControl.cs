@@ -477,10 +477,10 @@ public class BetterPlayerControl : MonoBehaviour
         }
         var positions = MeetingHud.Instance.playerStates
             .Where(x => !x.AmDead && !x.DidReport)
-            .Select(x => x.TargetPlayerId)
+            .Select(x => x.VotedForId.Value)
             .ToList();
         positions.Shuffle();
-        var rpc = new RandomizedMeetingOrderRpc(this, positions.ToArray());
+        var rpc = new RandomizedMeetingOrderRpc(this, [.. positions]);
         rpc.Send();
     }
 }
