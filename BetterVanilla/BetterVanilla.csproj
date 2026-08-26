@@ -4,7 +4,7 @@
         <RootNamespace>BetterVanilla</RootNamespace>
         <PluginName>BetterVanilla</PluginName>
         <PluginGuid>bettervanilla.eno.pm</PluginGuid>
-        <PluginVersion>1.3.10</PluginVersion>
+        <PluginVersion>1.3.11</PluginVersion>
         <Description>Enhanced Among Us Vanilla experience</Description>
     </PropertyGroup>
 
@@ -29,11 +29,11 @@
 
     <ItemGroup>
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1"/>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.785" />
     </ItemGroup>
     
     <ItemGroup Condition="$(Configuration) != 'Android'">
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.9.9" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2026.8.18" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     </ItemGroup>
 
     <ItemGroup Condition="$(Configuration) == 'Android'">

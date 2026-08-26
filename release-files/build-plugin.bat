@@ -9,8 +9,8 @@ set "Il2CppAutoInteropVersion=v1.1.0"
 set "Il2CppAutoInteropRuntime=win-x64"
 
 set "BepInExVersion=6.0.0"
-set "BepInExBuildNumber=738"
-set "BepInExBuildHash=af0cba7"
+set "BepInExBuildNumber=785"
+set "BepInExBuildHash=6abdba4"
 
 set "PluginOutputDirectory=%~1"
 set "UnityProjectDirectory=%~2"
@@ -18,7 +18,7 @@ set "UnityProjectDirectory=%~2"
 set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x86-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
 
 
-set "AmongUsBepInExDownloadUrl=https://raw.githubusercontent.com/EnoPM/EnoPM.BetterVanilla/refs/heads/master/release-files/AmongUs.BepInEx.zip"
+set "AmongUsBepInExDownloadUrl=https://raw.githubusercontent.com/EnoPM/EnoPM.BetterVanilla/refs/heads/release/release-files/AmongUs.BepInEx.zip"
 
 set "TempDirectory=%~dp0.build-plugin-temp"
 

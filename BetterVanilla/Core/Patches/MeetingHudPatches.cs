@@ -2,6 +2,7 @@
 using BetterVanilla.Core.Extensions;
 using BetterVanilla.Options;
 using HarmonyLib;
+using InnerNet;
 using UnityEngine;
 
 namespace BetterVanilla.Core.Patches;
@@ -9,10 +10,10 @@ namespace BetterVanilla.Core.Patches;
 [HarmonyPatch(typeof(MeetingHud))]
 internal static class MeetingHudPatches
 {
-    [HarmonyPostfix, HarmonyPatch(nameof(MeetingHud.CastVote))]
-    private static void CastVotePostfix(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)
+    [HarmonyPostfix, HarmonyPatch(nameof(MeetingHud.CastVote), typeof(PlayerId), typeof(PlayerId))]
+    private static void CastVotePostfix(MeetingHud __instance, PlayerId srcPlayerId, PlayerId suspectPlayerId)
     {
-        __instance.BetterCastVote(srcPlayerId, suspectPlayerId);
+        __instance.BetterCastVote(srcPlayerId.Value, suspectPlayerId.Value);
     }
 
     [HarmonyPostfix, HarmonyPatch(nameof(MeetingHud.Update))]

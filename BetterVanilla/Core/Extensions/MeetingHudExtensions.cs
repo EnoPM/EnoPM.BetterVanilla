@@ -59,7 +59,7 @@ public static class MeetingHudExtensions
 
     public static void BetterUpdate(this MeetingHud meetingHud)
     {
-        if (meetingHud.state is MeetingHud.VoteStates.Results or MeetingHud.VoteStates.Proceeding)
+        if (meetingHud.CurrentState is MeetingHud.MeetingStates.Results or MeetingHud.MeetingStates.Proceeding)
         {
             DeleteAllCachedVoteSpreaders();
         }
@@ -89,7 +89,7 @@ public static class MeetingHudExtensions
         aliveVoteAreas.Remove(firstVoteArea);
         
         var positions = aliveVoteAreas
-            .OrderBy(x => ids.IndexOf(x.TargetPlayerId))
+            .OrderBy(x => ids.IndexOf(x.PlayerId.Value))
             .Select(x => x.transform.localPosition)
             .ToList();
 
@@ -164,7 +164,7 @@ public static class MeetingHudExtensions
 
     private static void CreateBetterVoteIcon(this MeetingHud meetingHud, VoteData vote)
     {
-        var votedPva = vote.Voted != null ? meetingHud.playerStates.FirstOrDefault(x => x != null && x.TargetPlayerId == vote.Voted.Player.PlayerId) : null;
+        var votedPva = vote.Voted != null ? meetingHud.playerStates.FirstOrDefault(x => x != null && x.PlayerId.Value == vote.Voted.Player.PlayerId) : null;
         var parent = votedPva != null ? votedPva.transform : meetingHud.SkippedVoting.transform;
         if (!parent)
         {

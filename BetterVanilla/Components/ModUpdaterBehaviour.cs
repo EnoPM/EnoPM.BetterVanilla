@@ -27,8 +27,8 @@ public sealed class ModUpdaterBehaviour : MonoBehaviour
         Instance = this;
         BepInExUpdater = new BepInExUpdater(
             new Version(6, 0, 0),
-            738,
-            "af0cba7"
+            785,
+            "6abdba4"
         );
     }
 

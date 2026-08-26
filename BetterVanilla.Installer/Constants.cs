@@ -3,7 +3,7 @@
 public static class Constants
 {
     public const string GithubRepository = "EnoPM/EnoPM.BetterVanilla";
-    public const string GithubBranch = "master";
+    public const string GithubBranch = "release";
     public const string UserAgent = "BetterVanillaInstaller/1.0";
     public const string ModDirectoryName = "BetterVanilla";
     
