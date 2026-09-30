@@ -19,8 +19,8 @@ public sealed class BepInExUpdater
     
     public BepInExUpdater(Version version, uint buildNumber, string buildHash)
     {
-        BepInExDownloadUrl = $"https://builds.bepinex.dev/projects/bepinex_be/{buildNumber}/BepInEx-Unity.IL2CPP-win-x86-{version.Major}.{version.Minor}.{version.Build}-be.{buildNumber}+{buildHash}.zip";
-        CurrentBepInExDirectory = Path.Combine(ModPaths.BepInExVersionsDirectory, $"{version.Major}.{version.Minor}.{version.Build}-{buildNumber}-{buildHash}");
+        BepInExDownloadUrl = $"https://builds.bepinex.dev/projects/bepinex_be/{buildNumber}/BepInEx-Unity.IL2CPP-win-x64-{version.Major}.{version.Minor}.{version.Build}-be.{buildNumber}+{buildHash}.zip";
+        CurrentBepInExDirectory = Path.Combine(ModPaths.BepInExVersionsDirectory, $"{version.Major}.{version.Minor}.{version.Build}-{buildNumber}-{buildHash}-win-x64");
     }
 
     public IEnumerator CoUpdateIfNecessary(IProgress<float>? progress = null)

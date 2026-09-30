@@ -9,18 +9,31 @@ set "Il2CppAutoInteropVersion=v1.1.0"
 set "Il2CppAutoInteropRuntime=win-x64"
 
 set "BepInExVersion=6.0.0"
-set "BepInExBuildNumber=738"
-set "BepInExBuildHash=af0cba7"
+set "BepInExBuildNumber=788"
+set "BepInExBuildHash=5b766a3"
 
 set "ReleaseVersion=%1"
 set "UnityProjectDirectory=%~2"
 set "BuildCacheDirectory=%~3"
+set "OutputDirectory=%~4"
+
+if "%UnityProjectDirectory%"=="-" set "UnityProjectDirectory="
+if "%BuildCacheDirectory%"=="-" set "BuildCacheDirectory="
+if "%OutputDirectory%"=="-" set "OutputDirectory="
 if "%ReleaseVersion%"=="" (
     echo [!] Error: No version provided. Usage: create-release.bat v1.2.3
     exit /b 1
 )
 
-set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x86-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
+powershell -NoProfile -Command "if ('%ReleaseVersion%' -notmatch '^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') { exit 1 }"
+if errorLevel 1 (
+    echo [!] Error: Invalid version '%ReleaseVersion%'. Expected format: v1.2.3 or v1.2.3-beta.1
+    exit /b 1
+)
+
+set "PluginVersion=%ReleaseVersion:~1%"
+
+set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x64-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
 
 set "TempDirectory=%~dp0.create-release-temp"
 
@@ -30,7 +43,9 @@ if "%BuildCacheDirectory%"=="" (
 
 set "SolutionDir=%~dp0.."
 set "BuildDirectory=%TempDirectory%\builds"
-set "OutputDirectory=%~dp0output"
+if "%OutputDirectory%"=="" (
+    set "OutputDirectory=%~dp0output"
+)
 set "BepInExDirectory=%BuildCacheDirectory%\BepInEx-%BepInExVersion%-%BepInExBuildNumber%-%BepInExBuildHash%"
 set "BepInExAmongUsZipPath=%~dp0AmongUs.BepInEx.zip"
 
@@ -66,6 +81,7 @@ echo [+] Executable found : '%Il2CppAutoInteropExecutablePath%'
 for %%p in (%ProjectNames%) do (
     call :BuildDotnetProject %%p
 )
+call :BuildInstaller
 
 for %%p in (%ProjectNames%) do (
     if not exist "%BuildDirectory%\%%p\%%p.dll" (
@@ -92,6 +108,8 @@ call :DeleteFileIfExist "%BepInExDirectory%\changelog.txt"
 call :DeleteFileIfExist "%OutputDirectory%\%ReleaseName%.%ReleaseVersion%.zip"
 call :Zip "%BepInExDirectory%\*" "%OutputDirectory%\%ReleaseName%.%ReleaseVersion%.zip"
 call :MoveFile "%BepInExDirectory%\BepInEx\plugins\*" "%OutputDirectory%\"
+call :DeleteFileIfExist "%OutputDirectory%\BetterVanillaInstaller.exe"
+call :MoveFile "%BuildDirectory%\BetterVanilla.Installer\BetterVanillaInstaller.exe" "%OutputDirectory%\BetterVanillaInstaller.exe"
 
 goto :eof
 
@@ -142,6 +160,36 @@ if errorLevel 1 (
 endLocal
 goto :eof
 
+:BuildInstaller
+setLocal
+set "InstallerProjectName=BetterVanilla.Installer"
+set "InstallerBuildDirectory=%BuildDirectory%\%InstallerProjectName%"
+set "InstallerBuildLog=%TempDirectory%\%InstallerProjectName%.dotnet.log"
+
+call :DeleteDirectoryIfExist "%InstallerBuildDirectory%"
+
+echo [+] Publishing project : '%InstallerProjectName%'
+dotnet publish "%SolutionDir%/%InstallerProjectName%/%InstallerProjectName%.csproj" ^
+  --configuration Release ^
+  --runtime win-x64 ^
+  --self-contained true ^
+  -p:Version="%PluginVersion%" ^
+  --output "%InstallerBuildDirectory%" > "%InstallerBuildLog%" 2>&1
+if errorLevel 1 (
+    echo [!] Error: Publish '%InstallerProjectName%' failed. See output below:
+    type "%InstallerBuildLog%"
+    exit /b 1
+)
+if not exist "%InstallerBuildDirectory%\BetterVanillaInstaller.exe" (
+    echo [!] Error: Installer executable was not produced.
+    exit /b 1
+)
+call :DeleteFileIfExist "%InstallerBuildLog%"
+echo [+] Success: Publish succeeded : '%InstallerProjectName%'
+
+endLocal
+goto :eof
+
 :BuildDotnetProject
 setLocal
 set "DotnetProjectName=%~1"
@@ -152,7 +200,9 @@ call :DeleteDirectoryIfExist "%BuildDirectory%\%DotnetProjectName%"
 echo [+] Building project : '%DotnetProjectName%'
 dotnet build "%SolutionDir%/%DotnetProjectName%/%DotnetProjectName%.csproj" ^
   --configuration Release ^
-  --runtime win-x86 ^
+  --runtime win-x64 ^
+  -p:PluginVersion="%PluginVersion%" ^
+  -p:BepInExPluginsDirectory="%BuildDirectory%\%DotnetProjectName%" ^
   --output "%BuildDirectory%\%DotnetProjectName%" > "%ProjectBuildLog%" 2>&1
 if errorLevel 1 (
     echo [!] Error: Build '%DotnetProjectName%' failed. See output below:

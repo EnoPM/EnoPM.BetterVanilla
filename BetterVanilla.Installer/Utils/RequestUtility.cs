@@ -48,7 +48,7 @@ public static class RequestUtility
 
     public static async Task DownloadBepInExArchiveAsync(BepInExVersion version, Stream destination)
     {
-        var url = $"https://builds.bepinex.dev/projects/bepinex_be/{version.BuildNumber}/BepInEx-Unity.IL2CPP-win-x86-{version.Version.Major}.{version.Version.Minor}.{version.Version.Build}-be.{version.BuildNumber}+{version.BuildHash}.zip";
+        var url = $"https://builds.bepinex.dev/projects/bepinex_be/{version.BuildNumber}/BepInEx-Unity.IL2CPP-win-x64-{version.Version.Major}.{version.Version.Minor}.{version.Version.Build}-be.{version.BuildNumber}+{version.BuildHash}.zip";
         await DownloadFileAsync(url, destination);
         destination.Position = 0;
     }

@@ -6,6 +6,7 @@ on:
       version:
         description: 'Release version (e.g. v1.2.3)'
         required: true
+        default: 'v1.3.12'
         type: string
 
 permissions:
@@ -18,15 +19,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
       - name: Run create-release script
         working-directory: release-files
-        run: cmd /c .\create-release.bat ${{ github.event.inputs.version }}
+        run: cmd /c .\create-release.bat ${{ inputs.version }}
+
+      - name: Verify release artifacts
+        shell: pwsh
+        run: |
+          $expectedZip = "release-files/output/BetterVanilla.${{ inputs.version }}.zip"
+          $expectedPlugin = "release-files/output/BetterVanilla.dll"
+          $expectedInstaller = "release-files/output/BetterVanillaInstaller.exe"
+          if (-not (Test-Path -LiteralPath $expectedZip)) { throw "Missing release archive: $expectedZip" }
+          if (-not (Test-Path -LiteralPath $expectedPlugin)) { throw "Missing plugin: $expectedPlugin" }
+          if (-not (Test-Path -LiteralPath $expectedInstaller)) { throw "Missing installer: $expectedInstaller" }
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-files
           path: release-files/output/
+          if-no-files-found: error
 
   create-release:
     needs: build-release
@@ -46,7 +63,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          name: BetterVanilla ${{ github.event.inputs.version }}
-          body: Release of BetterVanilla ${{ github.event.inputs.version }}
+          tag_name: ${{ inputs.version }}
+          name: BetterVanilla ${{ inputs.version }}
+          body: Release of BetterVanilla ${{ inputs.version }}
           files: release-artifacts/**

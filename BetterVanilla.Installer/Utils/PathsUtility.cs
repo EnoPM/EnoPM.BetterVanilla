@@ -44,5 +44,5 @@ public sealed class PathsUtility
         BepInExConfigFileRelativePath = Path.Combine(BepInExConfigDirectoryRelativePath, Constants.BepInExConfigFilename);
     }
 
-    public string GetBepInExDirectory(BepInExVersion version) => Path.Combine(BepInExVersionsDirectoryPath, $"{version.Version.Major}.{version.Version.Minor}.{version.Version.Build}-{version.BuildNumber}-{version.BuildHash}");
+    public string GetBepInExDirectory(BepInExVersion version) => Path.Combine(BepInExVersionsDirectoryPath, $"{version.Version.Major}.{version.Version.Minor}.{version.Version.Build}-{version.BuildNumber}-{version.BuildHash}-win-x64");
 }

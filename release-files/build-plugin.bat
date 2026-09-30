@@ -9,13 +9,18 @@ set "Il2CppAutoInteropVersion=v1.1.0"
 set "Il2CppAutoInteropRuntime=win-x64"
 
 set "BepInExVersion=6.0.0"
-set "BepInExBuildNumber=785"
-set "BepInExBuildHash=6abdba4"
+set "BepInExBuildNumber=788"
+set "BepInExBuildHash=5b766a3"
 
 set "PluginOutputDirectory=%~1"
 set "UnityProjectDirectory=%~2"
 
-set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x86-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
+if "%PluginOutputDirectory%" == "" (
+    echo [!] Error: A plugin output directory is required.
+    exit /b 1
+)
+
+set "BepInExDownloadUrl=https://builds.bepinex.dev/projects/bepinex_be/%BepInExBuildNumber%/BepInEx-Unity.IL2CPP-win-x64-%BepInExVersion%-be.%BepInExBuildNumber%+%BepInExBuildHash%.zip"
 
 
 set "AmongUsBepInExDownloadUrl=https://raw.githubusercontent.com/EnoPM/EnoPM.BetterVanilla/refs/heads/release/release-files/AmongUs.BepInEx.zip"
@@ -42,6 +47,7 @@ call :CreateDirectoryIfNotExist "%TempDirectory%"
 call :CreateDirectoryIfNotExist "%BuildDirectory%"
 call :CreateDirectoryIfNotExist "%OutputDirectory%"
 call :CreateDirectoryIfNotExist "%BuildCacheDirectory%"
+call :CreateDirectoryIfNotExist "%PluginOutputDirectory%"
 
 if not exist "%Il2CppAutoInteropExecutablePath%" (
     call :DownloadAndExtractZip "%Il2CppAutoInteropDownloadUrl%" "%TempDirectory%"
@@ -120,7 +126,7 @@ if "%UnityProjectDirectory%" == "" (
     "%Il2CppAutoInteropExecutablePath%" -o "%Il2CppAutoInteropOutputDirectory%" -b "%BepInExDirectory%\BepInEx" -u "%UnityProjectDirectory%"  %Il2CppAutoInteropInputFiles% > "%ProjectAutoInteropLog%" 2>&1
 )
 
-if not errorLevel 0 (
+if errorLevel 1 (
     echo [!] Error: Il2CppAutoInterop failed. See output below:
     type "%ProjectAutoInteropLog%"
     exit /b 1
@@ -141,7 +147,8 @@ call :DeleteDirectoryIfExist "%BuildDirectory%\%DotnetProjectName%"
 echo [+] Building project : '%DotnetProjectName%'
 dotnet build "%SolutionDir%/%DotnetProjectName%/%DotnetProjectName%.csproj" ^
   --configuration Release ^
-  --runtime win-x86 ^
+  --runtime win-x64 ^
+  -p:BepInExPluginsDirectory="%BuildDirectory%\%DotnetProjectName%" ^
   --output "%BuildDirectory%\%DotnetProjectName%" > "%ProjectBuildLog%" 2>&1
 if errorLevel 1 (
     echo [!] Error: Build '%DotnetProjectName%' failed. See output below:

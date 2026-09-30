@@ -15,7 +15,7 @@
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
         <StripSymbols>true</StripSymbols>
-        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <Configurations>Debug;Release;Android</Configurations>
         <Platforms>AnyCPU</Platforms>
         <!-- <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile> -->

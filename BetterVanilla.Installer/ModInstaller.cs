@@ -89,13 +89,13 @@ public sealed class ModInstaller
     
     private void UpdateGameDirectory(string versionDirectory)
     {
-        if (!File.Exists(Paths.WinHttpDllFilePath))
-        {
-            File.Copy(
-                Path.Combine(versionDirectory, DoorstopUtility.EntryPointFilename),
-                Paths.WinHttpDllFilePath
-            );
-        }
+        // Always replace Doorstop's proxy: an existing installation may still
+        // contain the x86 DLL while current Among Us builds are x64.
+        File.Copy(
+            Path.Combine(versionDirectory, DoorstopUtility.EntryPointFilename),
+            Paths.WinHttpDllFilePath,
+            true
+        );
 
         if (!File.Exists(Paths.DoorstopConfigFilePath))
         {
