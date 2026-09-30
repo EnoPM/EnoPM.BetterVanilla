@@ -1,6 +1,9 @@
 ﻿name: Create release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       version:
@@ -11,6 +14,9 @@ on:
 
 permissions:
   contents: write
+
+env:
+  RELEASE_VERSION: ${{ inputs.version || github.ref_name }}
 
 jobs:
   build-release:
@@ -26,12 +32,12 @@ jobs:
 
       - name: Run create-release script
         working-directory: release-files
-        run: cmd /c .\create-release.bat ${{ inputs.version }}
+        run: cmd /c .\create-release.bat $env:RELEASE_VERSION
 
       - name: Verify release artifacts
         shell: pwsh
         run: |
-          $expectedZip = "release-files/output/BetterVanilla.${{ inputs.version }}.zip"
+          $expectedZip = "release-files/output/BetterVanilla.$env:RELEASE_VERSION.zip"
           $expectedPlugin = "release-files/output/BetterVanilla.dll"
           $expectedInstaller = "release-files/output/BetterVanillaInstaller.exe"
           if (-not (Test-Path -LiteralPath $expectedZip)) { throw "Missing release archive: $expectedZip" }
@@ -63,7 +69,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.version }}
-          name: BetterVanilla ${{ inputs.version }}
-          body: Release of BetterVanilla ${{ inputs.version }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: BetterVanilla ${{ env.RELEASE_VERSION }}
+          body: Release of BetterVanilla ${{ env.RELEASE_VERSION }}
           files: release-artifacts/**
